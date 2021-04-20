@@ -1,0 +1,41 @@
+{
+  query: {
+    indexed_local: {
+      count: 84,
+      average: 2452158.785714286,
+      max: 64812816,
+      slowest: "SELECT _gen0.bonus FROM com.redhat.PlayerScore _gen0 WHERE (bonus > 0) AND (human = false) AND (gameId = "d0eb71638d272a69")"
+    },
+    indexed_distributed: {
+      count: 84,
+      average: 2773269.488095238,
+      max: 65066748,
+      slowest: "SELECT _gen0.bonus FROM com.redhat.PlayerScore _gen0 WHERE (bonus > 0) AND (human = false) AND (gameId = "d0eb71638d272a69")"
+    },
+    hybrid: {
+      count: 16,
+      average: 1022730713483074.1,
+      max: 1022737112876077,
+      slowest: "SELECT C0 FROM Row "
+    },
+    non_indexed: {
+      count: 0,
+      average: 0,
+      max: -1
+    },
+    entity_load: {
+      count: 40,
+      average: 13895.6,
+      max: 146084
+    }
+  },
+  index: {
+    types: {
+      com.redhat.PlayerScore: {
+        count: 10,
+        size: 13038
+      }
+    },
+    reindexing: false
+  }
+}

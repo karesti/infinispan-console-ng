@@ -1,0 +1,11 @@
+{
+  search_query_execution_count: 84,
+  search_query_total_time: 205981338,
+  search_query_execution_max_time: 64812816,
+  search_query_execution_avg_time: 2452158,
+  object_loading_total_time: 40,
+  object_loading_execution_max_time: 555824,
+  object_loading_execution_avg_time: 13895,
+  objects_loaded_count: 40,
+  search_query_execution_max_time_query_string: "SELECT _gen0.bonus FROM com.redhat.PlayerScore _gen0 WHERE (bonus > 0) AND (human = false) AND (gameId = "d0eb71638d272a69")"
+}

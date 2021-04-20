@@ -8,6 +8,7 @@ import { CrossSiteReplicationService } from '@services/crossSiteReplicationServi
 import { CacheService } from '@services/cacheService';
 import { ContainerService } from '@services/dataContainerService';
 import { SecurityService } from '@services/securityService';
+import {SearchService} from "@services/searchService";
 
 /**
  * Infinispan Console Services
@@ -25,6 +26,7 @@ export class ConsoleServices {
   private cacheService;
   private dataContainerService;
   private userService;
+  private searchService;
 
   private constructor() {
     this.initialized = false;
@@ -108,6 +110,11 @@ export class ConsoleServices {
         this.instance.authenticationService
       );
 
+      this.instance.searchService = new SearchService(
+        ConsoleServices.endpoint() + '/caches',
+        this.instance.restUtils
+      );
+
       this.instance.initialized = true;
     }
   }
@@ -146,6 +153,10 @@ export class ConsoleServices {
 
   public static security(): SecurityService {
     return this.instance.userService;
+  }
+
+  public static search(): SearchService {
+    return this.instance.searchService;
   }
 
   public isInitialized(): boolean {

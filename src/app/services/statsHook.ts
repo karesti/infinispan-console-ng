@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import {ConsoleServices} from "@services/ConsoleServices";
 
+
 export function useFetchGlobalStats() {
   const [stats, setStats] = useState<CacheManagerStats>({
     statistics_enabled: false,
@@ -42,5 +43,37 @@ export function useFetchGlobalStats() {
     loading,
     stats,
     error,
+  };
+}
+
+export function useSearchStats(cacheName:string) {
+  const [stats, setStats] = useState<SearchStats>({
+    reindexing: false,
+    query: [],
+    index: [],
+  });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (loading) {
+      ConsoleServices.search()
+        .retrieveStats(cacheName)
+        .then((eitherStats) => {
+           if(eitherStats.isRight()) {
+             setStats(eitherStats.value)
+           } else {
+             setError(eitherStats.value.message);
+           }
+        })
+        .then(() => setLoading(false));
+    }
+  }, [loading]);
+
+  return {
+    loading,
+    stats,
+    error,
+    setLoading
   };
 }

@@ -1,0 +1,12 @@
+{
+  indexed_class_names: [
+    "com.redhat.PlayerScore"
+  ],
+  indexed_entities_count: {
+    com.redhat.PlayerScore: 10
+  },
+  index_sizes: {
+    com.redhat.PlayerScore: 18278
+  },
+  reindexing: false
+}

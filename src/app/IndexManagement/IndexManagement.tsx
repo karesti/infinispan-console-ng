@@ -30,6 +30,7 @@ import {useTranslation} from 'react-i18next';
 import {ConsoleServices} from "@services/ConsoleServices";
 import {ConsoleACL} from "@services/securityService";
 import {useConnectedUser} from "@app/services/userManagementHook";
+import {useSearchStats} from "@app/services/statsHook";
 
 const IndexManagement = (props) => {
   const { t } = useTranslation();
@@ -37,54 +38,39 @@ const IndexManagement = (props) => {
   const { addAlert } = useApiAlert();
   const { connectedUser } = useConnectedUser();
   const cacheName = decodeURIComponent(props.computedMatch.params.cacheName);
+  const {stats, loading, error, setLoading} = useSearchStats(cacheName)
   const [purgeModalOpen, setPurgeModalOpen] = useState<boolean>(false);
   const [reindexModalOpen, setReindexModalOpen] = useState<boolean>(false);
-  const [indexStats, setIndexStats] = useState<IndexStats | undefined>(
-    undefined
-  );
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string>('');
-
-  useEffect(() => {
-    retrieveIndexStats();
-  }, []);
-
-  const retrieveIndexStats = () => {
-    ConsoleServices.caches().retrieveIndexStats(cacheName).then((eitherResult) => {
-      setLoading(false);
-      if (eitherResult.isRight()) {
-        setIndexStats(eitherResult.value);
-      } else {
-        addAlert(eitherResult.value);
-        setError(eitherResult.value.message);
-      }
-    });
-  };
 
   const displayClassNames = () => {
-    if (!indexStats) {
-      return <Text></Text>;
+    if (!stats) {
+      return (
+        <Text></Text>
+      );
     }
-    return indexStats?.class_names.map((className) => (
-      <Text component={TextVariants.p} key={className}>
-        {className}
+    return stats.index.map((stat) => (
+      <Text component={TextVariants.p} key={stat.name}>
+        {stat.name}
       </Text>
     ));
   };
 
-  const displayIndexValues = (label: string, values: IndexValue[]) => {
-    if (!indexStats) {
+  const displayIndexValues = (label: string) => {
+    if (!stats) {
       return '';
     }
     return (
       <TextList component={TextListVariants.dl}>
-        {values.map((indexValue) => (
-          <React.Fragment key={'react-frangment-text-' + indexValue.entity}>
+        {stats.index.map((indexValue) => (
+          <React.Fragment key={'react-frangment-text-' + indexValue.name}>
             <TextListItem component={TextListItemVariants.dt}>
-              {indexValue.entity}
+              {indexValue.name}
             </TextListItem>
             <TextListItem component={TextListItemVariants.dd}>
-              {displayUtils.formatNumber(indexValue.count) + ' ' + label}
+              <TextContent>
+                <Text>Count {indexValue.count}</Text>
+                <Text>Size {indexValue.size}</Text>
+              </TextContent>
             </TextListItem>
           </React.Fragment>
         ))}
@@ -94,12 +80,12 @@ const IndexManagement = (props) => {
 
   const closePurgeModal = () => {
     setPurgeModalOpen(false);
-    retrieveIndexStats();
+    setLoading(true);
   };
 
   const closeReindexModal = () => {
     setReindexModalOpen(false);
-    retrieveIndexStats();
+    setLoading(true);
   };
 
   const buildReindexAction = () => {
@@ -107,7 +93,7 @@ const IndexManagement = (props) => {
       return ;
     }
 
-    if (indexStats?.reindexing) {
+    if (stats?.reindexing) {
       return <Spinner size={'md'} />;
     }
     return (
@@ -129,7 +115,7 @@ const IndexManagement = (props) => {
      <LevelItem>
       <Button
         variant={ButtonVariant.danger}
-        disabled={!indexStats?.reindexing}
+        disabled={!stats?.reindexing}
         onClick={() => setPurgeModalOpen(true)}
       >
         Clear index
@@ -147,7 +133,7 @@ const IndexManagement = (props) => {
       return <TableErrorState error={error} />;
     }
 
-    if (indexStats) {
+    if (stats) {
       return (
         <TextContent style={{ marginTop: global_spacer_md.value }}>
           <TextList component={TextListVariants.dl} key="indexes">
@@ -171,7 +157,7 @@ const IndexManagement = (props) => {
               key={'entriesCountValue'}
             >
               <TextContent>
-                {displayIndexValues('entities', indexStats?.entities_count)}
+                {displayIndexValues('entities', stats?.entities_count)}
               </TextContent>
             </TextListItem>
             <TextListItem component={TextListItemVariants.dt} key={'sizes'}>

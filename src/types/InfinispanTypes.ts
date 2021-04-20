@@ -246,3 +246,22 @@ interface AuthInfo {
   digest: boolean;
   keycloakConfig?: Keycloak.KeycloakConfig;
 }
+
+interface IndexStat {
+  name: string;
+  count: string;
+  size: string;
+}
+interface QueryStat {
+  name: string;
+  count: string;
+  average: string;
+  slowest: string;
+}
+
+interface SearchStats {
+  index: IndexStat[];
+  query: QueryStat[];
+  reindexing: boolean;
+
+}
