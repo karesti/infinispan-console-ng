@@ -1,10 +1,14 @@
 import * as React from 'react';
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import {
+  Alert,
+  AlertVariant,
   Button,
   ButtonVariant,
   Divider,
   DividerVariant,
+  Grid,
+  GridItem,
   Level,
   LevelItem,
   PageSection,
@@ -25,7 +29,6 @@ import {DataContainerBreadcrumb} from '@app/Common/DataContainerBreadcrumb';
 import {TableErrorState} from '@app/Common/TableErrorState';
 import {PurgeIndex} from '@app/IndexManagement/PurgeIndex';
 import {Reindex} from '@app/IndexManagement/Reindex';
-import displayUtils from '../../services/displayUtils';
 import {useTranslation} from 'react-i18next';
 import {ConsoleServices} from "@services/ConsoleServices";
 import {ConsoleACL} from "@services/securityService";
@@ -41,42 +44,6 @@ const IndexManagement = (props) => {
   const {stats, loading, error, setLoading} = useSearchStats(cacheName)
   const [purgeModalOpen, setPurgeModalOpen] = useState<boolean>(false);
   const [reindexModalOpen, setReindexModalOpen] = useState<boolean>(false);
-
-  const displayClassNames = () => {
-    if (!stats) {
-      return (
-        <Text></Text>
-      );
-    }
-    return stats.index.map((stat) => (
-      <Text component={TextVariants.p} key={stat.name}>
-        {stat.name}
-      </Text>
-    ));
-  };
-
-  const displayIndexValues = (label: string) => {
-    if (!stats) {
-      return '';
-    }
-    return (
-      <TextList component={TextListVariants.dl}>
-        {stats.index.map((indexValue) => (
-          <React.Fragment key={'react-frangment-text-' + indexValue.name}>
-            <TextListItem component={TextListItemVariants.dt}>
-              {indexValue.name}
-            </TextListItem>
-            <TextListItem component={TextListItemVariants.dd}>
-              <TextContent>
-                <Text>Count {indexValue.count}</Text>
-                <Text>Size {indexValue.size}</Text>
-              </TextContent>
-            </TextListItem>
-          </React.Fragment>
-        ))}
-      </TextList>
-    );
-  };
 
   const closePurgeModal = () => {
     setPurgeModalOpen(false);
@@ -126,74 +93,69 @@ const IndexManagement = (props) => {
 
   const buildIndexPageContent = () => {
     if (loading) {
-      return <Spinner size={'lg'} />;
+      return (
+        <Spinner size={'lg'} />
+        );
     }
 
     if (error != '') {
-      return <TableErrorState error={error} />;
+      return (
+        <TableErrorState error={error} />
+        );
     }
 
     if (stats) {
       return (
-        <TextContent style={{ marginTop: global_spacer_md.value }}>
-          <TextList component={TextListVariants.dl} key="indexes">
-            <TextListItem component={TextListItemVariants.dt} key={'className'}>
-              Class name
-            </TextListItem>
-            <TextListItem
-              component={TextListItemVariants.dd}
-              key={'classNameValue'}
-            >
-              <TextContent>{displayClassNames()}</TextContent>
-            </TextListItem>
-            <TextListItem
-              component={TextListItemVariants.dt}
-              key={'entriesCount'}
-            >
-              Number of entities
-            </TextListItem>
-            <TextListItem
-              component={TextListItemVariants.dd}
-              key={'entriesCountValue'}
-            >
-              <TextContent>
-                {displayIndexValues('entities', stats?.entities_count)}
+        <Grid hasGutter>
+          {stats.index.map(indexData =>
+            <GridItem span={6}>
+              <TextContent style={{marginTop: global_spacer_md.value}}>
+                <TextList component={TextListVariants.dl} key="indexes">
+                  <TextListItem component={TextListItemVariants.dt} key={'className'}>
+                    Class name
+                  </TextListItem>
+                  <TextListItem
+                    component={TextListItemVariants.dd}
+                    key={'classNameValue'}
+                  >
+                    <TextContent>{indexData.name}</TextContent>
+                  </TextListItem>
+                  <TextListItem
+                    component={TextListItemVariants.dt}
+                    key={'entriesCount'}
+                  >
+                    Number of entities
+                  </TextListItem>
+                  <TextListItem
+                    component={TextListItemVariants.dd}
+                    key={'entriesCountValue'}
+                  >
+                    <TextContent>
+                      {indexData.count}
+                    </TextContent>
+                  </TextListItem>
+                  <TextListItem component={TextListItemVariants.dt} key={'sizes'}>
+                    Index size
+                  </TextListItem>
+                  <TextListItem
+                    component={TextListItemVariants.dd}
+                    key={'sizesValue'}
+                  >
+                    <TextContent>
+                      {indexData.size}
+                    </TextContent>
+                  </TextListItem>
+                </TextList>
               </TextContent>
-            </TextListItem>
-            <TextListItem component={TextListItemVariants.dt} key={'sizes'}>
-              Index size
-            </TextListItem>
-            <TextListItem
-              component={TextListItemVariants.dd}
-              key={'sizesValue'}
-            >
-              <TextContent>
-                {displayIndexValues('bytes', indexStats?.sizes)}
-              </TextContent>
-            </TextListItem>
-            <TextListItem component={TextListItemVariants.dt} key={'reindex'}>
-              Rebuilding index
-            </TextListItem>
-            <TextListItem
-              component={TextListItemVariants.dd}
-              key={'reindexValue'}
-            >
-              {buildReindexAction()}
-            </TextListItem>
-          </TextList>
-          <Text key={'button-back'}>
-            <Link
-              to={{
-                pathname: '/cache/' + encodeURIComponent(cacheName),
-              }}
-            >
-              <Button>Back</Button>
-            </Link>
-          </Text>
-        </TextContent>
+            </GridItem>
+          )}
+        </Grid>
       );
     }
-    return;
+
+    return (
+      <Alert variant={AlertVariant.info} title={'Indexes are empty'}/>
+    );
   };
 
   return (
@@ -219,6 +181,18 @@ const IndexManagement = (props) => {
 
         <Divider component={DividerVariant.hr}></Divider>
         {buildIndexPageContent()}
+        {buildReindexAction()}
+        <TextContent>
+        <Text key={'button-back'}>
+          <Link
+            to={{
+              pathname: '/cache/' + encodeURIComponent(cacheName),
+            }}
+          >
+            <Button>Back</Button>
+          </Link>
+        </Text>
+        </TextContent>
         <PurgeIndex
           cacheName={cacheName}
           isModalOpen={purgeModalOpen}

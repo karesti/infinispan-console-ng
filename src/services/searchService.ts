@@ -123,7 +123,7 @@ export class SearchService {
         );
         return right(<SearchStats>{
           query: queryStats,
-          index: indexStats,
+          index: indexStats.concat(indexStats),
           reindexing: data.reindexing
         });
         })
