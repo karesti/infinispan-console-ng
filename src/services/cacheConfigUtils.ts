@@ -1,7 +1,12 @@
-import {CacheFeature, ContentType, EncodingType,} from '@services/infinispanRefData';
-import {Either, left, right} from '@services/either';
-import {ConsoleServices} from '@services/ConsoleServices';
-import {convertToMilliseconds} from '@app/utils/convertToMilliseconds';
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+import {
+  CacheFeature,
+  ContentType,
+  EncodingType,
+} from '@services/infinispanRefData';
+import { Either, left, right } from '@services/either';
+import { ConsoleServices } from '@services/ConsoleServices';
+import { convertToMilliseconds } from '@app/utils/convertToMilliseconds';
 
 export const Distributed = 'distributed-cache';
 export const Replicated = 'replicated-cache';
@@ -175,7 +180,7 @@ export class CacheConfigUtils {
 
     const locking = () => {
       cache[cacheType].locking = {
-        isolation: data.advanced.isolationLevel,
+        isolation: data.advanced.transactionalAdvance?.isolationLevel,
         striping: data.advanced.striping,
         'concurrency-level': data.advanced.concurrencyLevel,
         'acquire-timeout': data.advanced.lockAcquisitionTimeout,
@@ -339,21 +344,23 @@ export class CacheConfigUtils {
       };
     };
 
-    const helperLowLevelTrace = () => {
-      cache[cacheType]['indexing']['index-writer']['low-level-trace'] =
-        data.advanced.indexWriter.lowLevelTrace;
-    };
-
-    const helperCalibrateByDeletes = () => {
-      cache[cacheType]['indexing']['index-writer']['index-merge'][
-        'calibrate-by-deletes'
-      ] = data.advanced.indexMerge.calibrateByDeletes;
+    const featureTransactional = () => {
+      cache[cacheType]['transaction'] = {
+        mode: data.feature.transactionalCache.mode,
+        locking: data.feature.transactionalCache.locking,
+        'stop-timeout': data.advanced.transactionalAdvance?.stopTimeout,
+        'transaction-manager-lookup':
+          data.advanced.transactionalAdvance?.transactionManagerLookup,
+        'complete-timeout': data.advanced.transactionalAdvance?.completeTimeout,
+        'reaper-interval': data.advanced.transactionalAdvance?.reaperInterval,
+        'recovery-cache': data.advanced.transactionalAdvance?.recoveryCache,
+      };
     };
 
     if (
       data.advanced.concurrencyLevel ||
       data.advanced.striping ||
-      data.advanced.isolationLevel ||
+      data.advanced.transactionalAdvance?.isolationLevel ||
       data.advanced.lockAcquisitionTimeout
     )
       locking();
@@ -399,6 +406,9 @@ export class CacheConfigUtils {
 
     data.feature.cacheFeatureSelected.includes(CacheFeature.SECURED) &&
       featureSecured();
+
+    data.feature.cacheFeatureSelected.includes(CacheFeature.TRANSACTIONAL) &&
+      featureTransactional();
 
     return JSON.stringify(cache, null, 2);
   }

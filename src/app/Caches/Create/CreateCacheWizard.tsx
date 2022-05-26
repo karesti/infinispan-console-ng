@@ -5,17 +5,19 @@ import { useApiAlert } from '@app/utils/useApiAlert';
 import { CacheConfigUtils } from '@services/cacheConfigUtils';
 import { useTranslation } from 'react-i18next';
 import {
-  CacheType,
-  EncodingType,
-  IsolationLevel,
-  StorageType,
-  CacheFeature,
-  CacheMode,
-  EvictionStrategy,
-  TimeUnits,
-  EvictionType,
-  IndexedStorage,
-  MaxSizeUnit
+    CacheType,
+    EncodingType,
+    IsolationLevel,
+    StorageType,
+    CacheFeature,
+    CacheMode,
+    EvictionStrategy,
+    TimeUnits,
+    EvictionType,
+    IndexedStorage,
+    MaxSizeUnit,
+    Locking,
+    TransactionalMode
 } from "@services/infinispanRefData";
 import GettingStarted from './GettingStarted';
 import CacheEditor from './CacheEditor';
@@ -91,12 +93,22 @@ const BackupsCacheInitialState: BackupsCache = {
 const BackupSettingInitialState: BackupSetting = {
 }
 
+const TransactionalCacheInitialState: TransactionalCache = {
+    mode: TransactionalMode.NON_XA,
+    locking: Locking.OPTIMISTIC
+}
+
+const TransactionalCacheAdvanceInitialState: TransactionalCacheAdvance = {
+    isolationLevel: IsolationLevel.REPEATABLE_READ
+}
+
 const CacheFeatureInitialState: CacheFeatureStep = {
     cacheFeatureSelected: [],
     boundedCache: BoundedCacheInitialState,
     indexedCache: IndexedCacheInitialState,
     securedCache: SecuredCacheInitialState,
-    backupsCache: BackupsCacheInitialState
+    backupsCache: BackupsCacheInitialState,
+    transactionalCache: TransactionalCacheInitialState,
 }
 
 const AdvancedOptionsInitialState: AdvancedConfigurationStep = {
@@ -105,8 +117,8 @@ const AdvancedOptionsInitialState: AdvancedConfigurationStep = {
     isOpenIndexMerge: false,
     isOpenIndexReader: false,
     isOpenIndexWriter: false,
-    disabledStriping: true,
-    backupSetting: BackupSettingInitialState
+    backupSetting: BackupSettingInitialState,
+    transactionalAdvance: TransactionalCacheAdvanceInitialState
 }
 
 const CreateCacheWizard = (props) => {
@@ -254,7 +266,8 @@ const CreateCacheWizard = (props) => {
             {
                 id: 5,
                 name: t('caches.create.configurations.advanced-options.nav-title'),
-                component: <AdvancedOptions advancedOptions={advancedOptions} advancedOptionsModifier={setAdvancedOptions} showIndexTuning={cacheFeature.cacheFeatureSelected.includes(CacheFeature.INDEXED)} showBackupsTuning={cacheFeature.backupsCache.sites.length > 0} backupsSite={cacheFeature.backupsCache.sites} />,
+                // component: <AdvancedOptions advancedOptions={advancedOptions} advancedOptionsModifier={setAdvancedOptions} showIndexTuning={cacheFeature.cacheFeatureSelected.includes(CacheFeature.INDEXED)} />,
+                component: <AdvancedOptions advancedOptions={advancedOptions} advancedOptionsModifier={setAdvancedOptions} showIndexTuning={cacheFeature.cacheFeatureSelected.includes(CacheFeature.INDEXED)} showBackupsTuning={cacheFeature.backupsCache.sites.length > 0} backupsSite={cacheFeature.backupsCache.sites} showTransactionalTuning={cacheFeature.cacheFeatureSelected.includes(CacheFeature.TRANSACTIONAL)} transactionalMode={cacheFeature.transactionalCache.mode} />,
                 canJumpTo: isFormValid
             },
         ]

@@ -265,7 +265,21 @@
           "mode": "State transfer mode",
           "mode-tooltip": "Control whether state transfer happens manually on user action, which is the default, or automatically when backup locations come online. {{brandname}} can perform automatic state transfer with the ASYNC backup strategy only.",
           "mode-manual": "MANUAL",
-          "mode-auto": "AUTOMATIC"
+          "mode-auto": "AUTOMATIC",
+          "transactional": "Transactional",
+          "transactional-description": "Allows {{brandname}} to participate in distributed transaction complient with JTA",
+          "transactional-mode": "Transactional mode",
+          "transactional-mode-tooltip": "Configure the transactional mode for the cache. Transactional caches are not shared across nodes and are not replicated. Transactional caches are useful for high-performance transactional data stores.",
+          "non-xa": "NON_XA",
+          "non-xa-tooltip": "NON_XA tooltip",
+          "non-durable-xa": "NON_DURABLE_XA",
+          "non-durable-xa-tooltip": "NON_DURABLE_XA tooltip",
+          "full-xa": "FULL_XA",
+          "full-xa-tooltip": "FULL_XA tooltip",
+          "locking-mode": "Locking mode",
+          "locking-mode-tooltip": "Configures when locks are acquired for a transaction",
+          "locking-mode-optimistic": "Optimistic",
+          "locking-mode-pessimistic": "Pessimistic"
         },
         "advanced-options": {
           "nav-title": "Cache tuning",
@@ -279,6 +293,8 @@
           "concurrency-level-tooltip": "Configures the number of locks to create in the shared pool for lock striping.",
           "isolation-level-title": "Read isolation",
           "isolation-level-tooltip": "The default read isolation level for clustered caches is REPEATABLE_READ for guaranteed consistency. This level returns a value has not changed since the last read operation. The READ_COMMITTED isolation level returns modified values from uncommitted transactions on read operations.",
+          "isolation-level-repeatable-read": "REPEATABLE_READ",
+          "isolation-level-read-committed": "READ_COMMITTED",
           "lock-acquisition-timeout-title": "Lock timeout",
           "lock-acquisition-timeout-tooltip": "Sets how many milliseconds to wait for lock acquisition.",
           "striping": "Lock striping",
@@ -317,7 +333,19 @@
           "max-forced-size": "Maximum forced size",
           "max-forced-size-tooltip": "Sets the maximum size of segments, in MB, for forced merges and overrides the max-size attribute. Set this to the same value as max-size or lower. Setting the value too low degrades query performance because documents are deleted.",
           "backups-tuning": "Adjust settings for cache backups",
-          "backups-tuning-tooltip": "Configure cross-site replication settings for backup locations."
+          "backups-tuning-tooltip": "Configure cross-site replication settings for backup locations.",
+          "stop-timeout": "Stop timeout",
+          "stop-timeout-tooltip": "Sets the amount of time, in milliseconds, that {{brandname}} waits for ongoing transaction when a cache is stopped",
+          "transaction-manager-lookup": "Transaction manager lookup",
+          "transaction-manager-lookup-tooltip": "Sets the transaction manager lookup class. This class is responsible for creating the TransactionManager to be used.",
+          "complete-timeout": "Complete timeout",
+          "complete-timeout-tooltip": "Sets the duration, in milliseconds, in which {{brandname}} keeps the information about the completion of a transaction and aborts remote transactions that are running for more than this duration",
+          "reaper-interval": "Reaper interval",
+          "reaper-interval-tooltip": "Sets the interval, in milliseconds, that a transaction reaper thread checks if the transaction is not completed within the timeout.",
+          "recovery-cache": "Recovery cache",
+          "recovery-cache-tooltip": "Sets the name of the cache where recovery related information is held.",
+          "transactional-tuning": "Transactional tuning",
+          "transactional-tuning-tooltip": "Controls the transactional behavior of the cache."
         }
       },
       "review": {

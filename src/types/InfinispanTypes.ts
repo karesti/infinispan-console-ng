@@ -383,18 +383,32 @@ interface BackupsCache {
   isRemoteSiteValid: boolean;
 }
 
+interface TransactionalCache {
+  mode?: string;
+  locking?: string;
+}
+
+interface TransactionalCacheAdvance {
+  stopTimeout?: number;
+  transactionManagerLookup?: string;
+  completeTimeout?: number;
+  reaperInterval?: number;
+  recoveryCache?: string;
+  isolationLevel?: string;
+}
+
 interface CacheFeatureStep {
   cacheFeatureSelected: string[];
   boundedCache: BoundedCache;
   indexedCache: IndexedCache;
   securedCache: SecuredCache;
   backupsCache: BackupsCache;
+  transactionalCache: TransactionalCache;
 }
 
 interface AdvancedConfigurationStep {
   storage?: string;
   concurrencyLevel?: number;
-  isolationLevel?: string;
   lockAcquisitionTimeout?: number;
   striping?: boolean;
   indexReader?: number;
@@ -403,9 +417,9 @@ interface AdvancedConfigurationStep {
   isOpenIndexReader: boolean;
   isOpenIndexMerge: boolean;
   isOpenIndexWriter: boolean;
-  disabledStriping: boolean;
   backupSetting?: BackupSetting;
   backupSiteData?: BackupSite[];
+  transactionalAdvance?: TransactionalCacheAdvance;
 }
 
 interface CacheConfiguration {

@@ -157,3 +157,14 @@ export enum BackupSiteStateTransferMode {
   MANUAL = 'MANUAL',
   AUTO = 'AUTO',
 }
+
+export enum Locking {
+  OPTIMISTIC = 'OPTIMISTIC',
+  PESSIMISTIC = 'PESSIMISTIC',
+}
+
+export enum TransactionalMode {
+  NON_XA = 'NON_XA',
+  NON_DURABLE_XA = 'NON_DURABLE_XA',
+  FULL_XA = 'FULL_XA',
+}

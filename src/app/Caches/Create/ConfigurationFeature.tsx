@@ -15,6 +15,7 @@ import BoundedCache from './Features/BoundedCache';
 import IndexedCache from './Features/IndexedCache';
 import SecuredCache from './Features/SecuredCache';
 import BackupsCache from './Features/Backups/BackupsCache';
+import TransactionalCache from './Features/TransactionalCache/TransactionalCache';
 
 const ConfigurationFeature = (props: {
     cacheFeature: CacheFeatureStep,
@@ -42,65 +43,78 @@ const ConfigurationFeature = (props: {
     const [backupsCache, setBackupsCache] = useState<BackupsCache>(props.cacheFeature.backupsCache);
     const [loadingBackups, setLoadingBackups] = useState(true);
     const [isBackups, setIsBackups] = useState(false);
+    //Transactional Cache
+    const [transactionalCache, setTransactionalCache] = useState<TransactionalCache>(props.cacheFeature.transactionalCache);
+
+    const [loading, setLoading] = useState(true);
 
     const [isOpenCacheFeature, setIsOpenCacheFeature] = useState(false);
 
-  useEffect(() => {
-      props.cacheFeatureModifier({
-        cacheFeatureSelected: cacheFeatureSelected,
-        boundedCache: boundedCache,
-        indexedCache: indexedCache,
-        securedCache: securedCache,
-        backupsCache: backupsCache,
-      });
+    useEffect(() => {
+        props.cacheFeatureModifier({
+            cacheFeatureSelected: cacheFeatureSelected,
+            boundedCache: boundedCache,
+            indexedCache: indexedCache,
+            securedCache: securedCache,
+            backupsCache: backupsCache,
+            transactionalCache: transactionalCache
+        });
 
-      let validForm = true;
-      if (cacheFeatureSelected.length > 0) {
-        validForm = boundedFeatureValidation(validForm)
-        validForm = indexingFeatureValidation(validForm);
-        validForm = securedFeatureValidation(validForm);
-        validForm = backupsFeatureValidation(validForm);
-      }
-      props.handleIsFormValid(validForm);
+        let validForm = true;
+        if (cacheFeatureSelected.length > 0) {
+            validForm = boundedFeatureValidation(validForm)
+            validForm = indexingFeatureValidation(validForm);
+            validForm = securedFeatureValidation(validForm);
+            validForm = backupsFeatureValidation(validForm);
+            validForm = transactionalFeatureValidation(validForm);
+        }
+        props.handleIsFormValid(validForm);
 
-    }, [cacheFeatureSelected, boundedCache, indexedCache, securedCache, backupsCache]);
+    }, [cacheFeatureSelected, boundedCache, indexedCache, securedCache, backupsCache, transactionalCache]);
 
     const boundedFeatureValidation = (validForm: boolean) => {
-      if (cacheFeatureSelected.includes(CacheFeature.BOUNDED)) {
-        if (boundedCache.evictionType === EvictionType.size) {
-            validForm = validForm && boundedCache.maxSize > 0;
-        } else if (boundedCache.evictionType === EvictionType.count) {
-            validForm = validForm && boundedCache.maxCount > 0;
+        if (cacheFeatureSelected.includes(CacheFeature.BOUNDED)) {
+            if (boundedCache.evictionType === EvictionType.size) {
+                validForm = validForm && boundedCache.maxSize > 0;
+            } else if (boundedCache.evictionType === EvictionType.count) {
+                validForm = validForm && boundedCache.maxCount > 0;
+            }
         }
-      }
-      return validForm;
+        return validForm;
     }
 
     function indexingFeatureValidation(validForm: boolean) {
-      if (cacheFeatureSelected.includes(CacheFeature.INDEXED)) {
-        validForm = validForm && indexedCache.indexedEntities.length > 0;
-      }
-      return validForm;
+        if (cacheFeatureSelected.includes(CacheFeature.INDEXED)) {
+            validForm = validForm && indexedCache.indexedEntities.length > 0;
+        }
+        return validForm;
     }
 
     function securedFeatureValidation(validForm: boolean) {
-      if (cacheFeatureSelected.includes(CacheFeature.SECURED)) {
-        validForm = validForm && securedCache.roles.length > 0;
-      }
-      return validForm;
+        if (cacheFeatureSelected.includes(CacheFeature.SECURED)) {
+            validForm = validForm && securedCache.roles.length > 0;
+        }
+        return validForm;
     }
 
     function backupsFeatureValidation(validForm: boolean) {
-      if (cacheFeatureSelected.includes(CacheFeature.BACKUPS)) {
-        if (backupsCache.enableBackupFor) {
-            validForm = validForm && backupsCache.isRemoteCacheValid;
-            validForm = validForm && backupsCache.isRemoteSiteValid ;
-            validForm = validForm && backupsCache.isRemoteCacheValid;
-        } else {
-          validForm = validForm && backupsCache.sites.length > 0;
+        if (cacheFeatureSelected.includes(CacheFeature.BACKUPS)) {
+            if (backupsCache.enableBackupFor) {
+                validForm = validForm && backupsCache.isRemoteCacheValid;
+                validForm = validForm && backupsCache.isRemoteSiteValid;
+                validForm = validForm && backupsCache.isRemoteCacheValid;
+            } else {
+                validForm = validForm && backupsCache.sites.length > 0;
+            }
         }
-      }
-      return validForm;
+        return validForm;
+    }
+
+    function transactionalFeatureValidation(validForm: boolean) {
+        if (cacheFeatureSelected.includes(CacheFeature.TRANSACTIONAL)) {
+            validForm = true;
+        }
+        return validForm;
     }
 
     useEffect(() => {
@@ -123,7 +137,7 @@ const ConfigurationFeature = (props: {
             ConsoleServices.dataContainer().getDefaultCacheManager()
                 .then((r) => {
                     if (r.isRight()) {
-                      setIsBackups(r.value.backups_enabled);
+                        setIsBackups(r.value.backups_enabled);
                     }
                 }).then(() => setLoadingBackups(false));
         }
@@ -144,7 +158,7 @@ const ConfigurationFeature = (props: {
     };
 
     const cacheFeatureOptions = () => {
-        const availableOptions = ['BOUNDED', 'INDEXED', isSecure && 'SECURED', isBackups && 'BACKUPS'];
+        const availableOptions = ['BOUNDED', 'INDEXED', isSecure && 'SECURED', isBackups && 'BACKUPS', 'TRANSACTIONAL'];
         return Object.keys(CacheFeature).map((key) => (
             <SelectOption key={key} value={CacheFeature[key]} isDisabled={!availableOptions.includes(key)} />
         ));
@@ -175,7 +189,8 @@ const ConfigurationFeature = (props: {
             {cacheFeatureSelected.includes(CacheFeature.INDEXED) && <IndexedCache indexedOptions={indexedCache} indexedOptionsModifier={setIndexedCache} />}
             {cacheFeatureSelected.includes(CacheFeature.SECURED) && <SecuredCache securedOptions={securedCache} securedOptionsModifier={setSecuredCache} />}
             {cacheFeatureSelected.includes(CacheFeature.BACKUPS) && <BackupsCache backupsOptions={backupsCache} backupsOptionsModifier={setBackupsCache} />}
-        </Form>
+            {cacheFeatureSelected.includes(CacheFeature.TRANSACTIONAL) && <TransactionalCache transactionalOptions={transactionalCache} transactionalOptionsModifier={setTransactionalCache} />}
+        </Form >
     );
 };
 
