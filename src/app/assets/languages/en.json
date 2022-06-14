@@ -273,7 +273,7 @@
           "non-xa": "NON_XA",
           "non-xa-tooltip": "NON_XA tooltip",
           "non-durable-xa": "NON_DURABLE_XA",
-          "non-durable-xa-tooltip": "NON_DURABLE_XA tooltip",
+          "non-durable-xa-tooltip": "{{brandname}} registers itself using Xa Resouce but with recovery disabled.",
           "full-xa": "FULL_XA",
           "full-xa-tooltip": "{{brandname}} registers itself using Xa Resouce with recovery enabled.",
           "locking-mode": "Locking mode",
