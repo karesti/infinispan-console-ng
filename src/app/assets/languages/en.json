@@ -271,7 +271,7 @@
           "transactional-mode": "Transactional mode",
           "transactional-mode-tooltip": "Configure the transactional mode for the cache. Transactional caches are not shared across nodes and are not replicated. Transactional caches are useful for high-performance transactional data stores.",
           "non-xa": "NON_XA",
-          "non-xa-tooltip": "NON_XA tooltip",
+          "non-xa-tooltip": "{{brandname}} registers itself using Synchronizations",
           "non-durable-xa": "NON_DURABLE_XA",
           "non-durable-xa-tooltip": "{{brandname}} registers itself using Xa Resouce but with recovery disabled.",
           "full-xa": "FULL_XA",
