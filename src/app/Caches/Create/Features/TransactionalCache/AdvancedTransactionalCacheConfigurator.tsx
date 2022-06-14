@@ -1,21 +1,10 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-import React, { useState, useEffect } from 'react';
-import {
-    Flex,
-    FlexItem,
-    Form,
-    FormGroup,
-    Radio,
-    Text,
-    TextContent,
-    TextInput,
-    TextVariants,
-} from '@patternfly/react-core';
-import { useTranslation } from 'react-i18next';
-import { MoreInfoTooltip } from '@app/Common/MoreInfoTooltip';
-import { IsolationLevel, TransactionalMode } from "@services/infinispanRefData";
+import React, {useEffect, useState} from 'react';
+import {Flex, FlexItem, FormGroup, Radio, Text, TextContent, TextInput, TextVariants,} from '@patternfly/react-core';
+import {useTranslation} from 'react-i18next';
+import {MoreInfoTooltip} from '@app/Common/MoreInfoTooltip';
+import {IsolationLevel, TransactionalMode} from "@services/infinispanRefData";
 
-const TransactionalCacheAdvance = (props: {
+const AdvancedTransactionalCacheConfigurator = (props: {
     transactionalOptions: TransactionalCacheAdvance,
     transactionalOptionsModifier: (TransactionalCacheAdvance) => void,
     transactionalMode?: string
@@ -43,9 +32,7 @@ const TransactionalCacheAdvance = (props: {
     }, [stopTimeout, transactionManagerLookup, completeTimeout, reaperInterval, recoveryCache, isolationLevel]);
 
     return (
-        <Form onSubmit={(e) => {
-            e.preventDefault();
-        }}>
+        <React.Fragment>
             <FormGroup
                 isInline
                 isRequired
@@ -115,8 +102,8 @@ const TransactionalCacheAdvance = (props: {
                     </FormGroup>
                 </FlexItem>
             </Flex>
-        </Form>
+        </React.Fragment>
     );
 };
 
-export default TransactionalCacheAdvance;
+export default AdvancedTransactionalCacheConfigurator;

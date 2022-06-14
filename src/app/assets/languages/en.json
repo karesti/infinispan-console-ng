@@ -186,6 +186,9 @@
           "max-idle-helper-invalid": "The minimum value is -1."
         },
         "feature": {
+          "transactional-disabled": "Transactional caches are only available in synchronous replication mode.",
+          "backups-disabled": "Backups of caches are only available with cross site replication enabled in the server.",
+          "secured-disabled": "Secured caches are only available when authentication and authorization is enabled in the server.",
           "nav-title": "{{brandname}} capabilities",
           "cache-feature-list": "Add {{brandname}} capabilities",
           "cache-feature-list-tooltip": "Add capabilities to your cache.",
@@ -267,7 +270,7 @@
           "mode-manual": "MANUAL",
           "mode-auto": "AUTOMATIC",
           "transactional": "Transactional",
-          "transactional-description": "Allows {{brandname}} to participate in distributed transaction complient with JTA",
+          "transactional-description": "Allows {{brandname}} to participate in distributed transactions compliant with JTA.",
           "transactional-mode": "Transactional mode",
           "transactional-mode-tooltip": "Configure the transactional mode for the cache. Transactional caches are not shared across nodes and are not replicated. Transactional caches are useful for high-performance transactional data stores.",
           "non-xa": "NON_XA",

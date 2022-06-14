@@ -13,7 +13,7 @@ import { useTranslation } from 'react-i18next';
 import { GettingStartedState } from "@app/Caches/Create/CreateCacheWizard";
 import { ConsoleServices } from "@services/ConsoleServices";
 
-const GettingStarted = (props: {
+const CreateCacheGettingStarted = (props: {
     gettingStarted: GettingStartedState
     gettingStartedModifier: (GettingStartedState) => void,
     isFormValid: boolean,
@@ -145,4 +145,4 @@ const GettingStarted = (props: {
     );
 };
 
-export default GettingStarted;
+export default CreateCacheGettingStarted;

@@ -22,9 +22,9 @@ import { CacheType, EncodingType, CacheMode, TimeUnits } from "@services/infinis
 import { useTranslation } from 'react-i18next';
 import { MoreInfoTooltip } from '@app/Common/MoreInfoTooltip';
 
-const ConfigurationBasic = (props:
+const BasicCacheConfigConfigurator = (props:
     {
-        basicConfiguration: BasicConfigurationStep,
+        basicConfiguration: BasicCacheConfig,
         basicConfigurationModifier: (BasicConfigurationStep) => void,
         handleIsFormValid: (isFormValid: boolean) => void,
     }) => {
@@ -34,7 +34,7 @@ const ConfigurationBasic = (props:
     // State for the form
     // Passed to the parent component
     const [topology, setTopology] = useState<string>(props.basicConfiguration.topology);
-    const [mode, setMode] = useState<string>(props.basicConfiguration.mode);
+    const [mode, setMode] = useState<CacheMode>(props.basicConfiguration.mode as CacheMode);
     const [selectedNumberOwners, setSelectedNumberOwners] = useState(props.basicConfiguration.numberOfOwners);
     const [selectedEncodingCache, setSelectedEncodingCache] = useState(props.basicConfiguration.encoding);
     const [isStatistics, setIsStatistics] = useState(props.basicConfiguration.statistics);
@@ -151,23 +151,14 @@ const ConfigurationBasic = (props:
                 </Stack>
 
                 <Stack hasGutter>
-                    <MoreInfoTooltip label={t('caches.create.configurations.basic.cluster-repl-title')} toolTip={t('caches.create.configurations.basic.cluster-repl-tooltip')} textComponent={TextVariants.h2} />
+                    <MoreInfoTooltip label={t('caches.create.configurations.basic.cluster-repl-title')}
+                                     toolTip={t('caches.create.configurations.basic.cluster-repl-tooltip')}
+                                     textComponent={TextVariants.h2} />
                     <FormGroup
                         isInline
                         isRequired
                         fieldId="mode"
                     >
-                        <Radio
-                            name="mode-radio"
-                            id="async"
-                            onChange={() => setMode(() => CacheMode.ASYNC)}
-                            isChecked={mode as CacheMode == CacheMode.ASYNC}
-                            label={
-                                <TextContent>
-                                    <Text component={TextVariants.h3}>{t('caches.create.configurations.basic.cluster-repl-async')}</Text>
-                                </TextContent>
-                            }
-                        />
                         <Radio
                             name="mode-radio"
                             id="sync"
@@ -178,6 +169,17 @@ const ConfigurationBasic = (props:
                                     <Text component={TextVariants.h3}>{t('caches.create.configurations.basic.cluster-repl-sync')}</Text>
                                 </TextContent>
                             }
+                        />
+                        <Radio
+                          name="mode-radio"
+                          id="async"
+                          onChange={() => setMode(() => CacheMode.ASYNC)}
+                          isChecked={mode as CacheMode == CacheMode.ASYNC}
+                          label={
+                            <TextContent>
+                              <Text component={TextVariants.h3}>{t('caches.create.configurations.basic.cluster-repl-async')}</Text>
+                            </TextContent>
+                          }
                         />
                     </FormGroup>
                 </Stack>
@@ -370,4 +372,4 @@ const ConfigurationBasic = (props:
     );
 };
 
-export default ConfigurationBasic;
+export default BasicCacheConfigConfigurator;

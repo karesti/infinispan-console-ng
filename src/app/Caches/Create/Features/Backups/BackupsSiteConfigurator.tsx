@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import React, { useEffect, useState } from 'react';
 import {
     Divider,
@@ -21,7 +19,7 @@ import { useTranslation } from 'react-i18next';
 import { MoreInfoTooltip } from '@app/Common/MoreInfoTooltip';
 import { BackupSiteStrategy, BackupSiteFailurePolicy, BackupSiteStateTransferMode } from "@services/infinispanRefData";
 
-const BackupSite = (props: {
+const BackupSiteConfigurator = (props: {
     backupSiteOptions: BackupSite[],
     backupSiteOptionsModifier: (BackupSite) => void,
     index: number,
@@ -246,4 +244,4 @@ const BackupSite = (props: {
     );
 };
 
-export default BackupSite;
+export default BackupSiteConfigurator;

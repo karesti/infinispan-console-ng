@@ -1,36 +1,32 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
-    Card,
-    CardBody,
-    CardHeader,
-    ExpandableSection,
-    Flex,
-    FlexItem,
-    Form,
-    FormGroup,
-    Radio,
-    Select,
-    SelectOption,
-    SelectVariant,
-    Switch,
-    Text,
-    TextContent,
-    TextInput,
-    TextVariants
+  Card,
+  CardBody,
+  CardHeader,
+  ExpandableSection,
+  Flex,
+  FlexItem,
+  Form,
+  FormGroup,
+  Select,
+  SelectOption,
+  SelectVariant,
+  Switch,
+  TextInput,
+  TextVariants
 } from '@patternfly/react-core';
 
-import BackupSite from './Features/Backups/BackupsSite';
-import { IsolationLevel, StorageType } from "@services/infinispanRefData";
-import { useTranslation } from 'react-i18next';
-import { MoreInfoTooltip } from '@app/Common/MoreInfoTooltip';
-import TransactionalCacheAdvance from './Features/TransactionalCache/TransactionalCacheAdvance';
+import {StorageType} from "@services/infinispanRefData";
+import {useTranslation} from 'react-i18next';
+import {MoreInfoTooltip} from '@app/Common/MoreInfoTooltip';
+import BackupSiteConfigurator from "@app/Caches/Create/Features/Backups/BackupsSiteConfigurator";
+import AdvancedTransactionalCacheConfigurator from '@app/Caches/Create/Features/TransactionalCache/AdvancedTransactionalCacheConfigurator';
 
 const BackupSiteInitialState: BackupSite = {
 }
 
 
-const AdvancedOptions = (props: {
+const AdvancedOptionsConfigurator = (props: {
     advancedOptions: AdvancedConfigurationStep,
     advancedOptionsModifier: (AdvancedConfigurationStep) => void,
     showIndexTuning: boolean,
@@ -45,7 +41,6 @@ const AdvancedOptions = (props: {
     const [storage, setStorage] = useState<StorageType | undefined>(props.advancedOptions.storage as StorageType);
     const [concurrencyLevel, setConcurrencyLevel] = useState<number | undefined>(props.advancedOptions.concurrencyLevel);
     const [lockAcquisitionTimeout, setLockAcquisitionTimeout] = useState<number | undefined>(props.advancedOptions.lockAcquisitionTimeout);
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const [striping, setStriping] = useState<boolean>(props.advancedOptions.striping!);
 
     //Index Reader
@@ -417,9 +412,7 @@ const AdvancedOptions = (props: {
 
     const formBackupsSetting = () => {
         return (
-            <Form onSubmit={(e) => {
-                e.preventDefault();
-            }}>
+            <React.Fragment>
                 <FormGroup
                     fieldId='merge-policy'
                     isRequired
@@ -446,7 +439,7 @@ const AdvancedOptions = (props: {
                     <MoreInfoTooltip label={t('caches.create.configurations.feature.tombstone-map-site')} toolTip={t('caches.create.configurations.feature.tombstone-map-site-tooltip', { brandname: brandname })} textComponent={TextVariants.h3} />
                     <TextInput placeholder='512000' type='number' value={tombstoneMapSize} onChange={(val) => { isNaN(parseInt(val)) ? setTombstoneMapSize(undefined!) : setTombstoneMapSize(parseInt(val)) }} aria-label="tombstone-map-size-input" />
                 </FormGroup>
-            </Form>
+            </React.Fragment>
         )
     }
 
@@ -466,7 +459,7 @@ const AdvancedOptions = (props: {
                                 toggleText={site.siteName}
                                 displaySize='large'
                             >
-                                <BackupSite backupSiteOptions={backupSiteData} backupSiteOptionsModifier={setBackupSiteData} index={index} siteBasic={site} />
+                                <BackupSiteConfigurator backupSiteOptions={backupSiteData} backupSiteOptionsModifier={setBackupSiteData} index={index} siteBasic={site} />
                             </ExpandableSection>
                         </CardBody>
                     )
@@ -482,7 +475,7 @@ const AdvancedOptions = (props: {
                     <MoreInfoTooltip label={t('caches.create.configurations.advanced-options.transactional-tuning')} toolTip={t('caches.create.configurations.advanced-options.transactional-tuning-tooltip')} textComponent={TextVariants.h2} />
                 </CardHeader>
                 <CardBody>
-                    <TransactionalCacheAdvance transactionalOptions={transactionalCacheAdvance} transactionalOptionsModifier={setTransactionalCacheAdvance} transactionalMode={props.transactionalMode} />
+                    <AdvancedTransactionalCacheConfigurator transactionalOptions={transactionalCacheAdvance} transactionalOptionsModifier={setTransactionalCacheAdvance} transactionalMode={props.transactionalMode} />
                 </CardBody>
             </Card>
         )
@@ -501,4 +494,4 @@ const AdvancedOptions = (props: {
     );
 };
 
-export default AdvancedOptions;
+export default AdvancedOptionsConfigurator;

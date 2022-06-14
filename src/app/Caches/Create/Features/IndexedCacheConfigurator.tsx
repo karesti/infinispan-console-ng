@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Button,
   Card,
   CardBody,
   CardHeader,
-  Form,
   FormGroup,
   InputGroup,
   Label,
@@ -14,12 +13,12 @@ import {
   TextInput,
   TextVariants,
 } from '@patternfly/react-core';
-import { global_spacer_sm } from '@patternfly/react-tokens';
-import { IndexedStorage } from "@services/infinispanRefData";
-import { useTranslation } from 'react-i18next';
-import { MoreInfoTooltip } from '@app/Common/MoreInfoTooltip';
+import {global_spacer_sm} from '@patternfly/react-tokens';
+import {IndexedStorage} from "@services/infinispanRefData";
+import {useTranslation} from 'react-i18next';
+import {MoreInfoTooltip} from '@app/Common/MoreInfoTooltip';
 
-const IndexedCache = (props: {
+const IndexedCacheConfigurator = (props: {
   indexedOptions: IndexedCache,
   indexedOptionsModifier: (IndexedCache) => void,
 }) => {
@@ -143,4 +142,4 @@ const IndexedCache = (props: {
   );
 };
 
-export default IndexedCache;
+export default IndexedCacheConfigurator;

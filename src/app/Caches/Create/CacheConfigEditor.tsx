@@ -1,28 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 
 import {
-    Form,
-    FormGroup,
-    Text,
-    TextContent,
-    TextArea,
-    AlertVariant,
-    TextVariants,
-    Alert,
-    AlertActionLink,
-    Select,
-    SelectOption,
-    SelectVariant,
-    ExpandableSection,
-
+  Alert,
+  AlertActionLink,
+  AlertVariant,
+  ExpandableSection,
+  Form,
+  FormGroup,
+  Select,
+  SelectOption,
+  SelectVariant,
+  Text,
+  TextContent,
+  TextVariants,
 } from '@patternfly/react-core';
-import { CodeEditor, Language } from '@patternfly/react-code-editor';
-import { CubeIcon } from '@patternfly/react-icons';
-import { useTranslation } from 'react-i18next';
-import { ConsoleServices } from '@services/ConsoleServices';
-import { useApiAlert } from '@app/utils/useApiAlert';
+import {CodeEditor, Language} from '@patternfly/react-code-editor';
+import {CubeIcon} from '@patternfly/react-icons';
+import {useTranslation} from 'react-i18next';
+import {ConsoleServices} from '@services/ConsoleServices';
+import {useApiAlert} from '@app/utils/useApiAlert';
 
-const CacheEditor = (props: {
+const CacheConfigEditor = (props: {
     cmName: string,
     cacheEditor: CacheEditorStep,
     cacheEditorModifier: (CacheEditorStep) => void,
@@ -113,7 +111,7 @@ const CacheEditor = (props: {
     const displayCacheConfigEditor = () => {
         return (
             <FormGroup
-                label={t('caches.create.edit-config.cache-config')} 
+                label={t('caches.create.edit-config.cache-config')}
                 fieldId="cache-config"
                 validated={validConfig}
                 helperTextInvalid={t('caches.create.edit-config.cache-config-invalid')}
@@ -210,4 +208,4 @@ const CacheEditor = (props: {
     );
 };
 
-export default CacheEditor;
+export default CacheConfigEditor;

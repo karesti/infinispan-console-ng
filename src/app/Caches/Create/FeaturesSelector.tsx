@@ -7,20 +7,21 @@ import {
     SelectOption,
     SelectVariant,
 } from '@patternfly/react-core';
-import { CacheFeature, EvictionType } from "@services/infinispanRefData";
+import {CacheFeature, CacheMode, EvictionType} from "@services/infinispanRefData";
 import { useTranslation } from 'react-i18next';
 import { MoreInfoTooltip } from '@app/Common/MoreInfoTooltip';
 import { ConsoleServices } from '@services/ConsoleServices';
-import BoundedCache from './Features/BoundedCache';
-import IndexedCache from './Features/IndexedCache';
-import SecuredCache from './Features/SecuredCache';
-import BackupsCache from './Features/Backups/BackupsCache';
-import TransactionalCache from './Features/TransactionalCache/TransactionalCache';
+import BoundedCacheConfigurator from '@app/Caches/Create/Features/BoundedCacheConfigurator';
+import IndexedCacheConfigurator from '@app/Caches/Create/Features/IndexedCacheConfigurator';
+import SecuredCacheConfigurator from '@app/Caches/Create/Features/SecuredCacheConfigurator';
+import BackupsCacheConfigurator from '@app/Caches/Create/Features/Backups/BackupsCacheConfigurator';
+import TransactionalCacheConfigurator from '@app/Caches/Create/Features/TransactionalCache/TransactionalCacheConfigurator';
 
-const ConfigurationFeature = (props: {
+const FeaturesSelector = (props: {
     cacheFeature: CacheFeatureStep,
     cacheFeatureModifier: (CacheFeatureStep) => void,
-    handleIsFormValid: (isFormValid: boolean) => void
+    handleIsFormValid: (isFormValid: boolean) => void,
+    basicConfiguration: BasicCacheConfig
 }) => {
 
     const { t } = useTranslation();
@@ -37,6 +38,7 @@ const ConfigurationFeature = (props: {
     //Secured Cache
     const [securedCache, setSecuredCache] = useState<SecuredCache>(props.cacheFeature.securedCache);
     const [isSecure, setIsSecure] = useState(false);
+    const [isTransactional, setIsTransactional] = useState(props.basicConfiguration.mode === CacheMode.SYNC);
     const [loadingSecurityRoles, setLoadingSecurityRoles] = useState(true);
 
     //Backups Cache
@@ -92,6 +94,10 @@ const ConfigurationFeature = (props: {
 
     function securedFeatureValidation(validForm: boolean) {
         if (cacheFeatureSelected.includes(CacheFeature.SECURED)) {
+            if (!isSecure) {
+              return false;
+            }
+
             validForm = validForm && securedCache.roles.length > 0;
         }
         return validForm;
@@ -99,6 +105,9 @@ const ConfigurationFeature = (props: {
 
     function backupsFeatureValidation(validForm: boolean) {
         if (cacheFeatureSelected.includes(CacheFeature.BACKUPS)) {
+            if (!isBackups) {
+              return false;
+            }
             if (backupsCache.enableBackupFor) {
                 validForm = validForm && backupsCache.isRemoteCacheValid;
                 validForm = validForm && backupsCache.isRemoteSiteValid;
@@ -111,8 +120,8 @@ const ConfigurationFeature = (props: {
     }
 
     function transactionalFeatureValidation(validForm: boolean) {
-        if (cacheFeatureSelected.includes(CacheFeature.TRANSACTIONAL)) {
-            validForm = true;
+        if (cacheFeatureSelected.includes(CacheFeature.TRANSACTIONAL) && !isTransactional) {
+            return false;
         }
         return validForm;
     }
@@ -158,7 +167,7 @@ const ConfigurationFeature = (props: {
     };
 
     const cacheFeatureOptions = () => {
-        const availableOptions = ['BOUNDED', 'INDEXED', isSecure && 'SECURED', isBackups && 'BACKUPS', 'TRANSACTIONAL'];
+        const availableOptions = ['BOUNDED', 'INDEXED', 'SECURED', 'BACKUPS', 'TRANSACTIONAL'];
         return Object.keys(CacheFeature).map((key) => (
             <SelectOption key={key} value={CacheFeature[key]} isDisabled={!availableOptions.includes(key)} />
         ));
@@ -185,13 +194,15 @@ const ConfigurationFeature = (props: {
                 </Select>
             </FormGroup>
 
-            {cacheFeatureSelected.includes(CacheFeature.BOUNDED) && <BoundedCache boundedOptions={boundedCache} boundedOptionsModifier={setBoundedCache} />}
-            {cacheFeatureSelected.includes(CacheFeature.INDEXED) && <IndexedCache indexedOptions={indexedCache} indexedOptionsModifier={setIndexedCache} />}
-            {cacheFeatureSelected.includes(CacheFeature.SECURED) && <SecuredCache securedOptions={securedCache} securedOptionsModifier={setSecuredCache} />}
-            {cacheFeatureSelected.includes(CacheFeature.BACKUPS) && <BackupsCache backupsOptions={backupsCache} backupsOptionsModifier={setBackupsCache} />}
-            {cacheFeatureSelected.includes(CacheFeature.TRANSACTIONAL) && <TransactionalCache transactionalOptions={transactionalCache} transactionalOptionsModifier={setTransactionalCache} />}
+            {cacheFeatureSelected.includes(CacheFeature.BOUNDED) && <BoundedCacheConfigurator boundedOptions={boundedCache} boundedOptionsModifier={setBoundedCache} />}
+            {cacheFeatureSelected.includes(CacheFeature.INDEXED) && <IndexedCacheConfigurator indexedOptions={indexedCache} indexedOptionsModifier={setIndexedCache} />}
+            {cacheFeatureSelected.includes(CacheFeature.SECURED) && <SecuredCacheConfigurator securedOptions={securedCache} securedOptionsModifier={setSecuredCache} isEnabled={isSecure} />}
+            {cacheFeatureSelected.includes(CacheFeature.BACKUPS) && <BackupsCacheConfigurator backupsOptions={backupsCache} backupsOptionsModifier={setBackupsCache} isEnabled={isBackups}/>}
+            {cacheFeatureSelected.includes(CacheFeature.TRANSACTIONAL) && <TransactionalCacheConfigurator transactionalOptions={transactionalCache}
+                                                                                                          transactionalOptionsModifier={setTransactionalCache}
+                                                                                                          isEnabled={isTransactional}/>}
         </Form >
     );
 };
 
-export default ConfigurationFeature;
+export default FeaturesSelector;

@@ -1,25 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
-    Card,
-    CardBody,
-    CardHeader,
-    Form,
-    FormGroup,
-    Label,
-    Select,
-    SelectOption,
-    SelectVariant,
-    Text,
-    TextContent,
-    TextVariants,
+  Alert, AlertVariant,
+  Card,
+  CardBody,
+  CardHeader,
+  FormGroup,
+  Label,
+  Select,
+  SelectOption,
+  SelectVariant,
+  Text,
+  TextContent,
+  TextVariants,
 } from '@patternfly/react-core';
-import { useTranslation } from 'react-i18next';
-import { ConsoleServices } from '@services/ConsoleServices';
-import { global_spacer_sm } from '@patternfly/react-tokens';
+import {useTranslation} from 'react-i18next';
+import {ConsoleServices} from '@services/ConsoleServices';
+import {global_spacer_sm} from '@patternfly/react-tokens';
 
-const SecuredCache = (props: {
+const SecuredCacheConfigurator = (props: {
     securedOptions: SecuredCache,
     securedOptionsModifier: (SecuredCache) => void,
+    isEnabled: boolean
 }) => {
 
     const { t } = useTranslation();
@@ -73,10 +74,17 @@ const SecuredCache = (props: {
         const newRoles = roles.filter(role => !Object.is(role, roleToDelete));
         setRoles(newRoles);
     }
+
+    if (!props.isEnabled) {
+      return (
+        <Alert variant={AlertVariant.info}
+               isInline
+               isPlain
+               title={t('caches.create.configurations.feature.secured-disabled')} />
+      )
+    }
+
     return (
-        <Form onSubmit={(e) => {
-            e.preventDefault();
-        }}>
             <Card>
                 <CardHeader>
                     <TextContent>
@@ -113,8 +121,7 @@ const SecuredCache = (props: {
                     ))}
                 </CardBody>
             </Card>
-        </Form>
     );
 };
 
-export default SecuredCache;
+export default SecuredCacheConfigurator;

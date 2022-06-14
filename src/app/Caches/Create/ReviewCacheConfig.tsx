@@ -1,10 +1,10 @@
 import React from 'react';
-import { Flex, Form, FormGroup, Text, TextArea, TextContent, TextVariants } from '@patternfly/react-core';
-import { CodeEditor, Language } from '@patternfly/react-code-editor';
-import { useTranslation } from 'react-i18next';
-import { CacheConfigUtils } from "@services/cacheConfigUtils";
+import {Flex, Form, FormGroup, Text, TextContent, TextVariants} from '@patternfly/react-core';
+import {CodeEditor, Language} from '@patternfly/react-code-editor';
+import {useTranslation} from 'react-i18next';
+import {CacheConfigUtils} from "@services/cacheConfigUtils";
 
-const Review = (props:
+const ReviewCacheConfig = (props:
     {
         cacheName: string,
         cacheConfiguration: CacheConfiguration,
@@ -51,4 +51,4 @@ const Review = (props:
     );
 };
 
-export default Review;
+export default ReviewCacheConfig;

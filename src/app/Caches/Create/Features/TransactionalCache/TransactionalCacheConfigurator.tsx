@@ -1,26 +1,26 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
-    Card,
-    CardBody,
-    CardHeader,
-    Flex,
-    FlexItem,
-    Form,
-    FormGroup,
-    Radio,
-    Text,
-    TextContent,
-    TextVariants,
+  Alert, AlertVariant,
+  Card,
+  CardBody,
+  CardHeader,
+  Flex,
+  FlexItem,
+  FormGroup,
+  Radio,
+  Text,
+  TextContent,
+  TextVariants,
 } from '@patternfly/react-core';
-import { Locking, TransactionalMode } from "@services/infinispanRefData";
-import { useTranslation } from 'react-i18next';
-import { MoreInfoTooltip } from '@app/Common/MoreInfoTooltip';
-import { global_spacer_sm, global_spacer_2xl } from '@patternfly/react-tokens';
+import {Locking, TransactionalMode} from "@services/infinispanRefData";
+import {useTranslation} from 'react-i18next';
+import {MoreInfoTooltip} from '@app/Common/MoreInfoTooltip';
+import {global_spacer_2xl, global_spacer_sm} from '@patternfly/react-tokens';
 
-const TransactionalCache = (props: {
+const TransactionalCacheConfigurator = (props: {
     transactionalOptions: TransactionalCache,
     transactionalOptionsModifier: (TransactionalCache) => void,
+    isEnabled: boolean
 }) => {
 
     const { t } = useTranslation();
@@ -36,10 +36,16 @@ const TransactionalCache = (props: {
         });
     }, [mode, locking]);
 
+    if (!props.isEnabled) {
+      return (
+          <Alert variant={AlertVariant.info}
+                 isInline
+                 isPlain
+                 title={t('caches.create.configurations.feature.transactional-disabled')} />
+        )
+    }
+
     return (
-        <Form onSubmit={(e) => {
-            e.preventDefault();
-        }}>
             <Card>
                 <CardHeader>
                     <TextContent>
@@ -131,10 +137,8 @@ const TransactionalCache = (props: {
                         />
                     </FormGroup>
                 </CardBody>
-
             </Card>
-        </Form>
     );
 };
 
-export default TransactionalCache;
+export default TransactionalCacheConfigurator;

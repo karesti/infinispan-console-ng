@@ -290,7 +290,7 @@ interface CacheEditorStep {
   editorExpanded: boolean;
 }
 
-interface BasicConfigurationStep {
+interface BasicCacheConfig {
   topology: string;
   mode: string;
   numberOfOwners?: number;
@@ -423,7 +423,7 @@ interface AdvancedConfigurationStep {
 }
 
 interface CacheConfiguration {
-  basic: BasicConfigurationStep;
+  basic: BasicCacheConfig;
   feature: CacheFeatureStep;
   advanced: AdvancedConfigurationStep;
 }

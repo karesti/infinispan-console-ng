@@ -18,7 +18,7 @@ import {EvictionStrategy, EvictionType, MaxSizeUnit} from "@services/infinispanR
 import {useTranslation} from 'react-i18next';
 import {MoreInfoTooltip} from '@app/Common/MoreInfoTooltip';
 
-const BoundedCache = (props: {
+const BoundedCacheConfigurator = (props: {
     boundedOptions: BoundedCache,
     boundedOptionsModifier: (modifier: BoundedCache) => void,
 }) => {
@@ -170,4 +170,4 @@ const BoundedCache = (props: {
     );
 };
 
-export default BoundedCache;
+export default BoundedCacheConfigurator;

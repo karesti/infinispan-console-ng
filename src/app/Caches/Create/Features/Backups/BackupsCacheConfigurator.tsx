@@ -1,25 +1,22 @@
-/* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import React, { useEffect, useState } from 'react';
 import {
 
-    Card,
-    CardBody,
-    CardHeader,
-    Select,
-    SelectOption,
-    SelectVariant,
-    Flex,
-    FlexItem,
-    FormGroup,
-    Label,
-    Switch,
-    Radio,
-    Text,
-    TextContent,
-    TextInput,
-    TextVariants,
+  Card,
+  CardBody,
+  CardHeader,
+  Select,
+  SelectOption,
+  SelectVariant,
+  Flex,
+  FlexItem,
+  FormGroup,
+  Label,
+  Switch,
+  Radio,
+  Text,
+  TextContent,
+  TextInput,
+  TextVariants, Alert, AlertVariant,
 } from '@patternfly/react-core';
 import { useTranslation } from 'react-i18next';
 import { MoreInfoTooltip } from '@app/Common/MoreInfoTooltip';
@@ -27,9 +24,10 @@ import { BackupSiteStrategy } from "@services/infinispanRefData";
 import { global_spacer_sm, global_spacer_2xl } from '@patternfly/react-tokens';
 import { ConsoleServices } from '@services/ConsoleServices';
 
-const BackupsCache = (props: {
+const BackupsCacheConfigurator = (props: {
     backupsOptions: BackupsCache,
     backupsOptionsModifier: (BackupsCache) => void,
+    isEnabled: boolean
 }) => {
 
     const { t } = useTranslation();
@@ -191,6 +189,15 @@ const BackupsCache = (props: {
         )
     }
 
+  if (!props.isEnabled) {
+    return (
+      <Alert variant={AlertVariant.info}
+             isInline
+             isPlain
+             title={t('caches.create.configurations.feature.backups-disabled')} />
+    )
+  }
+
     return (
         <Card>
             <CardHeader>
@@ -278,4 +285,4 @@ const BackupsCache = (props: {
     );
 };
 
-export default BackupsCache;
+export default BackupsCacheConfigurator;
