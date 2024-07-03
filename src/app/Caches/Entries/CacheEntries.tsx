@@ -24,8 +24,19 @@ import {
   ToolbarToggleGroup,
   Tooltip
 } from '@patternfly/react-core';
-import { ActionsColumn, IAction, Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
-import { FilterIcon, HelpIcon, PlusCircleIcon, SearchIcon } from '@patternfly/react-icons';
+import {
+  ActionsColumn,
+  ExpandableRowContent,
+  IAction,
+  Table,
+  Tbody,
+  Td,
+  TdProps,
+  Th,
+  Thead,
+  Tr
+} from '@patternfly/react-table';
+import { CodeBranchIcon, EyeIcon, FilterIcon, HelpIcon, PlusCircleIcon, SearchIcon } from '@patternfly/react-icons';
 import { global_spacer_md, global_spacer_sm } from '@patternfly/react-tokens';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import displayUtils from '@services/displayUtils';
@@ -364,6 +375,31 @@ const CacheEntries = (props: { cacheName: string }) => {
     return entry.expires ? entry.expires : t('caches.entries.never-expire');
   };
 
+  const [expandedCells, setExpandedCells] = useState<Record<string, CacheEntry>>({
+  });
+
+  const setCellExpanded = (entry: CacheEntry, isExpanding = true) => {
+    const newExpandedCells = { ...expandedCells };
+    if (isExpanding) {
+      newExpandedCells[entry.key] = entry;
+    } else {
+      delete newExpandedCells[entry.key];
+    }
+    setExpandedCells(newExpandedCells);
+  };
+
+  const compoundExpandParams = (
+    entry: CacheEntry,
+    rowIndex: number,
+    columnIndex: number
+  ): TdProps['compoundExpand'] => ({
+    isExpanded: expandedCells[entry.key] === entry,
+    onToggle: () => setCellExpanded(entry, expandedCells[entry.key] !== entry),
+    expandId: 'compound-expandable-example',
+    rowIndex,
+    columnIndex
+  });
+
   return (
     <React.Fragment>
       {totalEntriesCount == 0 ? (
@@ -402,8 +438,8 @@ const CacheEntries = (props: { cacheName: string }) => {
                 <Th colSpan={2}>{columnNames.expires}</Th>
               </Tr>
             </Thead>
-            <Tbody>
               {filteredEntries.length == 0 ? (
+                <Tbody>
                 <Tr>
                   <Td colSpan={6}>
                     <Bullseye>
@@ -432,33 +468,49 @@ const CacheEntries = (props: { cacheName: string }) => {
                     </Bullseye>
                   </Td>
                 </Tr>
+                </Tbody>
               ) : (
-                rows.map((row) => {
+                rows.map((row, rowIndex) => {
+                  const expandedCellKey = expandedCells[row.key];
+                  const isRowExpanded = !!expandedCellKey;
                   return (
-                    <Tr key={row.key}>
-                      <Td dataLabel={columnNames.key}>
-                        {displayHighlighted(
-                          row.key,
-                          cache.encoding.key as EncodingType,
-                          row.keyContentType as ContentType
-                        )}
-                      </Td>
-                      <Td dataLabel={columnNames.value}>
-                        {displayHighlighted(
-                          row.value,
-                          cache.encoding.value as EncodingType,
-                          row.valueContentType as ContentType
-                        )}
-                      </Td>
-                      <Td dataLabel={columnNames.lifespan}>{displayTimeToLive(row)}</Td>
-                      <Td dataLabel={columnNames.maxIdle}>{displayMaxIdle(row)}</Td>
-                      <Td dataLabel={columnNames.expires}>{displayExpires(row)}</Td>
-                      {displayActions(row)}
-                    </Tr>
+                    <Tbody key={rowIndex}>
+                      <Tr>
+                        <Td dataLabel={columnNames.key}>
+                          {displayHighlighted(
+                            row.key,
+                            cache.encoding.key as EncodingType,
+                            row.keyContentType as ContentType
+                          )}
+                        </Td>
+                        <Td dataLabel={columnNames.value} compoundExpand={ row.value.length > 300? compoundExpandParams(row, rowIndex, 1) : undefined}>
+                          {row.value.length > 150?  <EyeIcon key="icon" /> : displayHighlighted(
+                            row.value,
+                            cache.encoding.value as EncodingType,
+                            row.valueContentType as ContentType
+                          )}
+                        </Td>
+                        <Td dataLabel={columnNames.lifespan}>{displayTimeToLive(row)}</Td>
+                        <Td dataLabel={columnNames.maxIdle}>{displayMaxIdle(row)}</Td>
+                        <Td dataLabel={columnNames.expires}>{displayExpires(row)}</Td>
+                        {displayActions(row)}
+                      </Tr>
+                      {isRowExpanded ? (
+                        <Tr isExpanded={isRowExpanded}>
+                          <Td dataLabel={columnNames['expandedCellKey']} noPadding colSpan={5}>
+                            <ExpandableRowContent>
+                                {displayHighlighted(
+                                  row.value,
+                                  cache.encoding.value as EncodingType,
+                                  row.valueContentType as ContentType
+                                )}
+                            </ExpandableRowContent>
+                          </Td>
+                        </Tr>) : null}
+                    </Tbody>
                   );
                 })
               )}
-            </Tbody>
           </Table>
           <Toolbar>
             <ToolbarItem variant="pagination">{toolbarPagination('up')}</ToolbarItem>
