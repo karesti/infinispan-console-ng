@@ -7,8 +7,9 @@ import {
   Form,
   FormGroup,
   Modal,
-  TextArea,
-  TextAreResizeOrientation,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   TextInput
 } from '@patternfly/react-core';
 import { useApiAlert } from '@app/utils/useApiAlert';
@@ -121,7 +122,7 @@ const CreateProtoSchema = (props: { isModalOpen: boolean; closeModal: (boolean) 
         </FormGroup>
         <FormGroup
           label={t('schemas.create.schema')}
-          labelIcon={
+          labelHelp={
             <PopoverHelp
               name="schema-content"
               label={t('schemas.create.schema')}
@@ -155,14 +156,14 @@ const CreateProtoSchema = (props: { isModalOpen: boolean; closeModal: (boolean) 
 
   return (
     <Modal
-      titleIconVariant={AddCircleOIcon}
-      className="pf-m-redhat-font"
-      width={'50%'}
       isOpen={props.isModalOpen}
-      title={t('schemas.create.modal-title')}
+      className="pf-m-redhat-font"
       onClose={() => clearCreateProtoSchema(false)}
       aria-label="Add Protobuf schema"
-      actions={[
+    >
+      <ModalHeader titleIconVariant={AddCircleOIcon} title={t('schemas.create.modal-title')} />
+      <ModalBody>{buildContent()}</ModalBody>
+      <ModalFooter>
         <Button
           data-cy="addSchemaButton"
           aria-label="add-schema-button"
@@ -170,7 +171,7 @@ const CreateProtoSchema = (props: { isModalOpen: boolean; closeModal: (boolean) 
           onClick={handleCreateButton}
         >
           {t('schemas.add-button')}
-        </Button>,
+        </Button>
         <Button
           data-cy="cancelAddSchemaButton"
           aria-label="cancel-add-schema-button"
@@ -180,9 +181,7 @@ const CreateProtoSchema = (props: { isModalOpen: boolean; closeModal: (boolean) 
         >
           {t('schemas.cancel-button')}
         </Button>
-      ]}
-    >
-      {buildContent()}
+      </ModalFooter>
     </Modal>
   );
 };

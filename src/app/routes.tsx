@@ -6,7 +6,7 @@ import { CreateCache } from '@app/Caches/CreateCache';
 import { Welcome } from '@app/Welcome/Welcome';
 import { DetailConfigurations } from '@app/Caches/Configuration/DetailConfigurations';
 import { GlobalStats } from '@app/GlobalStats/GlobalStats';
-import { ClusterStatus } from '@app/ClusterStatus/ClusterStatus';
+import { ClusterMembership } from '@app/ClusterStatus/ClusterMembership';
 import { IndexManagement } from '@app/IndexManagement/IndexManagement';
 import { XSiteCache } from '@app/XSite/XSiteCache';
 import { DetailCachePage } from '@app/Caches/DetailCachePage';
@@ -58,7 +58,7 @@ const routes: IAppRoute[] = [
     admin: false
   },
   {
-    component: <ClusterStatus />,
+    component: <ClusterMembership />,
     exact: true,
     label: 'Cluster Membership',
     path: '/cluster-membership',
@@ -171,7 +171,7 @@ const routes: IAppRoute[] = [
 let routeFocusTimer: number;
 const useA11yRouteChange = (isAsync: boolean) => {
   useEffect(() => {
-    if (!isAsync !== null) {
+    if (isAsync !== null) {
       routeFocusTimer = accessibleRouteChangeHandler();
     }
     return () => {
@@ -193,12 +193,12 @@ const AppRoutes = () => {
     <Routes>
       {routes.map((iroute, idx) => {
         if (iroute.admin && !ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
-          return <Route path={iroute.path} key={idx} element={<NotAuthorized />} />;
+          return <Route key={idx} path={iroute.path} element={<NotAuthorized />} />;
         }
         return <Route key={idx} path={iroute.path} element={<ComponentWithTitleUpdates appRoute={iroute} />} />;
       })}
-      <Route path={'/welcome'} element={<Welcome />} />
-      <Route path={'*'} element={<NotFound />} />
+      <Route key={'welcome'} path={'/welcome'} element={<Welcome />} />
+      <Route key={'not-found'} path={'*'} element={<NotFound />} />
     </Routes>
   );
 };

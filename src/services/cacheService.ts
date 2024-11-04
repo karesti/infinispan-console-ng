@@ -5,6 +5,7 @@ import { ContentTypeHeaderMapper } from '@services/contentTypeHeaderMapper';
 import { CacheRequestResponseMapper } from '@services/cacheRequestResponseMapper';
 import { ContentType, EncodingType } from '@services/infinispanRefData';
 import { formatXml } from '@utils/dataSerializerUtils';
+import displayUtils from '@services/displayUtils';
 
 /**
  * Cache Service calls Infinispan endpoints related to Caches
@@ -24,10 +25,10 @@ export class CacheService {
    *
    * @param cacheName
    */
-  public retrieveHealth(cacheName: string): Promise<Either<ActionResponse, string>> {
+  public retrieveHealth(cacheName: string): Promise<Either<ActionResponse, ComponentStatusType>> {
     return this.fetchCaller.get(
       this.endpoint + '/caches/' + encodeURIComponent(cacheName) + '?action=health',
-      (data) => data,
+      (data) => displayUtils.parseComponentStatus(data),
       undefined,
       true
     );

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Alert, Button, Form, FormGroup, Modal, Spinner, Text, TextContent } from '@patternfly/react-core';
+import { Alert, Button, Form, FormGroup, Modal, Spinner, Content } from '@patternfly/react-core';
 import { useTranslation } from 'react-i18next';
 import { useCacheAliases } from '@app/services/configHook';
 import { SelectMultiWithChips } from '@app/Common/SelectMultiWithChips';
@@ -46,10 +46,9 @@ const UpdateAliasCache = (props: { cacheName: string; isModalOpen: boolean; clos
         }}
       >
         {displayError()}
-        <TextContent>
-          <Text>{t('caches.aliases.body1', { cacheName: props.cacheName })}</Text>
-          <Text>{t('caches.aliases.body2', { cacheName: props.cacheName })}</Text>
-        </TextContent>
+
+        <Content>{t('caches.aliases.body1', { cacheName: props.cacheName })}</Content>
+        <Content>{t('caches.aliases.body2', { cacheName: props.cacheName })}</Content>
 
         <FormGroup isInline fieldId="field-aliases" label={t('caches.aliases.values')}>
           <SelectMultiWithChips

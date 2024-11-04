@@ -8,9 +8,11 @@ import {
   HelperText,
   HelperTextItem,
   Modal,
-  Text,
-  TextContent,
-  TextInput
+  Content,
+  TextInput,
+  ModalFooter,
+  ModalHeader,
+  ModalBody
 } from '@patternfly/react-core';
 import { useCaches } from '@app/services/dataContainerHooks';
 import { useDeleteCache } from '@app/services/cachesHook';
@@ -61,23 +63,53 @@ const DeleteCache = (props: { cacheName: string; isModalOpen: boolean; closeModa
 
   return (
     <Modal
-      titleIconVariant={'warning'}
+      variant={'small'}
       className="pf-m-redhat-font"
-      width={'50%'}
       isOpen={props.isModalOpen}
-      title={t('caches.delete.title')}
       onClose={() => clearDeleteCacheModal(false)}
       aria-label="Delete cache modal"
       disableFocusTrap={true}
       id="deleteCacheModal"
-      description={
-        <TextContent>
-          <Text>
+    >
+      <ModalHeader
+        titleIconVariant={'warning'}
+        title={t('caches.delete.title')}
+        description={
+          <Content>
             <strong>&quot;{props.cacheName}&quot; </strong> {t('caches.delete.body')}
-          </Text>
-        </TextContent>
-      }
-      actions={[
+          </Content>
+        }
+      />
+
+      <ModalBody>
+        <Form
+          onSubmit={(e) => {
+            e.preventDefault();
+          }}
+        >
+          <FormGroup label={t('caches.delete.cache-name')} fieldId="cache-to-delete">
+            <TextInput
+              isRequired
+              validated={isValidCacheNameValue}
+              value={cacheNameFormValue}
+              id="cache-to-delete"
+              aria-describedby="cache-to-delete-helper"
+              onChange={(_event, val) => setCacheNameFormValue(val)}
+              ref={nameInputRef}
+            />
+            {isValidCacheNameValue === 'error' && (
+              <FormHelperText>
+                <HelperText>
+                  <HelperTextItem variant={isValidCacheNameValue} icon={<ExclamationCircleIcon />}>
+                    {t('caches.delete.cache-name-invalid')}
+                  </HelperTextItem>
+                </HelperText>
+              </FormHelperText>
+            )}
+          </FormGroup>
+        </Form>
+      </ModalBody>
+      <ModalFooter>
         <Button
           key="confirm"
           variant={ButtonVariant.danger}
@@ -86,7 +118,7 @@ const DeleteCache = (props: { cacheName: string; isModalOpen: boolean; closeModa
           data-cy="deleteCacheButton"
         >
           {t('cache-managers.delete')}
-        </Button>,
+        </Button>
         <Button
           key="cancel"
           variant="link"
@@ -96,34 +128,7 @@ const DeleteCache = (props: { cacheName: string; isModalOpen: boolean; closeModa
         >
           {t('caches.delete.cancel')}
         </Button>
-      ]}
-    >
-      <Form
-        onSubmit={(e) => {
-          e.preventDefault();
-        }}
-      >
-        <FormGroup label={t('caches.delete.cache-name')} fieldId="cache-to-delete">
-          <TextInput
-            isRequired
-            validated={isValidCacheNameValue}
-            value={cacheNameFormValue}
-            id="cache-to-delete"
-            aria-describedby="cache-to-delete-helper"
-            onChange={(_event, val) => setCacheNameFormValue(val)}
-            ref={nameInputRef}
-          />
-          {isValidCacheNameValue === 'error' && (
-            <FormHelperText>
-              <HelperText>
-                <HelperTextItem variant={isValidCacheNameValue} icon={<ExclamationCircleIcon />}>
-                  {t('caches.delete.cache-name-invalid')}
-                </HelperTextItem>
-              </HelperText>
-            </FormHelperText>
-          )}
-        </FormGroup>
-      </Form>
+      </ModalFooter>
     </Modal>
   );
 };

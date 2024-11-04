@@ -60,7 +60,7 @@ const BackupsConfigurationTuning = () => {
         <FormGroup
           fieldId="merge-policy"
           label={t('caches.create.configurations.feature.merge-policy')}
-          labelIcon={
+          labelHelp={
             <PopoverHelp
               name="merge-policy"
               label={t('caches.create.configurations.feature.merge-policy')}
@@ -80,7 +80,7 @@ const BackupsConfigurationTuning = () => {
         <FormGroup
           fieldId="max-cleanup-delay"
           label={t('caches.create.configurations.feature.max-cleanup-delay')}
-          labelIcon={
+          labelHelp={
             <PopoverHelp
               name="cleanup-delay"
               label={t('caches.create.configurations.feature.max-cleanup-delay')}
@@ -101,7 +101,7 @@ const BackupsConfigurationTuning = () => {
         <FormGroup
           fieldId="tombstone-map-size"
           label={t('caches.create.configurations.feature.tombstone-map-site')}
-          labelIcon={
+          labelHelp={
             <PopoverHelp
               name="tombstone-map-size"
               label={t('caches.create.configurations.feature.tombstone-map-site')}
@@ -136,7 +136,8 @@ const BackupsConfigurationTuning = () => {
       {configuration.feature.backupsCache &&
         configuration.feature.backupsCache.sites.map((site, index) => {
           return (
-            <FormFieldGroupExpandable id={site.siteName + '-expand-button'}
+            <FormFieldGroupExpandable
+              id={site.siteName + '-expand-button'}
               key={site.siteName + '-expand'}
               header={<FormFieldGroupHeader titleText={{ text: site.siteName, id: site.siteName + '-titleText-id' }} />}
             >

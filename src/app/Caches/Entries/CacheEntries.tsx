@@ -13,8 +13,6 @@ import {
   EmptyStateActions,
   EmptyStateBody,
   EmptyStateFooter,
-  EmptyStateHeader,
-  EmptyStateIcon,
   EmptyStateVariant,
   Pagination,
   SearchInput,
@@ -29,7 +27,7 @@ import {
 } from '@patternfly/react-core';
 import { ActionsColumn, Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import { FilterIcon, HelpIcon, PlusCircleIcon, SearchIcon } from '@patternfly/react-icons';
-import { global_spacer_md, global_spacer_sm } from '@patternfly/react-tokens';
+import { t_global_spacer_md, t_global_spacer_sm } from '@patternfly/react-tokens';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import displayUtils from '@services/displayUtils';
 import { useTranslation } from 'react-i18next';
@@ -276,21 +274,17 @@ const CacheEntries = () => {
   };
 
   const emptyPage = (
-    <Card>
-      <CardBody>
-        <EmptyState variant={EmptyStateVariant.lg}>
-          <EmptyStateHeader
-            titleText={<>{t('caches.entries.empty-cache')}</>}
-            icon={<EmptyStateIcon icon={PlusCircleIcon} />}
-            headingLevel="h4"
-          />
-          <EmptyStateBody>{infoEntries ? t(infoEntries) : t('caches.entries.empty-cache-body')}</EmptyStateBody>
-          <EmptyStateFooter>
-            <EmptyStateActions style={{ marginTop: global_spacer_sm.value }}>{addEntryAction()}</EmptyStateActions>
-          </EmptyStateFooter>
-        </EmptyState>
-      </CardBody>
-    </Card>
+    <EmptyState
+      variant={EmptyStateVariant.lg}
+      titleText={<>{t('caches.entries.empty-cache')}</>}
+      icon={PlusCircleIcon}
+      headingLevel="h4"
+    >
+      <EmptyStateBody>{infoEntries ? t(infoEntries) : t('caches.entries.empty-cache-body')}</EmptyStateBody>
+      <EmptyStateFooter>
+        <EmptyStateActions style={{ marginTop: t_global_spacer_sm.value }}>{addEntryAction()}</EmptyStateActions>
+      </EmptyStateFooter>
+    </EmptyState>
   );
 
   const toolbarPagination = (dropDirection) => {
@@ -353,7 +347,7 @@ const CacheEntries = () => {
       clearAllFilters={() => {
         setSearchValue('');
       }}
-      style={{ paddingBottom: global_spacer_md.value }}
+      style={{ paddingBottom: t_global_spacer_md.value }}
     >
       <ToolbarContent>
         <ToolbarToggleGroup toggleIcon={<FilterIcon />} breakpoint="xl">
@@ -362,7 +356,6 @@ const CacheEntries = () => {
         <Divider orientation={{ default: 'vertical' }} inset={{ default: 'insetSm' }} />
         {addEntryAction()}
         {clearAllAction()}
-        <ToolbarItem variant="pagination">{toolbarPagination('down')}</ToolbarItem>
         <ToolbarItem>
           <SelectSingle
             id={'view'}
@@ -378,6 +371,7 @@ const CacheEntries = () => {
             </Button>
           </Tooltip>
         </ToolbarItem>
+        <ToolbarItem variant="pagination">{toolbarPagination('down')}</ToolbarItem>
       </ToolbarContent>
     </Toolbar>
   );
@@ -411,25 +405,20 @@ const CacheEntries = () => {
       encodingValue == EncodingType.Octet
     ) {
       return (
-        <Card isCompact>
-          <CardBody>
-            <Alert
-              isPlain
-              isInline
-              title={t('caches.configuration.pojo-encoding', {
-                brandname: brandname,
-                encodingKey: encodingKey,
-                encodingValue: encodingValue
-              })}
-              variant={AlertVariant.info}
-              actionLinks={
-                <AlertActionLink onClick={() => window.open(encodingDocs, '_blank')}>
-                  {t('caches.configuration.encoding-docs-message')}
-                </AlertActionLink>
-              }
-            />
-          </CardBody>
-        </Card>
+        <Alert
+          isInline
+          title={t('caches.configuration.pojo-encoding', {
+            brandname: brandname,
+            encodingKey: encodingKey,
+            encodingValue: encodingValue
+          })}
+          variant={AlertVariant.info}
+          actionLinks={
+            <AlertActionLink onClick={() => window.open(encodingDocs, '_blank')}>
+              {t('caches.configuration.encoding-docs-message')}
+            </AlertActionLink>
+          }
+        />
       );
     }
     return '';
@@ -440,125 +429,135 @@ const CacheEntries = () => {
     return <></>;
   }
   return (
-    <React.Fragment>
-      {encodingMessageDisplay()}
-      {totalEntriesCount == 0 ? (
-        emptyPage
-      ) : (
-        <React.Fragment>
-          {toolbar}
+    <Card isPlain isFullHeight>
+      <CardBody>
+        {encodingMessageDisplay()}
+        {totalEntriesCount == 0 ? (
+          emptyPage
+        ) : (
+          <React.Fragment>
+            {toolbar}
 
-          <Table className={'entries-table'} aria-label={'entries-table-label'} variant={'compact'}>
-            <Thead>
-              <Tr>
-                <Th colSpan={1}>{columnNames.key}</Th>
-                <Th colSpan={1}>{columnNames.value}</Th>
-                <Th
-                  info={{
-                    popover: t('caches.entries.column-lifespan-tooltip', { brandname: brandname }),
-                    popoverProps: {
-                      headerContent: t('caches.entries.column-lifespan')
-                    }
-                  }}
-                  colSpan={1}
-                >
-                  {columnNames.lifespan}
-                </Th>
-                <Th
-                  info={{
-                    popover: t('caches.entries.column-maxidle-tooltip', { brandname: brandname }),
-                    popoverProps: {
-                      headerContent: t('caches.entries.column-maxidle')
-                    }
-                  }}
-                  colSpan={1}
-                >
-                  {columnNames.maxIdle}
-                </Th>
-                <Th colSpan={2}>{columnNames.expires}</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {filteredEntries.length == 0 ? (
+            <Table className={'entries-table'} aria-label={'entries-table-label'} variant={'compact'}>
+              <Thead>
                 <Tr>
-                  <Td colSpan={6}>
-                    <Bullseye>
-                      <EmptyState variant={EmptyStateVariant.sm}>
-                        <EmptyStateHeader
-                          titleText={<>{t('caches.entries.no-filtered-entry')}</>}
-                          icon={<EmptyStateIcon icon={SearchIcon} />}
-                          headingLevel="h2"
-                        />
-                        <EmptyStateBody>{t('caches.entries.no-filtered-entry-tooltip')}</EmptyStateBody>
-                        <EmptyStateFooter>
-                          <EmptyStateActions style={{ marginTop: global_spacer_sm.value }}>
-                            <Button
-                              data-cy="clearSearch"
-                              key="clear-search"
-                              variant={ButtonVariant.link}
-                              onClick={() => {
-                                setSearchValue('');
-                              }}
-                            >
-                              {t('caches.entries.no-filtered-entry-action')}
-                            </Button>
-                          </EmptyStateActions>
-                        </EmptyStateFooter>
-                      </EmptyState>
-                    </Bullseye>
-                  </Td>
+                  <Th colSpan={1}>{columnNames.key}</Th>
+                  <Th colSpan={1}>{columnNames.value}</Th>
+                  <Th
+                    info={{
+                      popover: t('caches.entries.column-lifespan-tooltip', {
+                        brandname: brandname
+                      }),
+                      popoverProps: {
+                        headerContent: t('caches.entries.column-lifespan')
+                      }
+                    }}
+                    colSpan={1}
+                  >
+                    {columnNames.lifespan}
+                  </Th>
+                  <Th
+                    info={{
+                      popover: t('caches.entries.column-maxidle-tooltip', {
+                        brandname: brandname
+                      }),
+                      popoverProps: {
+                        headerContent: t('caches.entries.column-maxidle')
+                      }
+                    }}
+                    colSpan={1}
+                  >
+                    {columnNames.maxIdle}
+                  </Th>
+                  <Th colSpan={2}>{columnNames.expires}</Th>
                 </Tr>
-              ) : (
-                rows.map((row) => {
-                  return (
-                    <Tr key={row.key}>
-                      <Td dataLabel={columnNames.key}>
-                        {displayHighlighted(
-                          row.key,
-                          cache.encoding?.key as EncodingType,
-                          row.keyContentType as ContentType
-                        )}
-                      </Td>
-                      <Td dataLabel={columnNames.value}>
-                        {displayHighlighted(
-                          row.value,
-                          cache.encoding?.value as EncodingType,
-                          row.valueContentType as ContentType
-                        )}
-                      </Td>
-                      <Td dataLabel={columnNames.lifespan}>{displayTimeToLive(row)}</Td>
-                      <Td dataLabel={columnNames.maxIdle}>{displayMaxIdle(row)}</Td>
-                      <Td dataLabel={columnNames.expires}>{displayExpires(row)}</Td>
-                      {displayActions(row)}
-                    </Tr>
-                  );
-                })
-              )}
-            </Tbody>
-          </Table>
-          <Toolbar>
-            <ToolbarItem variant="pagination">{toolbarPagination('up')}</ToolbarItem>
-          </Toolbar>
-        </React.Fragment>
-      )}
-      <CreateOrUpdateEntryForm
-        cacheName={cache.name}
-        cacheEncoding={cache.encoding!}
-        keyToEdit={keyToEdit}
-        keyContentType={keyContentTypeToEdit}
-        isModalOpen={isCreateOrUpdateEntryFormOpen}
-        closeModal={closeCreateOrEditEntryFormModal}
-      />
-      <DeleteEntry
-        cacheName={cache.name}
-        cacheEncoding={cache.encoding!}
-        entryKey={keyToDelete}
-        keyContentType={keyContentTypeToEdit}
-        isModalOpen={isDeleteEntryModalOpen}
-        closeModal={closeDeleteEntryModal}
-      />
-      <ClearAllEntries cacheName={cache.name} isModalOpen={isClearAllModalOpen} closeModal={closeClearAllEntryModal} />
-    </React.Fragment>
+              </Thead>
+              <Tbody>
+                {filteredEntries.length == 0 ? (
+                  <Tr>
+                    <Td colSpan={6}>
+                      <Bullseye>
+                        <EmptyState
+                          variant={EmptyStateVariant.sm}
+                          titleText={<>{t('caches.entries.no-filtered-entry')}</>}
+                          icon={SearchIcon}
+                          headingLevel="h2"
+                        >
+                          <EmptyStateBody>{t('caches.entries.no-filtered-entry-tooltip')}</EmptyStateBody>
+                          <EmptyStateFooter>
+                            <EmptyStateActions style={{ marginTop: t_global_spacer_sm.value }}>
+                              <Button
+                                data-cy="clearSearch"
+                                key="clear-search"
+                                variant={ButtonVariant.link}
+                                onClick={() => {
+                                  setSearchValue('');
+                                }}
+                              >
+                                {t('caches.entries.no-filtered-entry-action')}
+                              </Button>
+                            </EmptyStateActions>
+                          </EmptyStateFooter>
+                        </EmptyState>
+                      </Bullseye>
+                    </Td>
+                  </Tr>
+                ) : (
+                  rows.map((row) => {
+                    return (
+                      <Tr key={row.key}>
+                        <Td dataLabel={columnNames.key}>
+                          {displayHighlighted(
+                            row.key,
+                            cache.encoding?.key as EncodingType,
+                            row.keyContentType as ContentType
+                          )}
+                        </Td>
+                        <Td dataLabel={columnNames.value}>
+                          {displayHighlighted(
+                            row.value,
+                            cache.encoding?.value as EncodingType,
+                            row.valueContentType as ContentType
+                          )}
+                        </Td>
+                        <Td dataLabel={columnNames.lifespan}>{displayTimeToLive(row)}</Td>
+                        <Td dataLabel={columnNames.maxIdle}>{displayMaxIdle(row)}</Td>
+                        <Td dataLabel={columnNames.expires}>{displayExpires(row)}</Td>
+                        {displayActions(row)}
+                      </Tr>
+                    );
+                  })
+                )}
+              </Tbody>
+            </Table>
+            <Toolbar>
+              <ToolbarItem variant="pagination">{toolbarPagination('up')}</ToolbarItem>
+            </Toolbar>
+          </React.Fragment>
+        )}
+        <CreateOrUpdateEntryForm
+          cacheName={cache.name}
+          cacheEncoding={cache.encoding!}
+          keyToEdit={keyToEdit}
+          keyContentType={keyContentTypeToEdit}
+          isModalOpen={isCreateOrUpdateEntryFormOpen}
+          closeModal={closeCreateOrEditEntryFormModal}
+        />
+        <DeleteEntry
+          cacheName={cache.name}
+          cacheEncoding={cache.encoding!}
+          entryKey={keyToDelete}
+          keyContentType={keyContentTypeToEdit}
+          isModalOpen={isDeleteEntryModalOpen}
+          closeModal={closeDeleteEntryModal}
+        />
+        <ClearAllEntries
+          cacheName={cache.name}
+          isModalOpen={isClearAllModalOpen}
+          closeModal={closeClearAllEntryModal}
+        />
+      </CardBody>
+    </Card>
   );
 };
 

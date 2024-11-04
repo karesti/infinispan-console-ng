@@ -1,8 +1,8 @@
 import React from 'react';
-import { AlertVariant, Flex, FlexItem, Text, TextContent, TextVariants } from '@patternfly/react-core';
+import { AlertVariant, Content, ContentVariants, Flex, FlexItem } from '@patternfly/react-core';
 import { AlertIcon } from '@patternfly/react-core/dist/js/components/Alert/AlertIcon';
 import { useTranslation } from 'react-i18next';
-import { global_disabled_color_100, global_info_color_100 } from '@patternfly/react-tokens';
+import { t_global_text_color_disabled, t_global_text_color_status_info_default } from '@patternfly/react-tokens';
 
 const TracingEnabled = (props: { enabled: boolean }) => {
   const { t } = useTranslation();
@@ -13,17 +13,15 @@ const TracingEnabled = (props: { enabled: boolean }) => {
         <AlertIcon
           variant={AlertVariant.info}
           style={{
-            color: props.enabled ? global_info_color_100.value : global_disabled_color_100.value,
+            color: props.enabled ? t_global_text_color_status_info_default.value : t_global_text_color_disabled.value,
             display: 'inline'
           }}
         />
       </FlexItem>
       <FlexItem>
-        <TextContent>
-          <Text component={TextVariants.p}>
-            {props.enabled ? t('common.tracing.enabled') : t('common.tracing.disabled')}
-          </Text>
-        </TextContent>
+        <Content component={ContentVariants.p}>
+          {props.enabled ? t('common.tracing.enabled') : t('common.tracing.disabled')}
+        </Content>
       </FlexItem>
     </Flex>
   );

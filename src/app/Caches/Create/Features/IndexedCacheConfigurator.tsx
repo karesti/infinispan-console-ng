@@ -50,7 +50,7 @@ const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
   const [indexedSharding, setIndexedSharding] = useState(configuration.feature.indexedCache.indexedSharding);
 
   useEffect(() => {
-    indexedEntities.length > 0 ? setValidEntity('success') : setValidEntity('error');
+    setValidEntity(indexedEntities.length > 0 ? 'success' : 'error');
 
     setConfiguration((prevState) => {
       return {
@@ -104,7 +104,7 @@ const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
       <FormGroup
         isRequired
         label={t('caches.create.configurations.feature.index-storage-entity')}
-        labelIcon={
+        labelHelp={
           <PopoverHelp
             name={'index-storage-entity'}
             label={t('caches.create.configurations.feature.index-storage-entity')}
@@ -162,7 +162,7 @@ const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
     >
       <FormGroup
         label={t('caches.create.configurations.feature.indexing-mode')}
-        labelIcon={
+        labelHelp={
           <PopoverHelp
             name={'indexing-mode'}
             label={t('caches.create.configurations.feature.indexing-mode')}
@@ -189,7 +189,7 @@ const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
       </FormGroup>
       <FormGroup
         label={t('caches.create.configurations.feature.index-storage')}
-        labelIcon={
+        labelHelp={
           <PopoverHelp
             name={'indexed-storage'}
             label={t('caches.create.configurations.feature.index-storage')}
@@ -216,7 +216,7 @@ const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
       </FormGroup>
       <FormGroup
         label={t('caches.create.configurations.feature.index-startup-mode')}
-        labelIcon={
+        labelHelp={
           <PopoverHelp
             name={'indexed-startup-mode'}
             label={t('caches.create.configurations.feature.index-startup-mode')}
@@ -237,7 +237,7 @@ const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
       {formSelectEntities()}
       <FormGroup
         label={t('caches.create.configurations.feature.index-sharding')}
-        labelIcon={
+        labelHelp={
           <PopoverHelp
             name={'indexed-sharding'}
             label={t('caches.create.configurations.feature.index-sharding')}

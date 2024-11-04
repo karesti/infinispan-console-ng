@@ -103,7 +103,7 @@ const BoundedCacheConfigurator = () => {
         {evictionType === 'size' && (
           <FormGroup
             label={t('caches.create.configurations.feature.max-size')}
-            labelIcon={
+            labelHelp={
               <PopoverHelp
                 name={'max-size'}
                 label={t('caches.create.configurations.feature.max-size')}
@@ -153,7 +153,7 @@ const BoundedCacheConfigurator = () => {
             fieldId="max-count"
             type="number"
             label={t('caches.create.configurations.feature.max-count')}
-            labelIcon={
+            labelHelp={
               <PopoverHelp
                 name="max-count"
                 label={t('caches.create.configurations.feature.max-count')}
@@ -185,7 +185,7 @@ const BoundedCacheConfigurator = () => {
           fieldId="form-eviction-strategy"
           label={t('caches.create.configurations.feature.eviction-strategy')}
           isRequired
-          labelIcon={
+          labelHelp={
             <PopoverHelp
               name="eviction-strategy"
               label={t('caches.create.configurations.feature.eviction-strategy')}

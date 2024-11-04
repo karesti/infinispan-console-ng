@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, ButtonVariant, Modal, Text, TextContent } from '@patternfly/react-core';
+import { Button, ButtonVariant, Modal, Content, ModalFooter, ModalBody, ModalHeader } from '@patternfly/react-core';
 import { useTranslation } from 'react-i18next';
 import { useDeleteRole } from '@app/services/rolesHook';
 import { useGrantAccess, useRemovePrincipal } from '@app/services/principalsHook';
@@ -16,16 +16,23 @@ const RemovePrincipal = (props: {
 
   return (
     <Modal
-      titleIconVariant={'warning'}
       id={'remove-principal-modal'}
       className="pf-m-redhat-font"
-      width={'50%'}
+      variant={'small'}
       isOpen={props.isModalOpen}
-      title={t('access-management.principals.modal-remove-title', { principalName: props.name })}
       onClose={props.closeModal}
       aria-label="modal-principal-delete"
       disableFocusTrap={true}
-      actions={[
+    >
+      <ModalHeader
+        titleIconVariant={'warning'}
+        title={t('access-management.principals.modal-remove-title', { principalName: props.name })}
+      />
+      <ModalBody>
+        <Content>{t('access-management.principals.modal-remove-description-1', { brandname: brandname })}</Content>
+        <Content>{t('access-management.principals.modal-remove-description-2')}</Content>
+      </ModalBody>
+      <ModalFooter>
         <Button
           key={'Remove'}
           aria-label={'Remove'}
@@ -36,7 +43,7 @@ const RemovePrincipal = (props: {
           }}
         >
           {t('common.actions.remove')}
-        </Button>,
+        </Button>
         <Button
           key={'Cancel'}
           aria-label={'Cancel'}
@@ -46,12 +53,7 @@ const RemovePrincipal = (props: {
         >
           {t('common.actions.cancel')}
         </Button>
-      ]}
-    >
-      <TextContent>
-        <Text>{t('access-management.principals.modal-remove-description-1', { brandname: brandname })}</Text>
-        <Text>{t('access-management.principals.modal-remove-description-2')}</Text>
-      </TextContent>
+      </ModalFooter>
     </Modal>
   );
 };

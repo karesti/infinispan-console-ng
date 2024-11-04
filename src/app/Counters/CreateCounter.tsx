@@ -8,13 +8,16 @@ import {
   HelperText,
   HelperTextItem,
   Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   ModalVariant,
-  TextInput,
-  Radio
+  Radio,
+  TextInput
 } from '@patternfly/react-core';
 import { useCreateCounter } from '@app/services/countersHook';
 import { useTranslation } from 'react-i18next';
-import { CounterType, CounterStorage } from '@services/infinispanRefData';
+import { CounterStorage, CounterType } from '@services/infinispanRefData';
 import { createCounterConfig } from '@utils/counterUtils';
 import formUtils, { IField } from '@services/formUtils';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
@@ -215,161 +218,165 @@ const CreateCounter = (props: { isModalOpen: boolean; submitModal: () => void; c
       id={'create-counter-modal'}
       className="pf-m-redhat-font"
       isOpen={props.isModalOpen}
-      title={t('cache-managers.counters.modal-create-title')}
       onClose={onCloseModal}
       aria-label={'counters-modal-create-title'}
       disableFocusTrap={true}
-      actions={[
+    >
+      <ModalHeader title={t('cache-managers.counters.modal-create-title')} />
+      <ModalBody>
+        <Form
+          onSubmit={(e) => {
+            e.preventDefault();
+          }}
+        >
+          <FormGroup isRequired isInline label={t('cache-managers.counters.modal-counter-name')}>
+            <TextInput
+              validated={counterName.validated}
+              value={counterName.value}
+              type="text"
+              onChange={(_event, value) =>
+                formUtils.validateRequiredField(value, t('cache-managers.counters.modal-counter-name'), setCounterName)
+              }
+              aria-label="counter-name-input"
+            />
+            {counterName.validated === 'error' && (
+              <FormHelperText>
+                <HelperText>
+                  <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
+                    {counterName.invalidText}
+                  </HelperTextItem>
+                </HelperText>
+              </FormHelperText>
+            )}
+          </FormGroup>
+          <FormGroup
+            isRequired
+            isInline
+            label={t('cache-managers.counters.modal-storage')}
+            labelHelp={
+              <PopoverHelp
+                name="storage"
+                label={t('cache-managers.counters.modal-storage')}
+                content={t('cache-managers.counters.modal-storage-tooltip', {
+                  brandname: brandname
+                })}
+              />
+            }
+          >
+            <Radio
+              name="counter-storage-radio"
+              id="persistent"
+              onChange={() =>
+                formUtils.validateRequiredField('PERSISTENT', t('cache-managers.counters.storage'), setCounterStorage)
+              }
+              isChecked={counterStorage.value === 'PERSISTENT'}
+              label={CounterStorage.PERSISTENT}
+            />
+            <Radio
+              name="counter-storage-radio"
+              id="volatile"
+              onChange={() =>
+                formUtils.validateRequiredField('VOLATILE', t('cache-managers.counters.storage'), setCounterStorage)
+              }
+              isChecked={counterStorage.value === 'VOLATILE'}
+              label={CounterStorage.VOLATILE}
+            />
+            {counterStorage.validated === 'error' && (
+              <FormHelperText>
+                <HelperText>
+                  <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
+                    {counterStorage.invalidText}
+                  </HelperTextItem>
+                </HelperText>
+              </FormHelperText>
+            )}
+          </FormGroup>
+          <FormGroup
+            isRequired
+            isInline
+            label={t('cache-managers.counters.counter-type')}
+            labelHelp={
+              <PopoverHelp
+                name="type"
+                label={t('cache-managers.counters.counter-type')}
+                content={t('cache-managers.counters.modal-counter-type-tooltip')}
+              />
+            }
+          >
+            <Radio
+              name="counter-type-radio"
+              id="strong"
+              onChange={() =>
+                formUtils.validateRequiredField(
+                  CounterType.STRONG_COUNTER,
+                  t('cache-managers.counters.counter-type'),
+                  setCounterType
+                )
+              }
+              isChecked={counterType.value === CounterType.STRONG_COUNTER}
+              label={t('cache-managers.counters.modal-strong-counter')}
+            />
+            <Radio
+              name="counter-type-radio"
+              id="weak"
+              onChange={() =>
+                formUtils.validateRequiredField(
+                  CounterType.WEAK_COUNTER,
+                  t('cache-managers.counters.counter-type'),
+                  setCounterType
+                )
+              }
+              isChecked={counterType.value === CounterType.WEAK_COUNTER}
+              label={t('cache-managers.counters.modal-weak-counter')}
+            />
+            {counterType.validated === 'error' && (
+              <FormHelperText>
+                <HelperText>
+                  <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
+                    {counterType.invalidText}
+                  </HelperTextItem>
+                </HelperText>
+              </FormHelperText>
+            )}
+          </FormGroup>
+          <FormGroup isInline label={t('cache-managers.counters.initial-value')}>
+            <TextInput
+              validated={initialValue.validated}
+              value={initialValue.value}
+              type="number"
+              onChange={(_event, value) =>
+                formUtils.validateRequiredField(
+                  value,
+                  t('cache-managers.counters.initial-value'),
+                  setInitialValue,
+                  validateInitialValue(value),
+                  t('cache-managers.counters.modal-initial-value-invalid')
+                )
+              }
+              aria-label="initial-value-input"
+            />
+            {initialValue.validated === 'error' && (
+              <FormHelperText>
+                <HelperText>
+                  <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
+                    {initialValue.invalidText}
+                  </HelperTextItem>
+                </HelperText>
+              </FormHelperText>
+            )}
+          </FormGroup>
+          {counterType.value === CounterType.STRONG_COUNTER && formStrongCounter()}
+          {counterType.value === CounterType.WEAK_COUNTER && formWeakCounter()}
+        </Form>
+      </ModalBody>
+      <ModalFooter>
         <Button key={'Create'} aria-label={'Create'} variant={ButtonVariant.primary} onClick={handleSubmit}>
           {t('cache-managers.counters.create-action')}
-        </Button>,
+        </Button>
         <Button key={'Cancel'} aria-label={'Cancel'} variant={ButtonVariant.link} onClick={onCloseModal}>
           {t('cache-managers.counters.modal-cancel-button')}
         </Button>
-      ]}
-    >
-      <Form
-        onSubmit={(e) => {
-          e.preventDefault();
-        }}
-      >
-        <FormGroup isRequired isInline label={t('cache-managers.counters.modal-counter-name')}>
-          <TextInput
-            validated={counterName.validated}
-            value={counterName.value}
-            type="text"
-            onChange={(_event, value) =>
-              formUtils.validateRequiredField(value, t('cache-managers.counters.modal-counter-name'), setCounterName)
-            }
-            aria-label="counter-name-input"
-          />
-          {counterName.validated === 'error' && (
-            <FormHelperText>
-              <HelperText>
-                <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
-                  {counterName.invalidText}
-                </HelperTextItem>
-              </HelperText>
-            </FormHelperText>
-          )}
-        </FormGroup>
-        <FormGroup
-          isRequired
-          isInline
-          label={t('cache-managers.counters.modal-storage')}
-          labelIcon={
-            <PopoverHelp
-              name="storage"
-              label={t('cache-managers.counters.modal-storage')}
-              content={t('cache-managers.counters.modal-storage-tooltip', { brandname: brandname })}
-            />
-          }
-        >
-          <Radio
-            name="counter-storage-radio"
-            id="persistent"
-            onChange={() =>
-              formUtils.validateRequiredField('PERSISTENT', t('cache-managers.counters.storage'), setCounterStorage)
-            }
-            isChecked={counterStorage.value === 'PERSISTENT'}
-            label={CounterStorage.PERSISTENT}
-          />
-          <Radio
-            name="counter-storage-radio"
-            id="volatile"
-            onChange={() =>
-              formUtils.validateRequiredField('VOLATILE', t('cache-managers.counters.storage'), setCounterStorage)
-            }
-            isChecked={counterStorage.value === 'VOLATILE'}
-            label={CounterStorage.VOLATILE}
-          />
-          {counterStorage.validated === 'error' && (
-            <FormHelperText>
-              <HelperText>
-                <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
-                  {counterStorage.invalidText}
-                </HelperTextItem>
-              </HelperText>
-            </FormHelperText>
-          )}
-        </FormGroup>
-        <FormGroup
-          isRequired
-          isInline
-          label={t('cache-managers.counters.counter-type')}
-          labelIcon={
-            <PopoverHelp
-              name="type"
-              label={t('cache-managers.counters.counter-type')}
-              content={t('cache-managers.counters.modal-counter-type-tooltip')}
-            />
-          }
-        >
-          <Radio
-            name="counter-type-radio"
-            id="strong"
-            onChange={() =>
-              formUtils.validateRequiredField(
-                CounterType.STRONG_COUNTER,
-                t('cache-managers.counters.counter-type'),
-                setCounterType
-              )
-            }
-            isChecked={counterType.value === CounterType.STRONG_COUNTER}
-            label={t('cache-managers.counters.modal-strong-counter')}
-          />
-          <Radio
-            name="counter-type-radio"
-            id="weak"
-            onChange={() =>
-              formUtils.validateRequiredField(
-                CounterType.WEAK_COUNTER,
-                t('cache-managers.counters.counter-type'),
-                setCounterType
-              )
-            }
-            isChecked={counterType.value === CounterType.WEAK_COUNTER}
-            label={t('cache-managers.counters.modal-weak-counter')}
-          />
-          {counterType.validated === 'error' && (
-            <FormHelperText>
-              <HelperText>
-                <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
-                  {counterType.invalidText}
-                </HelperTextItem>
-              </HelperText>
-            </FormHelperText>
-          )}
-        </FormGroup>
-        <FormGroup isInline label={t('cache-managers.counters.initial-value')}>
-          <TextInput
-            validated={initialValue.validated}
-            value={initialValue.value}
-            type="number"
-            onChange={(_event, value) =>
-              formUtils.validateRequiredField(
-                value,
-                t('cache-managers.counters.initial-value'),
-                setInitialValue,
-                validateInitialValue(value),
-                t('cache-managers.counters.modal-initial-value-invalid')
-              )
-            }
-            aria-label="initial-value-input"
-          />
-          {initialValue.validated === 'error' && (
-            <FormHelperText>
-              <HelperText>
-                <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
-                  {initialValue.invalidText}
-                </HelperTextItem>
-              </HelperText>
-            </FormHelperText>
-          )}
-        </FormGroup>
-        {counterType.value === CounterType.STRONG_COUNTER && formStrongCounter()}
-        {counterType.value === CounterType.WEAK_COUNTER && formWeakCounter()}
-      </Form>
+      </ModalFooter>
     </Modal>
   );
 };

@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Alert, AlertVariant, Flex, Form, FormGroup, Text, TextContent, TextVariants } from '@patternfly/react-core';
+import { Alert, AlertVariant, Content, ContentVariants, Flex, Form, FormGroup } from '@patternfly/react-core';
 import { CodeEditor } from '@patternfly/react-code-editor';
 import { useTranslation } from 'react-i18next';
 import { CacheConfigUtils } from '@services/cacheConfigUtils';
 import { useCreateCache } from '@app/services/createCacheHook';
-import { ThemeContext } from '@app/providers/ThemeProvider';
+import { DARK, ThemeContext } from '@app/providers/ThemeProvider';
 import LanguageToggleRadios from './LanguageToggleRadios';
 import { ConfigDownloadType } from '@services/infinispanRefData';
 import { ConsoleServices } from '@services/ConsoleServices';
@@ -84,7 +84,7 @@ const ReviewCacheConfig = (props: { setReviewConfig: (string) => void; setConten
           code={config()}
           height={'400px'}
           isCopyEnabled
-          isDarkTheme={theme === 'dark'}
+          isDarkTheme={theme === DARK}
           copyButtonSuccessTooltipText={t('caches.create.review.copied-tooltip')}
           copyButtonToolTipText={t('caches.create.review.copy-tooltip')}
         />
@@ -98,16 +98,13 @@ const ReviewCacheConfig = (props: { setReviewConfig: (string) => void; setConten
         e.preventDefault();
       }}
     >
-      <TextContent>
-        <Text component={TextVariants.h1}>{t('caches.create.review.review-title')}</Text>
-        <TextContent>
-          <Text component={TextVariants.p}>{t('caches.create.review.review-subtitle')}</Text>
-        </TextContent>
-        <Flex>
-          <Text component={TextVariants.p}>{t('caches.create.review.review-cache-name')}</Text>
-          <Text component={TextVariants.h4}>{configuration.start.cacheName}</Text>
-        </Flex>
-      </TextContent>
+      <Content component={ContentVariants.h1}>{t('caches.create.review.review-title')}</Content>
+      <Content component={ContentVariants.p}>{t('caches.create.review.review-subtitle')}</Content>
+      <Flex>
+        <Content component={ContentVariants.p}>{t('caches.create.review.review-cache-name')}</Content>
+        <Content component={ContentVariants.h4}>{configuration.start.cacheName}</Content>
+      </Flex>
+
       <LanguageToggleRadios language={language} setLanguage={setLanguage} />
       {displayCacheConfigEditor()}
     </Form>

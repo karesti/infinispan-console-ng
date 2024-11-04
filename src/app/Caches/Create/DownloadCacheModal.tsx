@@ -8,14 +8,16 @@ import {
   CodeBlock,
   CodeBlockAction,
   CodeBlockCode,
+  Content,
   Form,
   FormGroup,
   Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   ModalVariant,
   Radio,
-  Spinner,
-  TextContent,
-  Text
+  Spinner
 } from '@patternfly/react-core';
 import { ConfigDownloadType } from '@services/infinispanRefData';
 import { useTranslation } from 'react-i18next';
@@ -123,13 +125,49 @@ const DownloadCacheModal = (props: {
   );
 
   return (
-    <Modal
-      variant={ModalVariant.medium}
-      title={t('caches.create.review.download-title')}
-      description={t('caches.create.review.download-description')}
-      isOpen={props.isModalOpen}
-      onClose={props.closeModal}
-      actions={[
+    <Modal variant={ModalVariant.medium} isOpen={props.isModalOpen} onClose={props.closeModal}>
+      <ModalHeader
+        title={t('caches.create.review.download-title')}
+        description={t('caches.create.review.download-description')}
+      />
+      <ModalBody>
+        {loading && (
+          <Content>
+            {t('caches.create.review.formatting-loading')} <Spinner isInline aria-label="formattting..." />
+          </Content>
+        )}
+        {!loading && (
+          <Form isHorizontal id="download-modal-form">
+            <FormGroup hasNoPaddingTop isInline label="Code language" fieldId="code-language-radio-field">
+              <Radio
+                name="language-radio"
+                id="modal-JSON"
+                onChange={() => {
+                  setDownloadLanguage(ConfigDownloadType.JSON);
+                }}
+                isChecked={(downloadLanguage as ConfigDownloadType) == ConfigDownloadType.JSON}
+                label={t('caches.create.review.json')}
+              />
+              <Radio
+                name="language-radio"
+                id="modal-XML"
+                onChange={() => setDownloadLanguage(ConfigDownloadType.XML)}
+                isChecked={(downloadLanguage as ConfigDownloadType) == ConfigDownloadType.XML}
+                label={t('caches.create.review.xml')}
+              />
+              <Radio
+                name="language-radio"
+                id="modal-YAML"
+                onChange={() => setDownloadLanguage(ConfigDownloadType.YAML)}
+                isChecked={(downloadLanguage as ConfigDownloadType) == ConfigDownloadType.YAML}
+                label={t('caches.create.review.yaml')}
+              />
+            </FormGroup>
+            {codeBlock}
+          </Form>
+        )}
+      </ModalBody>
+      <ModalFooter>
         <Button
           component="a"
           key="download"
@@ -142,49 +180,11 @@ const DownloadCacheModal = (props: {
           download={props.cacheName + `.` + downloadLanguage.toLocaleLowerCase()}
         >
           {t('caches.create.review.download-button')}
-        </Button>,
+        </Button>
         <Button key="cancel" variant="link" onClick={props.closeModal}>
           {t('caches.create.review.cancel-button')}
         </Button>
-      ]}
-    >
-      {loading && (
-        <TextContent>
-          <Text>
-            {t('caches.create.review.formatting-loading')} <Spinner isInline aria-label="formattting..." />
-          </Text>
-        </TextContent>
-      )}
-      {!loading && (
-        <Form isHorizontal id="download-modal-form">
-          <FormGroup hasNoPaddingTop isInline label="Code language" fieldId="code-language-radio-field">
-            <Radio
-              name="language-radio"
-              id="modal-JSON"
-              onChange={() => {
-                setDownloadLanguage(ConfigDownloadType.JSON);
-              }}
-              isChecked={(downloadLanguage as ConfigDownloadType) == ConfigDownloadType.JSON}
-              label={t('caches.create.review.json')}
-            />
-            <Radio
-              name="language-radio"
-              id="modal-XML"
-              onChange={() => setDownloadLanguage(ConfigDownloadType.XML)}
-              isChecked={(downloadLanguage as ConfigDownloadType) == ConfigDownloadType.XML}
-              label={t('caches.create.review.xml')}
-            />
-            <Radio
-              name="language-radio"
-              id="modal-YAML"
-              onChange={() => setDownloadLanguage(ConfigDownloadType.YAML)}
-              isChecked={(downloadLanguage as ConfigDownloadType) == ConfigDownloadType.YAML}
-              label={t('caches.create.review.yaml')}
-            />
-          </FormGroup>
-          {codeBlock}
-        </Form>
-      )}
+      </ModalFooter>
     </Modal>
   );
 };

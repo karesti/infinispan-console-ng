@@ -1,110 +1,37 @@
-import {
-  chart_color_black_100,
-  chart_color_black_500,
-  chart_color_blue_500,
-  chart_color_cyan_100,
-  chart_color_cyan_500,
-  chart_color_gold_100,
-  chart_color_orange_500,
-  chart_color_purple_500,
-  chart_global_label_Fill,
-  global_Color_100,
-  global_danger_color_100,
-  global_info_color_100,
-  global_palette_blue_50,
-  global_palette_purple_100,
-  global_success_color_100,
-  global_warning_color_100
-} from '@patternfly/react-tokens';
-import { AlertVariant } from '@patternfly/react-core';
+import { chart_color_blue_500, t_chart_color_purple_500 } from '@patternfly/react-tokens';
 import numeral from 'numeral';
-import { CacheType, ComponentHealth, ContentType } from '@services/infinispanRefData';
+import {
+  CacheType,
+  CANCEL_STATUS,
+  ContentType,
+  DEGRADED_HEALTH,
+  ERROR_STATUS,
+  FAILED,
+  HEALTHY_HEALTH,
+  HEALTHY_REBALANCING_HEALTH,
+  INIT_STATUS,
+  INSTANTIATED_STATUS,
+  OK_STATUS,
+  RUNNING_STATUS,
+  ST_IDLE,
+  ST_SEND_CANCELED,
+  ST_SEND_FAILED,
+  ST_SEND_OK,
+  ST_SENDING,
+  STOPPING_STATUS,
+  TERMINATED_STATUS,
+  UNKNOWN
+} from '@services/infinispanRefData';
 
 /**
  * Utility class to manage display features
  *
  * @author Katia Aresti
  */
-export const UNKNOWN_STATUS = {
-  name: 'Unknown',
-  color: chart_global_label_Fill.value,
-  icon: AlertVariant.warning
-};
-export const OK_STATUS = {
-  name: 'Ok',
-  color: global_success_color_100.value,
-  icon: AlertVariant.success
-};
-export const RUNNING_STATUS = {
-  name: 'Running',
-  color: global_success_color_100.value,
-  icon: AlertVariant.success
-};
-export const INIT_STATUS = {
-  name: 'Initializing',
-  color: global_warning_color_100.value,
-  icon: AlertVariant.warning
-};
-export const CANCEL_STATUS = {
-  name: 'Cancelling',
-  color: global_warning_color_100.value,
-  icon: AlertVariant.warning
-};
-export const FAILED_STATUS = {
-  name: 'Failed',
-  color: global_danger_color_100.value,
-  icon: AlertVariant.danger
-};
-export const ERROR_STATUS = {
-  name: 'Error',
-  color: global_danger_color_100.value,
-  icon: AlertVariant.danger
-};
-export const TERMINATED_STATUS = {
-  name: 'Terminated',
-  color: global_info_color_100.value,
-  icon: AlertVariant.info
-};
-export const STOPPING_STATUS = {
-  name: 'Stopping',
-  color: global_info_color_100.value,
-  icon: AlertVariant.info
-};
-export const INSTANTIATED_STATUS = {
-  name: 'Instantiated',
-  color: global_info_color_100.value,
-  icon: AlertVariant.info
-};
-
-export const ST_IDLE = {
-  name: 'Inactive',
-  color: global_Color_100.value,
-  icon: AlertVariant.success
-};
-export const ST_SENDING = {
-  name: 'Sending',
-  color: global_info_color_100.value,
-  icon: AlertVariant.info
-};
-export const ST_SEND_OK = {
-  name: 'Transfer Ok',
-  color: global_success_color_100.value,
-  icon: AlertVariant.success
-};
-export const ST_SEND_FAILED = {
-  name: 'Transfer Failed',
-  color: global_danger_color_100.value,
-  icon: AlertVariant.danger
-};
-export const ST_SEND_CANCELED = {
-  name: 'Transfer Cancelled',
-  color: global_warning_color_100.value,
-  icon: AlertVariant.warning
-};
 
 class DisplayUtils {
-  public parseStateTransferStatus(value?: string): Status {
-    let stateTransfertStatus: Status;
+  public parseStateTransferStatus(value?: string): ComponentStatusType {
+    let stateTransfertStatus: ComponentStatusType;
     switch (value) {
       case 'IDLE':
         stateTransfertStatus = ST_IDLE;
@@ -128,10 +55,19 @@ class DisplayUtils {
     return stateTransfertStatus;
   }
 
-  public parseComponentStatus(value?: string): Status {
-    let componentStatus: Status;
+  public parseComponentStatus(value?: string): ComponentStatusType {
+    let componentStatus: ComponentStatusType;
 
     switch (value) {
+      case 'HEALTHY':
+        componentStatus = HEALTHY_HEALTH;
+        break;
+      case 'HEALTHY_REBALANCING':
+        componentStatus = HEALTHY_REBALANCING_HEALTH;
+        break;
+      case 'DEGRADED':
+        componentStatus = DEGRADED_HEALTH;
+        break;
       case 'RUNNING':
         componentStatus = RUNNING_STATUS;
         break;
@@ -143,9 +79,6 @@ class DisplayUtils {
         break;
       case 'CANCELLING':
         componentStatus = CANCEL_STATUS;
-        break;
-      case 'FAILED':
-        componentStatus = FAILED_STATUS;
         break;
       case 'ERROR':
         componentStatus = ERROR_STATUS;
@@ -159,131 +92,14 @@ class DisplayUtils {
       case 'INSTANTIATED':
         componentStatus = INSTANTIATED_STATUS;
         break;
+      case 'FAILED':
+        componentStatus = FAILED;
+        break;
       default:
-        componentStatus = UNKNOWN_STATUS;
+        componentStatus = UNKNOWN;
     }
 
     return componentStatus;
-  }
-
-  /**
-   * Get the health color
-   * @param health, string value
-   * @param isIcon, color depends on the icon as well
-   */
-  public healthColor(health: ComponentHealth | undefined, isIcon: boolean): string {
-    if (health == undefined) {
-      return chart_global_label_Fill.value;
-    }
-
-    if (!isIcon) {
-      if (health == ComponentHealth.FAILED || health == ComponentHealth.DEGRADED) {
-        return global_danger_color_100.value;
-      }
-      return chart_global_label_Fill.value;
-    }
-
-    let color;
-    switch (health) {
-      case ComponentHealth.HEALTHY:
-        color = global_success_color_100.value;
-        break;
-      case ComponentHealth.HEALTHY_REBALANCING:
-        color = global_warning_color_100.value;
-        break;
-      case ComponentHealth.FAILED:
-      case ComponentHealth.DEGRADED:
-        color = global_danger_color_100.value;
-        break;
-      default:
-        color = chart_global_label_Fill.value;
-    }
-    return color;
-  }
-
-  /**
-   * Used to display a health label instead of the backend value
-   *
-   * @param health
-   */
-  public healthLabel(health: ComponentHealth | undefined): string {
-    if (health === undefined) {
-      return '-';
-    }
-
-    let label;
-    switch (health) {
-      case ComponentHealth.HEALTHY:
-        label = 'Healthy';
-        break;
-      case ComponentHealth.HEALTHY_REBALANCING:
-        label = 'Rebalancing';
-        break;
-      case ComponentHealth.DEGRADED:
-        label = 'Degraded';
-        break;
-      case ComponentHealth.FAILED:
-        label = 'Failed';
-        break;
-      default:
-        label = 'Unknown';
-    }
-    return label;
-  }
-
-  /**
-   * Used to define color for cache health label
-   * @param health
-   */
-  public healthLabelColor(health: ComponentHealth | undefined) {
-    if (!health) return;
-
-    let color;
-    switch (health) {
-      case ComponentHealth.HEALTHY:
-        color = 'green';
-        break;
-      case ComponentHealth.HEALTHY_REBALANCING:
-        color = 'orange';
-        break;
-      case ComponentHealth.DEGRADED:
-        color = 'grey';
-        break;
-      case ComponentHealth.FAILED:
-        color = 'red';
-        break;
-      default:
-        color = 'blue';
-    }
-    return color;
-  }
-
-  /**
-   * Alert variant for the icon in the
-   * @param health
-   */
-  public healthAlertVariant(health: ComponentHealth | undefined): AlertVariant {
-    if (health == undefined) {
-      return AlertVariant.custom;
-    }
-
-    let variant;
-
-    switch (health) {
-      case ComponentHealth.HEALTHY:
-        variant = AlertVariant.success;
-        break;
-      case ComponentHealth.HEALTHY_REBALANCING:
-        variant = AlertVariant.warning;
-        break;
-      case ComponentHealth.FAILED:
-      case ComponentHealth.DEGRADED:
-        variant = AlertVariant.danger;
-        break;
-      default:
-        variant = AlertVariant.custom;
-    }
-    return variant;
   }
 
   /**
@@ -315,82 +131,16 @@ class DisplayUtils {
     return color;
   }
 
-  /**
-   * Cache type label text color
-   *
-   * @param cacheType
-   */
-  public cacheTypeLabelTextColor(cacheType: CacheType): string {
-    if (cacheType == undefined) {
-      return chart_color_black_100.value;
-    }
-
-    let color;
-    switch (cacheType) {
-      case CacheType.Distributed:
-        color = chart_color_blue_500.value;
-        break;
-      case CacheType.Replicated:
-        color = chart_color_purple_500.value;
-        break;
-      case CacheType.Local:
-        color = chart_color_cyan_500.value;
-        break;
-      case CacheType.Invalidated:
-        color = chart_color_orange_500.value;
-        break;
-      default:
-        color = chart_color_black_500.value;
-    }
-    return color;
-  }
-
-  /**
-   * Cache type label background color
-   *
-   * @param cacheType
-   */
-  public cacheTypeLabelBackgroundColor(cacheType: CacheType | undefined) {
-    let color;
-    if (cacheType == undefined) {
-      return chart_color_black_100.value;
-    }
-    switch (cacheType) {
-      case CacheType.Distributed:
-        color = global_palette_blue_50.value;
-        break;
-      case CacheType.Replicated:
-        color = global_palette_purple_100.value;
-        break;
-      case CacheType.Local:
-        color = chart_color_cyan_100.value;
-        break;
-      case CacheType.Invalidated:
-        color = chart_color_gold_100.value;
-        break;
-      default:
-        color = chart_color_black_100.value;
-    }
-    return color;
-  }
-
   public taskTypeColor(counterType: string): string {
     let color;
     switch (counterType) {
       case 'AdminServerTask':
-        color = chart_color_cyan_100.value;
+        color = t_chart_color_purple_500.value;
         break;
       default:
-        color = global_palette_blue_50.value;
+        color = chart_color_blue_500.value;
     }
     return color;
-  }
-
-  public capitalize(value: string | undefined): string {
-    if (value === undefined) return '';
-    if (value.length <= 1) return value;
-
-    return value.charAt(0).toUpperCase() + value.slice(1).toLocaleLowerCase();
   }
 
   public formatNumber(digit: number | undefined): string {

@@ -27,9 +27,9 @@ export class ContainerService {
    * For now there is a single cache manager
    */
   public getDefaultCacheManager(): Promise<Either<ActionResponse, CacheManager>> {
-    const healthPromise: Promise<Either<ActionResponse, string>> = this.fetchCaller.get(
+    const healthPromise: Promise<Either<ActionResponse, ComponentStatusType>> = this.fetchCaller.get(
       this.endpoint + '/container/health',
-      (data) => data.cluster_health.health_status
+      (data) => displayUtils.parseComponentStatus(data.cluster_health.health_status)
     );
 
     return healthPromise.then((maybeHealth) =>
@@ -132,7 +132,7 @@ export class ContainerService {
                 hasRemoteBackup: cacheInfo.has_remote_backup
               },
               tracing: cacheInfo.tracing,
-              health: cacheInfo.health,
+              health: displayUtils.parseComponentStatus(cacheInfo.health),
               rebalancing_enabled: cacheInfo['rebalancing_enabled']
             }
         )

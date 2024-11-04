@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, ButtonVariant, Modal, Text, TextContent } from '@patternfly/react-core';
+import { Button, ButtonVariant, Content, Modal, ModalBody, ModalFooter, ModalHeader } from '@patternfly/react-core';
 import { useTranslation } from 'react-i18next';
 import { useClearStats } from '@app/services/statsHook';
 import { useCacheDetail } from '@app/services/cachesHook';
@@ -23,25 +23,24 @@ const ClearMetrics = (props: {
 
   return (
     <Modal
-      titleIconVariant={'warning'}
       className="pf-m-redhat-font"
-      width={'50%'}
+      variant={'small'}
       isOpen={props.isModalOpen}
-      title={t(label + '.modal-clear-stats')}
       onClose={props.closeModal}
       aria-label={t(label + '.modal-clear-stats-label')}
-      actions={[
+    >
+      <ModalHeader titleIconVariant={'warning'} title={t(label + '.modal-clear-stats')} />
+      <ModalBody>
+        <Content component={'p'}>{t(label + '.modal-button-clear-stats-body')}</Content>
+      </ModalBody>
+      <ModalFooter>
         <Button data-cy="confirmButton" key="confirm" variant={ButtonVariant.danger} onClick={onClearStats}>
           {t(label + '.modal-button-clear-stats')}
-        </Button>,
+        </Button>
         <Button data-cy="cancelButton" key="cancel" variant="link" onClick={props.closeModal}>
           {t('common.actions.cancel')}
         </Button>
-      ]}
-    >
-      <TextContent>
-        <Text>{t(label + '.modal-button-clear-stats-body')}</Text>
-      </TextContent>
+      </ModalFooter>
     </Modal>
   );
 };

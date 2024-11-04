@@ -9,8 +9,6 @@ import {
   EmptyStateActions,
   EmptyStateBody,
   EmptyStateFooter,
-  EmptyStateHeader,
-  EmptyStateIcon,
   EmptyStateVariant,
   Form,
   FormGroup,
@@ -20,7 +18,6 @@ import {
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
-import { global_danger_color_200 } from '@patternfly/react-tokens';
 import { Link } from 'react-router-dom';
 import { IField } from '@services/formUtils';
 
@@ -41,7 +38,6 @@ const RoleGeneral = (props: { name: string }) => {
   const { role, loading, error, setLoading } = useDescribeRole(props.name);
   const [roleName, setRoleName] = useState<IField>(roleNameInitialState);
   const [roleDescription, setRoleDescription] = useState<IField>(roleDescriptionInitialState);
-  const [isImplicit, setIsImplicit] = useState<boolean>(false);
   const { onUpdateRole } = useUpdateRole(props.name, roleDescription.value, [], () => setLoading(true));
 
   useEffect(() => {
@@ -54,7 +50,6 @@ const RoleGeneral = (props: { name: string }) => {
         ...roleDescription,
         value: role.description
       });
-      setIsImplicit(role.implicit);
     }
   }, [role]);
 
@@ -65,12 +60,15 @@ const RoleGeneral = (props: { name: string }) => {
 
     if (error !== '') {
       return (
-        <EmptyState variant={EmptyStateVariant.sm}>
-          <EmptyStateHeader
-            titleText={t('access-management.role.error', { roleName: props.name })}
-            icon={<EmptyStateIcon icon={ExclamationCircleIcon} color={global_danger_color_200.value} />}
-            headingLevel="h2"
-          />
+        <EmptyState
+          variant={EmptyStateVariant.sm}
+          titleText={t('access-management.role.error', {
+            roleName: props.name
+          })}
+          icon={ExclamationCircleIcon}
+          headingLevel={'h2'}
+          status={'danger'}
+        >
           <EmptyStateBody>{error}</EmptyStateBody>
           <EmptyStateFooter>
             <EmptyStateActions>
@@ -133,7 +131,7 @@ const RoleGeneral = (props: { name: string }) => {
             isDisabled={role?.implicit}
             key={'Save'}
             aria-label={'Save'}
-            onClick={(e) => onUpdateRole()}
+            onClick={() => onUpdateRole()}
             variant={ButtonVariant.primary}
           >
             {t('common.actions.save')}
@@ -143,7 +141,7 @@ const RoleGeneral = (props: { name: string }) => {
             key={'Cancel'}
             aria-label={'Cancel'}
             variant={ButtonVariant.link}
-            onClick={(e) => setLoading(true)}
+            onClick={() => setLoading(true)}
           >
             {t('common.actions.cancel')}
           </Button>

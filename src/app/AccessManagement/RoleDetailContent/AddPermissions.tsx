@@ -8,6 +8,9 @@ import {
   HelperText,
   HelperTextItem,
   Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   ModalVariant,
   SelectOptionProps
 } from '@patternfly/react-core';
@@ -85,17 +88,46 @@ const AddPermissions = (props: {
 
   return (
     <Modal
-      tabIndex={0}
-      titleIconVariant={AddCircleOIcon}
-      variant={ModalVariant.small}
       id={'add-permission-modal'}
-      className="pf-m-redhat-font"
+      variant="small"
       isOpen={props.isModalOpen}
-      title={t('access-management.role.modal-add-permission-title')}
       onClose={onCloseModal}
-      aria-label={'roles-modal-add-permission-title'}
       disableFocusTrap={true}
-      actions={[
+    >
+      <ModalHeader
+        titleIconVariant={AddCircleOIcon}
+        title={t('access-management.role.modal-add-permission-title')}
+        labelId={'roles-modal-add-permission-title'}
+      />
+      <ModalBody>
+        <Form
+          onSubmit={(e) => {
+            e.preventDefault();
+          }}
+        >
+          <FormGroup fieldId="permissions" isRequired label={t('access-management.roles.modal-permissions')}>
+            <SelectMultiWithChips
+              id="permissions"
+              placeholder={t('access-management.roles.modal-permissions-list-placeholder')}
+              options={initialSelectOptions}
+              selection={selectedPermissions}
+              onSelect={onSelectPermission}
+              onClear={() => setSelectedPermissions([])}
+              readonly={props.permissions}
+            />
+            {rolePermissionsField.validated === 'error' && (
+              <FormHelperText>
+                <HelperText>
+                  <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
+                    {rolePermissionsField.invalidText}
+                  </HelperTextItem>
+                </HelperText>
+              </FormHelperText>
+            )}
+          </FormGroup>
+        </Form>
+      </ModalBody>
+      <ModalFooter>
         <Button
           key={'Save'}
           aria-label={'Save'}
@@ -104,38 +136,12 @@ const AddPermissions = (props: {
           onClick={handleSubmit}
         >
           {t('common.actions.save')}
-        </Button>,
+        </Button>
+        ,
         <Button key={'Cancel'} aria-label={'Cancel'} variant={ButtonVariant.link} onClick={onCloseModal}>
           {t('common.actions.cancel')}
         </Button>
-      ]}
-    >
-      <Form
-        onSubmit={(e) => {
-          e.preventDefault();
-        }}
-      >
-        <FormGroup fieldId="permissions" isRequired label={t('access-management.roles.modal-permissions')}>
-          <SelectMultiWithChips
-            id="permissions"
-            placeholder={t('access-management.roles.modal-permissions-list-placeholder')}
-            options={initialSelectOptions}
-            selection={selectedPermissions}
-            onSelect={onSelectPermission}
-            onClear={() => setSelectedPermissions([])}
-            readonly={props.permissions}
-          />
-          {rolePermissionsField.validated === 'error' && (
-            <FormHelperText>
-              <HelperText>
-                <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
-                  {rolePermissionsField.invalidText}
-                </HelperTextItem>
-              </HelperText>
-            </FormHelperText>
-          )}
-        </FormGroup>
-      </Form>
+      </ModalFooter>
     </Modal>
   );
 };

@@ -1,4 +1,4 @@
-import { Button, ButtonVariant, Modal, Text, TextContent } from '@patternfly/react-core';
+import { Button, ButtonVariant, Content, Modal, ModalBody, ModalFooter, ModalHeader } from '@patternfly/react-core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -16,18 +16,25 @@ const RebalancingConfirmationModal = (props: {
   return (
     <Modal
       data-cy="rebalancingModal"
-      titleIconVariant={props.enabled ? 'warning' : 'info'}
+      variant={'small'}
       className="pf-m-redhat-font"
-      width={'50%'}
       isOpen={props.isModalOpen}
-      title={
-        props.enabled
-          ? t(props.type + '.rebalancing.modal-disable-title')
-          : t(props.type + '.rebalancing.modal-enable-title')
-      }
       onClose={() => props.closeModal()}
       aria-label={props.enabled ? 'Disable' : 'Enable'}
-      actions={[
+    >
+      <ModalHeader
+        titleIconVariant={props.enabled ? 'warning' : 'info'}
+        title={
+          props.enabled
+            ? t(props.type + '.rebalancing.modal-disable-title')
+            : t(props.type + '.rebalancing.modal-enable-title')
+        }
+      />
+      <ModalBody>
+        <Content>{t(props.type + '.rebalancing.modal-description')}</Content>
+      </ModalBody>
+
+      <ModalFooter>
         <Button
           variant={props.enabled ? ButtonVariant.danger : ButtonVariant.primary}
           key={props.enabled ? 'disable-rebalancing' : 'enable-rebalancing'}
@@ -37,15 +44,11 @@ const RebalancingConfirmationModal = (props: {
           {props.enabled
             ? t(props.type + '.rebalancing.modal-disable-button')
             : t(props.type + '.rebalancing.modal-enable-button')}
-        </Button>,
+        </Button>
         <Button data-cy="rebalanceChangeCancelButton" key="cancel" variant="link" onClick={props.closeModal}>
           {t(props.type + '.rebalancing.modal-cancel-button')}
         </Button>
-      ]}
-    >
-      <TextContent>
-        <Text>{t(props.type + '.rebalancing.modal-description')}</Text>
-      </TextContent>
+      </ModalFooter>
     </Modal>
   );
 };

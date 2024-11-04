@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import {
+  ActionList,
+  ActionListGroup,
+  ActionListItem,
   Button,
   PageSection,
   PageSectionTypes,
-  PageSectionVariants,
-  ToolbarItem,
   useWizardContext,
   Wizard,
   WizardFooterWrapper,
@@ -39,6 +40,14 @@ const CacheEditorInitialState: CacheEditorStep = {
   editorExpanded: false
 };
 
+const STEP_ADD_CONFIG = 'step-add-config';
+const STEP_START = 'step-start';
+const STEP_CONFIGURE = 'step-configure';
+const SUBSTEP_BASIC = 'substep-configure-basics';
+const SUBSTEP_FEATURES = 'substep-configure-features';
+const SUBSTEP_ADVANCED = 'substep-configure-advanced';
+const STEP_REVIEW = 'step-review';
+
 const CreateCacheWizard = (props: { cacheManager: CacheManager; create: boolean }) => {
   const { addAlert } = useApiAlert();
   const { configuration } = useCreateCache();
@@ -58,38 +67,37 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager; create: boolean 
   const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
   const canCreateCache = ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser);
   const [contentType, setContentType] = useState<'json' | 'yaml' | 'xml'>('json');
-
   const navigate = useNavigate();
   const closeWizard = () => {
     navigate('/');
   };
 
   const isCreateButton = (activeStep: WizardStepType): boolean => {
-    return activeStep.id === 2 || activeStep.id === 7;
+    return activeStep.id === STEP_ADD_CONFIG || activeStep.id === STEP_REVIEW;
   };
 
   const isButtonNextOrCreateDisabled = (activeStep: WizardStepType): boolean => {
     let activeButton = true;
     switch (activeStep.id) {
-      case 1:
+      case STEP_START:
         activeButton = configuration.start.valid;
         break;
-      case 2:
+      case STEP_ADD_CONFIG:
         activeButton = props.create && cacheEditor.validConfig !== 'error';
         break;
-      case 3:
+      case STEP_CONFIGURE:
         activeButton = configuration.basic.valid;
         break;
-      case 4:
+      case SUBSTEP_BASIC:
         activeButton = configuration.basic.valid;
         break;
-      case 5:
+      case SUBSTEP_FEATURES:
         activeButton = validFeatures(configuration);
         break;
-      case 6:
+      case SUBSTEP_ADVANCED:
         activeButton = configuration.advanced.valid;
         break;
-      case 7:
+      case STEP_REVIEW:
         activeButton = props.create;
         break;
       default:
@@ -106,25 +114,23 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager; create: boolean 
 
     const buttonId = isCreateButton(activeStep) ? 'create-cache' : 'next-step';
     return (
-      <ToolbarItem>
-        <Button
-          id={buttonId}
-          name={buttonId}
-          variant="primary"
-          type="submit"
-          onClick={onNext}
-          isDisabled={isButtonNextOrCreateDisabled(activeStep)}
-          data-cy="wizardNextButton"
-        >
-          {isCreateButton(activeStep) ? t('caches.create.create-button-label') : t('caches.create.next-button-label')}
-        </Button>
-      </ToolbarItem>
+      <Button
+        id={buttonId}
+        name={buttonId}
+        variant="primary"
+        type="submit"
+        onClick={onNext}
+        isDisabled={isButtonNextOrCreateDisabled(activeStep)}
+        data-cy="wizardNextButton"
+      >
+        {isCreateButton(activeStep) ? t('caches.create.create-button-label') : t('caches.create.next-button-label')}
+      </Button>
     );
   };
 
   const backToolbarItem = (activeStep: WizardStepType, onBack) => {
     return (
-      <Button isDisabled={activeStep.id == 1} variant="secondary" onClick={onBack} data-cy="wizardBackButton">
+      <Button isDisabled={activeStep.id == STEP_START} variant="secondary" onClick={onBack} data-cy="wizardBackButton">
         {t('common.actions.back')}
       </Button>
     );
@@ -132,34 +138,30 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager; create: boolean 
 
   const cancelToolbarItem = (onClose) => {
     return (
-      <ToolbarItem>
-        <Button variant="link" onClick={onClose} data-cy="cancelWizard">
-          {t('caches.create.cancel-button-label')}
-        </Button>
-      </ToolbarItem>
+      <Button variant="link" onClick={onClose} data-cy="cancelWizard">
+        {t('caches.create.cancel-button-label')}
+      </Button>
     );
   };
 
   const downloadToolbarItem = (activeStep) => {
-    if (activeStep.id !== 2 && activeStep.id !== 7) {
+    if (activeStep.id !== STEP_ADD_CONFIG && activeStep.id !== 'step') {
       return '';
     }
-    if (activeStep.id === 7 && !configuration.advanced.valid) {
+    if (activeStep.id === STEP_REVIEW && !configuration.advanced.valid) {
       return '';
     }
 
-    if (activeStep.id === 2 && cacheEditor.validConfig !== 'success') {
+    if (activeStep.id === STEP_ADD_CONFIG && cacheEditor.validConfig !== 'success') {
       return '';
     }
 
     const buttonVariant = canCreateCache ? 'secondary' : 'primary';
 
     return (
-      <ToolbarItem>
-        <Button variant={buttonVariant} onClick={() => setIsDownloadModalOpen(true)} data-cy="downloadModal">
-          {t('caches.create.download-button-label')}
-        </Button>
-      </ToolbarItem>
+      <Button variant={buttonVariant} onClick={() => setIsDownloadModalOpen(true)} data-cy="downloadModal">
+        {t('caches.create.download-button-label')}
+      </Button>
     );
   };
 
@@ -187,23 +189,45 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager; create: boolean 
     const { activeStep, goToNextStep, goToPrevStep, close } = useWizardContext();
     return (
       <WizardFooterWrapper>
-        {backToolbarItem(activeStep, goToPrevStep)}
-        {nextOrCreateToolbarItem(activeStep, goToNextStep)}
-        {downloadToolbarItem(activeStep)}
-        {cancelToolbarItem(close)}
+        <ActionList>
+          <ActionListGroup>
+            <ActionListItem>{backToolbarItem(activeStep, goToPrevStep)}</ActionListItem>
+            <ActionListItem>{nextOrCreateToolbarItem(activeStep, goToNextStep)}</ActionListItem>
+          </ActionListGroup>
+          <ActionListGroup>
+            <ActionListItem>{downloadToolbarItem(activeStep)}</ActionListItem>
+          </ActionListGroup>
+          <ActionListGroup>
+            <ActionListItem>{cancelToolbarItem(close)}</ActionListItem>
+          </ActionListGroup>
+        </ActionList>
       </WizardFooterWrapper>
     );
   };
 
+  const WizardStepConfigure = () => {
+    const { activeStep } = useWizardContext();
+
+    console.log(activeStep);
+    return (
+      <WizardStep
+        id={STEP_START}
+        name={t('caches.create.getting-started.nav-title')}
+        footer={<CustomStepsFooter />}
+        status={configuration.start.valid ? 'success' : 'default'}
+      >
+        <CreateCacheGettingStarted create={props.create} />
+      </WizardStep>
+    );
+  };
+
   return (
-    <PageSection type={PageSectionTypes.wizard} variant={PageSectionVariants.light}>
-      <Wizard navAriaLabel={'Create Cache steps'} onClose={closeWizard} onSave={onSave}>
-        <WizardStep name={t('caches.create.getting-started.nav-title')} id={1} footer={<CustomStepsFooter />}>
-          <CreateCacheGettingStarted create={props.create} />
-        </WizardStep>
+    <PageSection type={PageSectionTypes.wizard}>
+      <Wizard navAriaLabel={'Create Cache steps'} onClose={closeWizard} onSave={onSave} height={600}>
+        {WizardStepConfigure()}
         <WizardStep
+          id={STEP_ADD_CONFIG}
           name={t('caches.create.edit-config.nav-title')}
-          id={2}
           footer={<CustomStepsFooter />}
           isHidden={!configuration.start.valid || configuration.start.createType == 'configure'}
         >
@@ -214,34 +238,34 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager; create: boolean 
           />
         </WizardStep>
         <WizardStep
+          id={STEP_CONFIGURE}
           name={'Configure the cache'}
           isHidden={!configuration.start.valid || configuration.start.createType == 'edit'}
-          id={3}
           footer={<CustomStepsFooter />}
+          isExpandable
           steps={[
             <WizardStep
+              id={SUBSTEP_BASIC}
               name={t('caches.create.configurations.basic.nav-title')}
-              id={4}
               footer={<CustomStepsFooter />}
-              key={'basics'}
             >
               <BasicCacheConfigConfigurator />
             </WizardStep>,
             <WizardStep
-              name={t('caches.create.configurations.feature.nav-title', { brandname: brandname })}
-              id={5}
+              id={SUBSTEP_FEATURES}
+              name={t('caches.create.configurations.feature.nav-title', {
+                brandname: brandname
+              })}
               footer={<CustomStepsFooter />}
               isDisabled={!configuration.basic.valid}
-              key={'features'}
             >
-              <FeaturesSelector />
+              {<FeaturesSelector />}
             </WizardStep>,
             <WizardStep
+              id={SUBSTEP_ADVANCED}
               name={t('caches.create.configurations.advanced-options.nav-title')}
-              id={6}
               footer={<CustomStepsFooter />}
               isDisabled={!configuration.basic.valid || !validFeatures(configuration)}
-              key={'advanced'}
             >
               <AdvancedOptionsConfigurator cacheManager={props.cacheManager} />
             </WizardStep>
@@ -249,11 +273,11 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager; create: boolean 
         />
 
         <WizardStep
+          id={STEP_REVIEW}
           name={t('caches.create.review.nav-title')}
           footer={<CustomStepsFooter />}
           isDisabled={!configuration.basic.valid || !validFeatures(configuration) || !configuration.advanced.valid}
           isHidden={!configuration.start.valid || configuration.start.createType == 'edit'}
-          id={7}
         >
           <ReviewCacheConfig setReviewConfig={setReviewConfig} setContentType={setContentType} />
         </WizardStep>

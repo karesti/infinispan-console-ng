@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, ButtonVariant, Modal, Text, TextContent } from '@patternfly/react-core';
+import { Button, ButtonVariant, Content, Modal, ModalBody, ModalFooter, ModalHeader } from '@patternfly/react-core';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { useCacheDetail } from '@app/services/cachesHook';
 import { useTranslation } from 'react-i18next';
@@ -25,14 +25,20 @@ const ClearAllEntries = (props: { cacheName: string; isModalOpen: boolean; close
 
   return (
     <Modal
-      titleIconVariant={'warning'}
       className="pf-m-redhat-font"
-      width={'50%'}
+      variant={'small'}
       isOpen={props.isModalOpen}
-      title={t('caches.entries.modal-clear-title')}
       onClose={props.closeModal}
       aria-label={t('caches.entries.modal-clear-label')}
-      actions={[
+    >
+      <ModalHeader titleIconVariant={'warning'} title={t('caches.entries.modal-clear-title')} />
+      <ModalBody>
+        <Content component={'p'}>
+          {t('caches.entries.modal-clear-body-line-one')} <strong>{props.cacheName}</strong>.
+        </Content>
+        <Content component={'p'}>{t('caches.entries.modal-clear-body-line-two')}</Content>
+      </ModalBody>
+      <ModalFooter>
         <Button
           data-cy="deleteButton"
           key="confirm"
@@ -40,19 +46,11 @@ const ClearAllEntries = (props: { cacheName: string; isModalOpen: boolean; close
           onClick={onClickClearAllEntriesButton}
         >
           {t('caches.entries.modal-clear-button-click')}
-        </Button>,
+        </Button>
         <Button data-cy="cancelButton" key="cancel" variant="link" onClick={props.closeModal}>
           {t('caches.entries.modal-button-cancel')}
         </Button>
-      ]}
-    >
-      <TextContent>
-        <Text>
-          {t('caches.entries.modal-clear-body-line-one')} <strong>{props.cacheName}</strong>.
-          <br />
-          {t('caches.entries.modal-clear-body-line-two')}
-        </Text>
-      </TextContent>
+      </ModalFooter>
     </Modal>
   );
 };

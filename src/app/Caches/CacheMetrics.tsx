@@ -5,26 +5,25 @@ import {
   Card,
   CardBody,
   CardTitle,
+  Content,
+  ContentVariants,
+  DescriptionList,
+  DescriptionListDescription,
+  DescriptionListGroup,
+  DescriptionListTerm,
   EmptyState,
   EmptyStateActions,
   EmptyStateBody,
   EmptyStateFooter,
-  EmptyStateHeader,
-  EmptyStateIcon,
   EmptyStateVariant,
   Grid,
   GridItem,
   Spinner,
-  Text,
-  TextContent,
-  TextList,
-  TextListItem,
-  TextListItemVariants,
-  TextListVariants,
-  TextVariants
+  Stack,
+  StackItem
 } from '@patternfly/react-core';
 import displayUtils from '@services/displayUtils';
-import { CubesIcon, ExclamationCircleIcon } from '@patternfly/react-icons';
+import { CubesIcon } from '@patternfly/react-icons';
 import { QueryMetrics } from '@app/Caches/Query/QueryMetrics';
 import { DataDistributionChart } from './DataDistributionChart';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
@@ -35,9 +34,9 @@ import { useCacheDetail } from '@app/services/cachesHook';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { useConnectedUser } from '@app/services/userManagementHook';
 import { ConsoleACL } from '@services/securityService';
-import { CacheLifecycle } from '@app/Caches/CacheLifecycle';
-import { global_danger_color_200 } from '@patternfly/react-tokens';
 import { Link } from 'react-router-dom';
+import { MultiContentCard } from '@patternfly/react-component-groups';
+import { MetricDescriptionListGroup } from '@app/Caches/Metrics/MetricDescriptionListGroup';
 
 const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
   const { t } = useTranslation();
@@ -56,51 +55,27 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
   };
 
   const buildOperationsPerformanceCard = () => {
-    if (!stats) {
-      return '';
-    }
-
     return (
-      <Card>
+      <Card isPlain isFullHeight>
         <CardTitle>{t('caches.cache-metrics.performance-title')}</CardTitle>
         <CardBody>
-          <TextContent>
-            <TextList component={TextListVariants.dl}>
-              <TextListItem component={TextListItemVariants.dt} aria-label="average-cache-read-time">
-                {displayUtils.formatNumber(stats.average_read_time)}
-              </TextListItem>
-              <TextListItem component={TextListItemVariants.dd}>
-                <PopoverHelp
-                  name="average-reads"
-                  label={t('caches.cache-metrics.average-reads')}
-                  content={t('caches.cache-metrics.average-reads-tooltip')}
-                  text={t('caches.cache-metrics.average-reads')}
-                />
-              </TextListItem>
-              <TextListItem component={TextListItemVariants.dt} aria-label="average-cache-write-time">
-                {displayUtils.formatNumber(stats.average_write_time)}
-              </TextListItem>
-              <TextListItem component={TextListItemVariants.dd}>
-                <PopoverHelp
-                  name="average-writes"
-                  label={t('caches.cache-metrics.average-writes')}
-                  content={t('caches.cache-metrics.average-writes-tooltip')}
-                  text={t('caches.cache-metrics.average-writes')}
-                />
-              </TextListItem>
-              <TextListItem component={TextListItemVariants.dt} aria-label="average-cache-delete-time">
-                {displayUtils.formatNumber(stats.average_remove_time)}
-              </TextListItem>
-              <TextListItem component={TextListItemVariants.dd}>
-                <PopoverHelp
-                  name="average-deletes"
-                  label={t('caches.cache-metrics.average-deletes')}
-                  content={t('caches.cache-metrics.average-deletes-tooltip')}
-                  text={t('caches.cache-metrics.average-deletes')}
-                />
-              </TextListItem>
-            </TextList>
-          </TextContent>
+          <DescriptionList isHorizontal isCompact>
+            <MetricDescriptionListGroup
+              metricName="caches.cache-metrics.average-reads"
+              metricValue={stats?.average_read_time}
+              ariaLabel="average-cache-read-time"
+            />
+            <MetricDescriptionListGroup
+              metricName="caches.cache-metrics.average-writes"
+              metricValue={stats?.average_write_time}
+              ariaLabel="average-cache-write-time"
+            />
+            <MetricDescriptionListGroup
+              metricName="caches.cache-metrics.average-deletes"
+              metricValue={stats?.average_remove_time}
+              ariaLabel="average-cache-delete-time"
+            />
+          </DescriptionList>
         </CardBody>
       </Card>
     );
@@ -121,117 +96,88 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
   };
 
   const buildEntriesCard = () => {
-    if (!stats) {
-      return '';
-    }
-
     return (
-      <Card>
+      <Card isPlain isFullHeight>
         <CardTitle>{t('caches.cache-metrics.entries-title')}</CardTitle>
         <CardBody>
-          <TextContent>
-            <TextList component={TextListVariants.dl}>
-              <TextListItem aria-label="view-cache-approximate-unique-entries" component={TextListItemVariants.dt}>
-                {displayUtils.formatNumber(stats.approximate_entries_unique)}
-              </TextListItem>
-              <TextListItem component={TextListItemVariants.dd}>
-                <PopoverHelp
-                  name="approximate-unique-entries"
-                  label={t('caches.cache-metrics.approximate-unique-entries')}
-                  content={t('caches.cache-metrics.approximate-unique-entries-tooltip')}
-                  text={t('caches.cache-metrics.approximate-unique-entries')}
-                />
-              </TextListItem>
-              <TextListItem aria-label="view-cache-approximate-entries-in-memory" component={TextListItemVariants.dt}>
-                {displayUtils.formatNumber(stats.approximate_entries_in_memory)}
-              </TextListItem>
-              <TextListItem component={TextListItemVariants.dd}>
-                <PopoverHelp
-                  name="min-nodes"
-                  label={t('caches.cache-metrics.approximate-entries-in-memory')}
-                  content={t('caches.cache-metrics.approximate-entries-in-memory-tooltip')}
-                  text={t('caches.cache-metrics.approximate-entries-in-memory')}
-                />
-              </TextListItem>
-              <TextListItem aria-label="view-cache-approximate-entries" component={TextListItemVariants.dt}>
-                {displayUtils.formatNumber(stats.approximate_entries)}
-              </TextListItem>
-              <TextListItem component={TextListItemVariants.dd}>
-                <PopoverHelp
-                  name="approximate-unique-entries"
-                  label={t('caches.cache-metrics.approximate-entries')}
-                  content={t('caches.cache-metrics.approximate-entries-tooltip')}
-                  text={t('caches.cache-metrics.approximate-entries')}
-                />
-              </TextListItem>
-            </TextList>
-          </TextContent>
+          <DescriptionList isHorizontal isCompact>
+            <MetricDescriptionListGroup
+              metricName="caches.cache-metrics.approximate-unique-entries"
+              metricValue={stats?.approximate_entries_unique}
+              ariaLabel="view-cache-approximate-unique-entries"
+            />
+            <MetricDescriptionListGroup
+              metricName="caches.cache-metrics.approximate-entries-in-memory"
+              metricValue={stats?.approximate_entries_in_memory}
+              ariaLabel="view-cache-approximate-entries-in-memory"
+            />
+            <MetricDescriptionListGroup
+              metricName="caches.cache-metrics.approximate-entries"
+              metricValue={stats?.approximate_entries_in_memory}
+              ariaLabel="view-cache-approximate-entries"
+            />
+          </DescriptionList>
+        </CardBody>
+      </Card>
+    );
+  };
+
+  const buildLifecycleCard = () => {
+    return (
+      <Card isPlain isFullHeight>
+        <CardTitle>{t('caches.cache-metrics.cache-lifecycle-title')}</CardTitle>
+        <CardBody>
+          <DescriptionList isHorizontal isCompact>
+            <MetricDescriptionListGroup
+              metricName="caches.cache-metrics.cache-started-since"
+              metricValue={stats?.time_since_start}
+              ariaLabel="view-cache-started-since"
+              dataCy="cache-started-since"
+            />
+            <MetricDescriptionListGroup
+              metricName="caches.cache-metrics.cache-reset-since"
+              metricValue={stats?.time_since_reset}
+              ariaLabel="view-cache-reset-since"
+              dataCy="cache-reset-since"
+            />
+          </DescriptionList>
         </CardBody>
       </Card>
     );
   };
 
   const buildMemoryCard = () => {
-    if (!stats) {
-      return '';
-    }
     let content;
     if (memory() === StorageType.OFF_HEAP) {
       content = (
-        <React.Fragment>
-          <TextListItem aria-label="view-cache-metrics-off-heap" component={TextListItemVariants.dt}>
-            {displayUtils.formatNumber(stats.off_heap_memory_used)}
-          </TextListItem>
-          <TextListItem component={TextListItemVariants.dd}>
-            <PopoverHelp
-              name="cache-size-off-heap"
-              label={t('caches.cache-metrics.cache-size-off-heap')}
-              content={t('caches.cache-metrics.cache-size-off-heap-tooltip')}
-              text={t('caches.cache-metrics.cache-size-off-heap')}
-            />
-          </TextListItem>
-        </React.Fragment>
+        <MetricDescriptionListGroup
+          metricName="caches.cache-metrics.cache-size-off-heap"
+          metricValue={stats?.off_heap_memory_used}
+          ariaLabel="view-cache-metrics-off-heap"
+        />
       );
     } else {
       content = (
-        <React.Fragment>
-          <TextListItem aria-label="view-cache-metrics-heap" component={TextListItemVariants.dt}>
-            {displayUtils.formatNumber(stats.data_memory_used)}
-          </TextListItem>
-          <TextListItem component={TextListItemVariants.dd}>
-            <PopoverHelp
-              name="cache-size-heap"
-              label={t('caches.cache-metrics.cache-size-heap')}
-              content={t('caches.cache-metrics.cache-size-heap-tooltip')}
-              text={t('caches.cache-metrics.cache-size-heap')}
-            />
-          </TextListItem>
-        </React.Fragment>
+        <MetricDescriptionListGroup
+          metricName="caches.cache-metrics.cache-size-heap"
+          metricValue={stats?.data_memory_used}
+          ariaLabel="view-cache-metrics-heap"
+        />
       );
     }
 
     return (
-      <Card>
+      <Card isPlain isFullHeight>
         <CardTitle>{t('caches.cache-metrics.memory-title')}</CardTitle>
         <CardBody>
-          <TextContent>
-            <TextList component={TextListVariants.dl}>
-              {content}
-              <TextListItem aria-label="view-cache-metrics-nodes" component={TextListItemVariants.dt}>
-                {displayUtils.formatNumber(stats.required_minimum_number_of_nodes)}
-              </TextListItem>
-              <TextListItem component={TextListItemVariants.dd}>
-                <PopoverHelp
-                  name="min-nodes"
-                  label={t('caches.cache-metrics.min-nodes')}
-                  content={t('caches.cache-metrics.min-nodes-tooltip')}
-                  text={t('caches.cache-metrics.min-nodes')}
-                />
-              </TextListItem>
-              <TextListItem component={TextListItemVariants.dt}></TextListItem>
-              <TextListItem component={TextListItemVariants.dd}>_</TextListItem>
-            </TextList>
-          </TextContent>
+          <DescriptionList isHorizontal isCompact>
+            {content}
+            <MetricDescriptionListGroup
+              metricName="caches.cache-metrics.min-nodes"
+              metricValue={stats?.required_minimum_number_of_nodes}
+              ariaLabel="view-cache-metrics-nodes"
+            />
+          </DescriptionList>
         </CardBody>
       </Card>
     );
@@ -245,13 +191,7 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
     return (
       <Card>
         <CardBody>
-          <EmptyState>
-            <EmptyStateHeader
-              titleText={t('common.loading')}
-              headingLevel="h4"
-              icon={<EmptyStateIcon icon={Spinner} />}
-            />
-          </EmptyState>
+          <EmptyState icon={Spinner} titleText={t('common.loading')} headingLevel="h4"></EmptyState>
         </CardBody>
       </Card>
     );
@@ -261,12 +201,12 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
     return (
       <Card>
         <CardBody>
-          <EmptyState variant={EmptyStateVariant.sm}>
-            <EmptyStateHeader
-              titleText={<>{`An error occurred while retrieving stats ${props.cacheName}`}</>}
-              icon={<EmptyStateIcon icon={ExclamationCircleIcon} color={global_danger_color_200.value} />}
-              headingLevel="h2"
-            />
+          <EmptyState
+            variant={EmptyStateVariant.sm}
+            status={'warning'}
+            titleText={t('caches.cache-metrics.load-error')}
+            headingLevel="h2"
+          >
             <EmptyStateBody>{error}</EmptyStateBody>
             <EmptyStateFooter>
               <EmptyStateActions>
@@ -288,33 +228,40 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
 
   if (stats && !stats.enabled) {
     return (
-      <EmptyState variant={EmptyStateVariant.sm}>
-        <EmptyStateHeader
-          titleText={t('caches.cache-metrics.metrics-title')}
-          icon={<EmptyStateIcon icon={CubesIcon} />}
-          headingLevel="h5"
-        />
+      <EmptyState
+        variant={EmptyStateVariant.sm}
+        icon={CubesIcon}
+        headingLevel="h5"
+        status={'info'}
+        titleText={t('caches.cache-metrics.metrics-title')}
+      >
         <EmptyStateBody>
-          <TextContent>
-            <Text component={TextVariants.p}>{t('caches.cache-metrics.metrics-disabled')}</Text>
-          </TextContent>
+          <Content component={ContentVariants.p}>{t('caches.cache-metrics.metrics-disabled')}</Content>
         </EmptyStateBody>
       </EmptyState>
     );
   }
 
   return (
-    <Grid hasGutter={true}>
-      <GridItem span={4}>{buildEntriesCard()}</GridItem>
-      <GridItem span={4}>{buildMemoryCard()}</GridItem>
-      <GridItem span={4}>{buildOperationsPerformanceCard()}</GridItem>
-      {displayDataDistribution && <GridItem span={8}> {buildDataDistribution()}</GridItem>}
-      <GridItem span={4}>
-        <CacheLifecycle stats={stats!} />
-        <DataAccess cacheName={props.cacheName} stats={stats!} />
-      </GridItem>
-      <GridItem span={displayDataDistribution ? 12 : 8}>{buildQueryStats()}</GridItem>
-    </Grid>
+    <Card isPlain isFullHeight>
+      <CardBody>
+        <Grid hasGutter={true}>
+          <GridItem span={12}>
+            {stats && <MultiContentCard withDividers cards={[buildEntriesCard(), buildMemoryCard()]} />}
+          </GridItem>
+          <GridItem span={12}>
+            {stats && (
+              <MultiContentCard withDividers cards={[buildLifecycleCard(), buildOperationsPerformanceCard()]} />
+            )}
+          </GridItem>
+          <GridItem span={6}>
+            <DataAccess cacheName={props.cacheName} stats={stats!} />
+          </GridItem>
+          {displayDataDistribution && <GridItem span={6}> {buildDataDistribution()}</GridItem>}
+          <GridItem span={displayDataDistribution ? 12 : 6}>{buildQueryStats()}</GridItem>
+        </Grid>
+      </CardBody>
+    </Card>
   );
 };
 

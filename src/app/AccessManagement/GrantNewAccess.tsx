@@ -8,6 +8,9 @@ import {
   HelperText,
   HelperTextItem,
   Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   ModalVariant,
   SelectOptionProps,
   TextInput
@@ -64,7 +67,7 @@ const GrantNewAccess = (props: { isModalOpen: boolean; submitModal: () => void; 
 
   const userNameExist = (principalName: string): boolean => {
     let found = false;
-    realms.forEach((value, key) => {
+    realms.forEach((value) => {
       if (found) {
         return;
       }
@@ -142,74 +145,78 @@ const GrantNewAccess = (props: { isModalOpen: boolean; submitModal: () => void; 
     <Modal
       position={'top'}
       tabIndex={0}
-      titleIconVariant={AddCircleOIcon}
       variant={ModalVariant.small}
       id={'grant-new-access-modal'}
       className="pf-m-redhat-font"
       isOpen={props.isModalOpen}
-      title={t('access-management.principals.modal-grant-title')}
-      description={t('access-management.principals.modal-grant-description', { brandname: brandname })}
       onClose={onCloseModal}
       aria-label={'principals-modal-grant-title'}
       disableFocusTrap={true}
-      actions={[
+    >
+      <ModalHeader
+        titleIconVariant={AddCircleOIcon}
+        title={t('access-management.principals.modal-grant-title')}
+        description={t('access-management.principals.modal-grant-description', { brandname: brandname })}
+      />
+      <ModalBody>
+        <Form
+          onSubmit={(e) => {
+            e.preventDefault();
+          }}
+        >
+          <FormGroup isRequired isInline label={t('access-management.principals.modal-principal-name')}>
+            <TextInput
+              validated={principalName.validated}
+              value={principalName.value}
+              type="text"
+              onChange={(_event, value) =>
+                formUtils.validateRequiredField(
+                  value,
+                  t('access-management.principals.modal-principal-name'),
+                  setPrincipalName
+                )
+              }
+              aria-label="principal-name-input"
+            />
+            {principalName.validated === 'error' && (
+              <FormHelperText>
+                <HelperText>
+                  <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
+                    {principalName.invalidText}
+                  </HelperTextItem>
+                </HelperText>
+              </FormHelperText>
+            )}
+          </FormGroup>
+          <FormGroup fieldId="roles" isRequired isInline label={t('access-management.principals.modal-roles')}>
+            <SelectMultiWithChips
+              id="roles"
+              placeholder={t('access-management.principals.modal-roles-list-placeholder')}
+              options={rolesOptions()}
+              selection={selectedRoles}
+              onSelect={onSelectRoles}
+              onClear={() => setSelectedRoles([])}
+            />
+            {principalRolesField.validated === 'error' && (
+              <FormHelperText>
+                <HelperText>
+                  <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
+                    {principalRolesField.invalidText}
+                  </HelperTextItem>
+                </HelperText>
+              </FormHelperText>
+            )}
+          </FormGroup>
+        </Form>
+      </ModalBody>
+      <ModalFooter>
         <Button key={'Save'} aria-label={'Save'} variant={ButtonVariant.primary} onClick={handleSubmit}>
           {t('common.actions.save')}
-        </Button>,
+        </Button>
         <Button key={'Cancel'} aria-label={'Cancel'} variant={ButtonVariant.link} onClick={onCloseModal}>
           {t('common.actions.cancel')}
         </Button>
-      ]}
-    >
-      <Form
-        onSubmit={(e) => {
-          e.preventDefault();
-        }}
-      >
-        <FormGroup isRequired isInline label={t('access-management.principals.modal-principal-name')}>
-          <TextInput
-            validated={principalName.validated}
-            value={principalName.value}
-            type="text"
-            onChange={(_event, value) =>
-              formUtils.validateRequiredField(
-                value,
-                t('access-management.principals.modal-principal-name'),
-                setPrincipalName
-              )
-            }
-            aria-label="principal-name-input"
-          />
-          {principalName.validated === 'error' && (
-            <FormHelperText>
-              <HelperText>
-                <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
-                  {principalName.invalidText}
-                </HelperTextItem>
-              </HelperText>
-            </FormHelperText>
-          )}
-        </FormGroup>
-        <FormGroup fieldId="roles" isRequired isInline label={t('access-management.principals.modal-roles')}>
-          <SelectMultiWithChips
-            id="roles"
-            placeholder={t('access-management.principals.modal-roles-list-placeholder')}
-            options={rolesOptions()}
-            selection={selectedRoles}
-            onSelect={onSelectRoles}
-            onClear={() => setSelectedRoles([])}
-          />
-          {principalRolesField.validated === 'error' && (
-            <FormHelperText>
-              <HelperText>
-                <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
-                  {principalRolesField.invalidText}
-                </HelperTextItem>
-              </HelperText>
-            </FormHelperText>
-          )}
-        </FormGroup>
-      </Form>
+      </ModalFooter>
     </Modal>
   );
 };

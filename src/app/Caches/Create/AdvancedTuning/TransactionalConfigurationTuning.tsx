@@ -79,7 +79,7 @@ const TransactionalConfigurationTuning = () => {
             isInline
             fieldId="field-isolation-level"
             label={t('caches.create.configurations.advanced-options.isolation-level-title')}
-            labelIcon={
+            labelHelp={
               <PopoverHelp
                 name="field-isolation-level"
                 label={t('caches.create.configurations.advanced-options.isolation-level-title')}
@@ -125,7 +125,7 @@ const TransactionalConfigurationTuning = () => {
           <FormGroup
             fieldId="stopTimeout"
             label={t('caches.create.configurations.advanced-options.stop-timeout')}
-            labelIcon={
+            labelHelp={
               <PopoverHelp
                 name="stopTimeout"
                 label={t('caches.create.configurations.advanced-options.stop-timeout')}
@@ -149,7 +149,7 @@ const TransactionalConfigurationTuning = () => {
           <FormGroup
             fieldId="completeTimeout"
             label={t('caches.create.configurations.advanced-options.complete-timeout')}
-            labelIcon={
+            labelHelp={
               <PopoverHelp
                 name="completeTimeout"
                 label={t('caches.create.configurations.advanced-options.complete-timeout')}
@@ -173,7 +173,7 @@ const TransactionalConfigurationTuning = () => {
           <FormGroup
             fieldId="reaperInterval"
             label={t('caches.create.configurations.advanced-options.reaper-interval')}
-            labelIcon={
+            labelHelp={
               <PopoverHelp
                 name="reaperInterval"
                 label={t('caches.create.configurations.advanced-options.reaper-interval')}

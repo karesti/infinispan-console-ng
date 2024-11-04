@@ -12,9 +12,8 @@ import {
   NavList,
   PageSection,
   PageSectionVariants,
-  Text,
-  TextContent,
-  TextVariants,
+  Content,
+  ContentVariants,
   Toolbar,
   ToolbarContent,
   ToolbarGroup,
@@ -29,6 +28,8 @@ import { DeleteRole } from '@app/AccessManagement/DeleteRole';
 import { useDescribeRole } from '@app/services/rolesHook';
 import { useNavigate } from 'react-router';
 import { useParams } from 'react-router-dom';
+import { PageHeader } from '@patternfly/react-component-groups';
+import { EllipsisVIcon } from '@patternfly/react-icons';
 
 const RoleDetail = () => {
   const navigate = useNavigate();
@@ -73,7 +74,7 @@ const RoleDetail = () => {
 
   const buildTabs = () => {
     return (
-      <Nav onSelect={handleTabClick} variant={'tertiary'}>
+      <Nav onSelect={handleTabClick} variant={'horizontal'}>
         <NavList>
           {tabs.map((tab) => (
             <NavItem
@@ -92,58 +93,47 @@ const RoleDetail = () => {
 
   const displayActions = () => {
     if (!role || role.implicit) {
-      return;
+      return [];
     }
 
     return (
-      <ToolbarGroup align={{ default: 'alignRight' }}>
-        <ToolbarItem>
-          <Dropdown
-            isOpen={isOpen}
-            onSelect={onSelect}
-            onOpenChange={(isOpen: boolean) => setIsOpen(isOpen)}
-            toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
-              <MenuToggle ref={toggleRef} onClick={onToggleClick} isExpanded={isOpen}>
-                {t('access-management.role.actions')}
-              </MenuToggle>
-            )}
-            ouiaId="roleDetailDropdown"
-            shouldFocusToggleOnSelect
-          >
-            <DropdownList>
-              <DropdownItem value={0} key="deleteRole" onClick={() => setIsDeleteRole(true)}>
-                {t('common.actions.delete')}
-              </DropdownItem>
-            </DropdownList>
-          </Dropdown>
-        </ToolbarItem>
-      </ToolbarGroup>
+      <Dropdown
+        isOpen={isOpen}
+        onSelect={onSelect}
+        popperProps={{ position: 'right' }}
+        onOpenChange={(isOpen: boolean) => setIsOpen(isOpen)}
+        toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+          <MenuToggle
+            ref={toggleRef}
+            onClick={onToggleClick}
+            icon={<EllipsisVIcon />}
+            variant={'plain'}
+            aria-label={t('access-management.role.actions')}
+            isExpanded={isOpen}
+          ></MenuToggle>
+        )}
+        ouiaId="roleDetailDropdown"
+        shouldFocusToggleOnSelect
+      >
+        <DropdownList>
+          <DropdownItem value={0} key="deleteRole" onClick={() => setIsDeleteRole(true)}>
+            {t('common.actions.delete')}
+          </DropdownItem>
+        </DropdownList>
+      </Dropdown>
     );
   };
 
   return (
     <>
-      <PageSection variant={PageSectionVariants.light} style={{ paddingBottom: 0 }}>
-        <DataContainerBreadcrumb
-          parentPage={'/access-management'}
-          label={'access-management.title'}
-          currentPage={t('access-management.role.breadcrumb', { roleName: roleName })}
-        />
-        <Toolbar id="role-detail-toolbar">
-          <ToolbarContent>
-            <ToolbarGroup>
-              <ToolbarItem>
-                <TextContent>
-                  <Text component={TextVariants.h1}>{role?.name}</Text>
-                </TextContent>
-              </ToolbarItem>
-            </ToolbarGroup>
-            {displayActions()}
-          </ToolbarContent>
-        </Toolbar>
-        {buildTabs()}
-      </PageSection>
+      <DataContainerBreadcrumb
+        parentPage={'/access-management'}
+        label={'access-management.title'}
+        currentPage={t('access-management.role.breadcrumb', { roleName: roleName })}
+      />
+      <PageHeader title={role ? role.name : 'Role'} subtitle={''} actionMenu={displayActions()} />
       <PageSection variant={PageSectionVariants.default}>
+        {buildTabs()}
         <Card>
           <CardBody>
             {showGeneralDescription && <RoleGeneral name={roleName} />}

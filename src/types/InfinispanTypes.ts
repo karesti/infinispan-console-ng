@@ -1,7 +1,6 @@
-interface Status {
+interface ComponentStatusType {
   name: string;
-  color: string;
-  icon: string;
+  status: 'danger' | 'warning' | 'info' | 'custom' | 'success';
 }
 
 interface CacheManager {
@@ -9,12 +8,12 @@ interface CacheManager {
   physical_addresses: string[];
   coordinator: boolean;
   cluster_name: string;
-  cache_manager_status: Status;
+  cache_manager_status: ComponentStatusType;
   cluster_size: number;
   defined_caches: DefinedCache[];
   cache_configuration_names: string[];
   cluster_members: ClusterMember[];
-  health: string;
+  health: ComponentStatusType;
   local_site?: string;
   rebalancing_enabled?: boolean;
   backups_enabled: boolean;
@@ -84,7 +83,7 @@ interface CacheInfo {
   name: string;
   type: string;
   simpleCache: boolean;
-  health: string;
+  health: ComponentStatusType;
   features: Features;
   rebalancing_enabled?: boolean;
   tracing: boolean;
@@ -123,7 +122,7 @@ interface DetailedInfinispanCache {
   encoding?: CacheEncoding;
   type?: string;
   started: boolean;
-  health?: string;
+  health?: ComponentStatusType;
   size?: number;
   rehash_in_progress?: boolean;
   indexing_in_progress?: boolean;
@@ -178,7 +177,7 @@ interface CacheStats {
 
 interface StateTransferStatus {
   site: string;
-  status: Status;
+  status: ComponentStatusType;
 }
 
 interface SiteNode {

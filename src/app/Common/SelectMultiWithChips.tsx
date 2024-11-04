@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import {
   Button,
-  Chip,
-  ChipGroup,
+  Label,
+  LabelGroup,
   MenuToggle,
   MenuToggleElement,
   Select,
@@ -188,9 +188,9 @@ const SelectMultiWithChips = (props: {
           isExpanded={isOpen}
           aria-controls={'select-multi-typeahead-' + props.id}
         >
-          <ChipGroup numChips={6} aria-label="Current selections">
+          <LabelGroup numLabels={6} aria-label="Current selections">
             {selected.map((selection, index) => (
-              <Chip
+              <Label
                 key={index}
                 onClick={(ev) => {
                   ev.stopPropagation();
@@ -200,9 +200,9 @@ const SelectMultiWithChips = (props: {
                 disabled={props.readonly && props.readonly.includes(selection)}
               >
                 {selection}
-              </Chip>
+              </Label>
             ))}
-          </ChipGroup>
+          </LabelGroup>
         </TextInputGroupMain>
         <TextInputGroupUtilities>
           {selected.length > 0 && (

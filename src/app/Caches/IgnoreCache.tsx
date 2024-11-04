@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Modal, Text, TextContent } from '@patternfly/react-core';
+import { Button, Content, Modal, ModalBody, ModalFooter, ModalHeader } from '@patternfly/react-core';
 import { useCaches } from '@app/services/dataContainerHooks';
 import { useTranslation } from 'react-i18next';
 import { EyeIcon, EyeSlashIcon } from '@patternfly/react-icons';
@@ -40,21 +40,17 @@ const IgnoreCache = (props: {
   const buildContent = () => {
     if (props.action == 'undo') {
       return (
-        <TextContent>
-          <Text>
-            Shows the <strong>{`' ${props.cacheName} '`}</strong>.
-          </Text>
-        </TextContent>
+        <Content>
+          Shows the <strong>{`' ${props.cacheName} '`}</strong>.
+        </Content>
       );
     }
     return (
-      <TextContent>
-        <Text>
-          Hides the <strong>{`'${props.cacheName}'`}</strong> cache.
-          <br />
-          {t('caches.ignore.hide-body')}
-        </Text>
-      </TextContent>
+      <Content>
+        Hides the <strong>{`'${props.cacheName}'`}</strong> cache.
+        <br />
+        {t('caches.ignore.hide-body')}
+      </Content>
     );
   };
 
@@ -62,14 +58,18 @@ const IgnoreCache = (props: {
     <Modal
       data-cy={`${props.action}CacheModal`}
       id="hideShowModal"
-      titleIconVariant={props.action == 'ignore' ? EyeSlashIcon : EyeIcon}
       className="pf-m-redhat-font"
-      width={'50%'}
+      variant={'small'}
       isOpen={props.isModalOpen}
-      title={props.action == 'ignore' ? t('caches.ignore.hide-title') : t('caches.ignore.show-title')}
       onClose={() => clearIgnoreCacheModal(false)}
       aria-label={props.action == 'ignore' ? 'Hide cache modal' : 'Show cache modal'}
-      actions={[
+    >
+      <ModalHeader
+        titleIconVariant={props.action == 'ignore' ? EyeSlashIcon : EyeIcon}
+        title={props.action == 'ignore' ? t('caches.ignore.hide-title') : t('caches.ignore.show-title')}
+      />
+      <ModalBody>{buildContent()}</ModalBody>
+      <ModalFooter>
         <Button
           aria-label={props.action == 'ignore' ? 'Hide' : 'Show'}
           key={props.action == 'ignore' ? 'ignore-modal-button' : 'undo-ignore-modal'}
@@ -77,7 +77,7 @@ const IgnoreCache = (props: {
           data-cy={props.action == 'ignore' ? 'hideCacheButton' : 'showCacheButton'}
         >
           {props.action == 'ignore' ? 'Hide' : 'Show'}
-        </Button>,
+        </Button>
         <Button
           aria-label="Cancel"
           key="cancel"
@@ -87,9 +87,7 @@ const IgnoreCache = (props: {
         >
           {t('caches.ignore.cancel')}
         </Button>
-      ]}
-    >
-      {buildContent()}
+      </ModalFooter>
     </Modal>
   );
 };

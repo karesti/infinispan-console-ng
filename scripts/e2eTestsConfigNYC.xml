@@ -4,10 +4,11 @@
   <security>
     <authorization/>
   </security>
+  <local-cache name="default"/>
 </cache-container>
   <server>
   <endpoints>
-    <endpoint  socket-binding="default" security-realm="default" >
+    <endpoint socket-binding="default" security-realm="default" >
       <hotrod-connector name="hotrod">
         <authentication>
           <sasl mechanisms="PLAIN" server-name="infinispan"/>

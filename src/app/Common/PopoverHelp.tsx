@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { Button, Flex, FlexItem, Popover, Text, TextContent } from '@patternfly/react-core';
+import { Button, Flex, FlexItem, Popover, Content } from '@patternfly/react-core';
 import { HelpIcon } from '@patternfly/react-icons';
 
 /**
@@ -21,14 +21,9 @@ const PopoverHelp = (props: { name: string; label: string; content: string | Rea
 
   if (props.text) {
     return (
-      <Flex>
-        <FlexItem>
-          <TextContent>
-            <Text>{props.text}</Text>
-          </TextContent>
-        </FlexItem>
-        <FlexItem>{popOver}</FlexItem>
-      </Flex>
+      <Content>
+        {props.text} {popOver}
+      </Content>
     );
   }
 

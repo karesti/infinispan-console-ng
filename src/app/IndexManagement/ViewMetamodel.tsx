@@ -1,5 +1,15 @@
 import React, { useState } from 'react';
-import { Button, ButtonVariant, Icon, Modal, Pagination, Popover, Toolbar, ToolbarItem } from '@patternfly/react-core';
+import {
+  Button,
+  Icon,
+  Modal,
+  ModalBody,
+  ModalHeader,
+  Pagination,
+  Popover,
+  Toolbar,
+  ToolbarItem
+} from '@patternfly/react-core';
 import { useTranslation } from 'react-i18next';
 import { CheckCircleIcon, HelpIcon, ListIcon } from '@patternfly/react-icons';
 import { TableEmptyState } from '@app/Common/TableEmptyState';
@@ -198,23 +208,22 @@ const ViewMetamodel = (props: {
   };
 
   return (
-    <Modal
-      titleIconVariant={ListIcon}
-      isOpen={props.isModalOpen}
-      title={props.metamodelName}
-      onClose={props.closeModal}
-      help={
-        <Popover
-          headerContent={<div>{t('caches.index.metamodel.tooltip-title')}</div>}
-          bodyContent={<div>{t('caches.index.metamodel.tooltip-content')}</div>}
-        >
-          <Button variant="plain" aria-label="Help">
-            <HelpIcon />
-          </Button>
-        </Popover>
-      }
-    >
-      {buildContent()}
+    <Modal isOpen={props.isModalOpen} onClose={props.closeModal}>
+      <ModalHeader
+        titleIconVariant={ListIcon}
+        title={props.metamodelName}
+        help={
+          <Popover
+            headerContent={<div>{t('caches.index.metamodel.tooltip-title')}</div>}
+            bodyContent={<div>{t('caches.index.metamodel.tooltip-content')}</div>}
+          >
+            <Button variant="plain" aria-label="Help">
+              <HelpIcon />
+            </Button>
+          </Popover>
+        }
+      />
+      <ModalBody>{buildContent()}</ModalBody>
     </Modal>
   );
 };

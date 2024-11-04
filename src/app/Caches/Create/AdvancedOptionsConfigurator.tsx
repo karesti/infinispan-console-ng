@@ -70,7 +70,7 @@ const AdvancedOptionsConfigurator = (props: { cacheManager: CacheManager }) => {
         isInline
         fieldId="field-storage"
         label={t('caches.create.configurations.advanced-options.storage-title')}
-        labelIcon={
+        labelHelp={
           <PopoverHelp
             name="storage"
             label={t('caches.create.configurations.advanced-options.storage-title')}
@@ -108,7 +108,7 @@ const AdvancedOptionsConfigurator = (props: { cacheManager: CacheManager }) => {
         isInline
         fieldId="field-aliases"
         label={t('caches.create.configurations.advanced-options.aliases')}
-        labelIcon={
+        labelHelp={
           <PopoverHelp
             name="aliases"
             label={t('caches.create.configurations.advanced-options.aliases-title')}
@@ -141,7 +141,7 @@ const AdvancedOptionsConfigurator = (props: { cacheManager: CacheManager }) => {
               isInline
               fieldId="field-concurrency-level"
               label={t('caches.create.configurations.advanced-options.concurrency-level-title')}
-              labelIcon={
+              labelHelp={
                 <PopoverHelp
                   name="concurrency-level"
                   label={t('caches.create.configurations.advanced-options.concurrency-level-title')}
@@ -164,7 +164,7 @@ const AdvancedOptionsConfigurator = (props: { cacheManager: CacheManager }) => {
               isInline
               fieldId="field-lock-acquisition-timeout"
               label={t('caches.create.configurations.advanced-options.lock-acquisition-timeout-title')}
-              labelIcon={
+              labelHelp={
                 <PopoverHelp
                   name="lock-acquisition-timeout"
                   label={t('caches.create.configurations.advanced-options.lock-acquisition-timeout-title')}
@@ -206,6 +206,7 @@ const AdvancedOptionsConfigurator = (props: { cacheManager: CacheManager }) => {
                 aria-label="striping"
                 data-cy="stripingSwitch"
                 id="striping"
+                hasCheckIcon
                 isChecked={striping === undefined ? false : striping}
                 onChange={() => setStriping(!striping)}
                 label={t('caches.create.configurations.advanced-options.striping')}

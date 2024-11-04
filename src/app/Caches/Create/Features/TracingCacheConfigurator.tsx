@@ -79,8 +79,12 @@ const TracingCacheConfigurator = (props: { tracingEnabled: boolean }) => {
               };
             });
           }}
-          labelOff={t('caches.create.configurations.advanced-options.tracing-disable')}
-          label={t('caches.create.configurations.advanced-options.tracing-enable')}
+          hasCheckIcon
+          label={
+            tracingConf.enabled
+              ? t('caches.create.configurations.advanced-options.tracing-disable')
+              : t('caches.create.configurations.advanced-options.tracing-enable')
+          }
         />
         <PopoverHelp
           name={'tracing'}

@@ -24,13 +24,15 @@ module.exports = {
     "@app/(.*)": '<rootDir>/src/app/$1',
     '@services/(.*)': '<rootDir>/src/services/$1',
     '@utils/(.*)': '<rootDir>/src/app/utils/$1',
+    '^keycloak-js$': '<rootDir>/__mocks__/keycloak-js.js',
   },
 
   // A preset that is used as a base for Jest's configuration
   preset: 'ts-jest/presets/js-with-ts',
   setupFilesAfterEnv: ['<rootDir>/test-setup.js'],
 
+  transformIgnorePatterns: ['/node_modules/(?!(react-syntax-highlighter)/)'],
+
   // The test environment that will be used for testing.
-  transformIgnorePatterns: ['/node_modules/(?!(react-syntax-highlighter|keycloak-js)/)'],
   testEnvironment: "jsdom",
 };

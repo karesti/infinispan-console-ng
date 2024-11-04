@@ -9,6 +9,9 @@ import {
   HelperText,
   HelperTextItem,
   Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   ModalVariant,
   SelectOptionProps,
   Spinner,
@@ -159,26 +162,28 @@ const ManageRolesForPrincipal = (props: {
     <Modal
       position={'top'}
       tabIndex={0}
-      titleIconVariant={EditIcon}
       variant={ModalVariant.small}
       id={'grant-new-access-modal'}
       className="pf-m-redhat-font"
       isOpen={props.isModalOpen}
-      title={t('access-management.principals.modal-manage-roles-title')}
-      description={t('access-management.principals.modal-manage-roles-description', { brandname: brandname })}
       onClose={onCloseModal}
       aria-label={'principals-modal-grant-title'}
       disableFocusTrap={true}
-      actions={[
+    >
+      <ModalHeader
+        titleIconVariant={EditIcon}
+        title={t('access-management.principals.modal-manage-roles-title')}
+        description={t('access-management.principals.modal-manage-roles-description', { brandname: brandname })}
+      />
+      <ModalBody>{displayContent()}</ModalBody>
+      <ModalFooter>
         <Button key={'Save'} aria-label={'Save'} variant={ButtonVariant.primary} onClick={handleSubmit}>
           {t('common.actions.save')}
-        </Button>,
+        </Button>
         <Button key={'Cancel'} aria-label={'Cancel'} variant={ButtonVariant.link} onClick={onCloseModal}>
           {t('common.actions.cancel')}
         </Button>
-      ]}
-    >
-      {displayContent()}
+      </ModalFooter>
     </Modal>
   );
 };

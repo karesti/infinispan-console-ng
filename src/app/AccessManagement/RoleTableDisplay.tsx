@@ -4,15 +4,12 @@ import {
   Bullseye,
   Button,
   ButtonVariant,
-  Chip,
-  ChipGroup,
   EmptyState,
   EmptyStateBody,
   EmptyStateFooter,
-  EmptyStateHeader,
-  EmptyStateIcon,
   EmptyStateVariant,
-  Icon,
+  Label,
+  LabelGroup,
   Pagination,
   SearchInput,
   Title,
@@ -20,15 +17,14 @@ import {
   ToolbarContent,
   ToolbarGroup,
   ToolbarItem,
-  ToolbarItemVariant,
-  Spinner
+  ToolbarItemVariant
 } from '@patternfly/react-core';
 import { ActionsColumn, IAction, Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import { useTranslation } from 'react-i18next';
 import { DatabaseIcon, LockIcon, SearchIcon } from '@patternfly/react-icons';
 import { useFetchAvailableRoles } from '@app/services/rolesHook';
 import { CreateRole } from '@app/AccessManagement/CreateRole';
-import { global_spacer_sm, global_spacer_xl } from '@patternfly/react-tokens';
+import { t_global_spacer_sm, t_global_spacer_xl } from '@patternfly/react-tokens';
 import { DeleteRole } from '@app/AccessManagement/DeleteRole';
 import { TableErrorState } from '@app/Common/TableErrorState';
 import { TableLoadingState } from '@app/Common/TableLoadingState';
@@ -121,7 +117,10 @@ const RoleTableDisplay = () => {
               {row.implicit && <LockIcon className="role-icon" />}
               <Link
                 key={row.name}
-                to={{ pathname: '/access-management/role/' + encodeURIComponent(row.name), search: location.search }}
+                to={{
+                  pathname: '/access-management/role/' + encodeURIComponent(row.name),
+                  search: location.search
+                }}
               >
                 <Button data-cy={`detailLink-${row.name}`} key={`detailLink-${row}`} variant={ButtonVariant.link}>
                   {row.name}
@@ -130,13 +129,11 @@ const RoleTableDisplay = () => {
             </Td>
             <Td dataLabel={columnNames.permissions} width={30}>
               {
-                <ChipGroup>
+                <LabelGroup>
                   {row.permissions.map((currentChip) => (
-                    <Chip key={currentChip} isReadOnly={true}>
-                      {currentChip}
-                    </Chip>
+                    <Label key={currentChip}>{currentChip}</Label>
                   ))}
-                </ChipGroup>
+                </LabelGroup>
               }
             </Td>
             <Td dataLabel={columnNames.description}>{row.description}</Td>
@@ -154,14 +151,15 @@ const RoleTableDisplay = () => {
       <Tr>
         <Td colSpan={4}>
           <Bullseye>
-            <EmptyState variant={EmptyStateVariant.sm}>
-              <EmptyStateIcon icon={SearchIcon} />
+            <EmptyState variant={EmptyStateVariant.sm} icon={SearchIcon}>
               <Title headingLevel="h2" size="lg">
                 {t('access-management.roles.no-roles-found')}
               </Title>
               <EmptyStateBody>
                 {roles.length == 0
-                  ? t('access-management.roles.no-roles-body', { brandname: brandname })
+                  ? t('access-management.roles.no-roles-body', {
+                      brandname: brandname
+                    })
                   : t('access-management.roles.no-filtered-roles-body')}
               </EmptyStateBody>
             </EmptyState>
@@ -172,8 +170,12 @@ const RoleTableDisplay = () => {
   };
 
   const createRoleButtonHelper = (isEmptyPage?: boolean) => {
-    const emptyPageButtonProp = { style: { marginTop: global_spacer_xl.value } };
-    const normalPageButtonProps = { style: { marginLeft: global_spacer_sm.value } };
+    const emptyPageButtonProp = {
+      style: { marginTop: t_global_spacer_xl.value }
+    };
+    const normalPageButtonProps = {
+      style: { marginLeft: t_global_spacer_sm.value }
+    };
     return (
       <Button
         variant={ButtonVariant.primary}
@@ -190,13 +192,17 @@ const RoleTableDisplay = () => {
   const displayContent = () => {
     if (roles.length === 0) {
       return (
-        <EmptyState variant={EmptyStateVariant.lg}>
-          <EmptyStateHeader
-            titleText={t('access-management.roles.no-roles-status')}
-            icon={<EmptyStateIcon icon={DatabaseIcon} />}
-            headingLevel="h4"
-          />
-          <EmptyStateBody>{t('access-management.roles.no-roles-body', { brandname: brandname })}</EmptyStateBody>
+        <EmptyState
+          variant={EmptyStateVariant.lg}
+          icon={DatabaseIcon}
+          headingLevel="h4"
+          titleText={t('access-management.roles.no-roles-status')}
+        >
+          <EmptyStateBody>
+            {t('access-management.roles.no-roles-body', {
+              brandname: brandname
+            })}
+          </EmptyStateBody>
           <EmptyStateFooter>{createRoleButtonHelper(true)}</EmptyStateFooter>
         </EmptyState>
       );
@@ -215,7 +221,7 @@ const RoleTableDisplay = () => {
         <Toolbar id="role-table-toolbar" className={'role-table-display'}>
           <ToolbarContent>
             <ToolbarGroup variant="filter-group">
-              <ToolbarItem variant={'search-filter'}>
+              <ToolbarItem>
                 <SearchInput
                   placeholder={t('access-management.roles.search-placeholder')}
                   value={searchValue}
@@ -240,7 +246,9 @@ const RoleTableDisplay = () => {
                     headerContent: columnNames.name,
                     footerContent: (
                       <a target="_blank" rel="noreferrer" href={t('brandname.default-roles-docs-link')}>
-                        {t('access-management.roles.roles-hint-link', { brandname: brandname })}
+                        {t('access-management.roles.roles-hint-link', {
+                          brandname: brandname
+                        })}
                       </a>
                     )
                   }

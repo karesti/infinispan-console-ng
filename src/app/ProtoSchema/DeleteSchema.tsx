@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, ButtonVariant, Modal, Text, TextContent } from '@patternfly/react-core';
+import { Button, ButtonVariant, Modal, Content, ModalFooter, ModalHeader, ModalBody } from '@patternfly/react-core';
 import { useTranslation } from 'react-i18next';
 import { useDeleteProtobufSchema } from '@app/services/protobufHooks';
 
@@ -15,14 +15,20 @@ const DeleteSchema = (props: { schemaName: string; isModalOpen: boolean; closeMo
 
   return (
     <Modal
-      titleIconVariant={'danger'}
-      className="pf-m-redhat-font"
-      width={'50%'}
       isOpen={props.isModalOpen}
-      title={t('schemas.delete.heading')}
       onClose={props.closeModal}
+      variant={'small'}
+      className="pf-m-redhat-font"
       aria-label="Delete schema modal"
-      actions={[
+    >
+      <ModalHeader titleIconVariant={'danger'} title={t('schemas.delete.heading')} />
+      <ModalBody>
+        <Content component={'p'}>
+          <strong>{props.schemaName}</strong> {t('schemas.delete.modal-description-1', { brandname: brandname })}
+        </Content>
+        <Content component={'p'}>{t('schemas.delete.modal-description-2')}</Content>
+      </ModalBody>
+      <ModalFooter>
         <Button
           id="confirm-delete-schema-button"
           name="confirm-delete-schema-button"
@@ -32,7 +38,7 @@ const DeleteSchema = (props: { schemaName: string; isModalOpen: boolean; closeMo
           onClick={onClickDeleteButton}
         >
           {t('schemas.delete-button')}
-        </Button>,
+        </Button>
         <Button
           id="cancel-delete-schema-button"
           name="cancel-delete-schema-button"
@@ -43,14 +49,7 @@ const DeleteSchema = (props: { schemaName: string; isModalOpen: boolean; closeMo
         >
           {t('schemas.cancel-button')}
         </Button>
-      ]}
-    >
-      <TextContent>
-        <Text>
-          <strong>{props.schemaName}</strong> {t('schemas.delete.modal-description-1', { brandname: brandname })}
-        </Text>
-        <Text>{t('schemas.delete.modal-description-2')}</Text>
-      </TextContent>
+      </ModalFooter>
     </Modal>
   );
 };

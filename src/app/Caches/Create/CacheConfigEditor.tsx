@@ -17,7 +17,7 @@ import { CodeEditor, Language } from '@patternfly/react-code-editor';
 import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { useApiAlert } from '@app/utils/useApiAlert';
-import { ThemeContext } from '@app/providers/ThemeProvider';
+import { DARK, ThemeContext } from '@app/providers/ThemeProvider';
 import { SelectSingleTypehead } from '@app/Common/SelectSingleTypehead';
 import { selectOptionPropsFromArray } from '@utils/selectOptionPropsCreator';
 
@@ -119,7 +119,7 @@ const CacheConfigEditor = (props: {
           onChange={handleChangeConfig}
           id="cache-config"
           height="200px"
-          isDarkTheme={theme === 'dark'}
+          isDarkTheme={theme === DARK}
         />
         <Alert
           isInline

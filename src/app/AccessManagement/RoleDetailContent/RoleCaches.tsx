@@ -5,11 +5,9 @@ import {
   ButtonVariant,
   EmptyState,
   EmptyStateBody,
-  EmptyStateIcon,
   EmptyStateVariant,
   Pagination,
   SearchInput,
-  Title,
   Toolbar,
   ToolbarContent,
   ToolbarGroup,
@@ -101,11 +99,13 @@ const RoleCaches = (props: { name: string }) => {
         <Tr>
           <Td>
             <Bullseye>
-              <EmptyState variant={EmptyStateVariant.sm}>
-                <EmptyStateIcon icon={SearchIcon} />
-                <Title headingLevel="h2" size="lg">
-                  {t('access-management.role.no-caches-found')}
-                </Title>
+              <EmptyState
+                variant={EmptyStateVariant.sm}
+                title={t('access-management.role.no-caches-found')}
+                headingLevel="h2"
+                status="info"
+                icon={SearchIcon}
+              >
                 <EmptyStateBody>{t('access-management.role.no-filtered-caches-body')}</EmptyStateBody>
               </EmptyState>
             </Bullseye>
@@ -123,7 +123,10 @@ const RoleCaches = (props: { name: string }) => {
               <Link
                 data-cy={`detailLink-${row}`}
                 key={row}
-                to={{ pathname: '/cache/' + encodeURIComponent(row), search: location.search }}
+                to={{
+                  pathname: '/cache/' + encodeURIComponent(row),
+                  search: location.search
+                }}
               >
                 <Button data-cy={`detailButton-${row}`} key={`detail-button-${row}`} variant={ButtonVariant.link}>
                   {row}
@@ -137,11 +140,23 @@ const RoleCaches = (props: { name: string }) => {
   };
 
   if (loading) {
-    return <TableLoadingState message={t('access-management.role.loading-caches', { roleName: props.name })} />;
+    return (
+      <TableLoadingState
+        message={t('access-management.role.loading-caches', {
+          roleName: props.name
+        })}
+      />
+    );
   }
 
   if (error) {
-    return <TableErrorState error={t('access-management.role.error-caches', { roleName: props.name })} />;
+    return (
+      <TableErrorState
+        error={t('access-management.role.error-caches', {
+          roleName: props.name
+        })}
+      />
+    );
   }
 
   return (
@@ -149,7 +164,7 @@ const RoleCaches = (props: { name: string }) => {
       <Toolbar id="caches-table-toolbar" className={'caches-table-display'}>
         <ToolbarContent>
           <ToolbarGroup variant="filter-group">
-            <ToolbarItem variant={'search-filter'}>
+            <ToolbarItem>
               <SearchInput
                 placeholder={t('access-management.role.caches-search-placeholder')}
                 value={searchValue}

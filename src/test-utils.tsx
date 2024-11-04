@@ -14,5 +14,12 @@ export function renderWithRouter(children, routes = []) {
     initialIndex: 1
   });
 
-  return render(<RouterProvider router={router} />);
+  return render(
+    <RouterProvider
+      future={{
+        v7_startTransition: true
+      }}
+      router={router}
+    />
+  );
 }

@@ -1,15 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  FormGroup,
-  Grid,
-  GridItem,
-  Radio,
-  Switch,
-  Text,
-  TextContent,
-  TextInput,
-  TextVariants
-} from '@patternfly/react-core';
+import { FormGroup, Grid, GridItem, Radio, Switch, Content, TextInput, ContentVariants } from '@patternfly/react-core';
 import { SelectSingle } from '@app/Common/SelectSingle';
 import { useTranslation } from 'react-i18next';
 import { BackupSiteFailurePolicy, BackupSiteStateTransferMode, BackupSiteStrategy } from '@services/infinispanRefData';
@@ -99,17 +89,15 @@ const BackupSiteConfigurator = (props: {
     return (
       <React.Fragment>
         <GridItem span={12}>
-          <TextContent>
-            <Text component={TextVariants.p}>{t('caches.create.configurations.feature.take-offline')}</Text>
-            <Text component={TextVariants.small}>
-              {t('caches.create.configurations.feature.take-offline-tooltip', { brandname: brandname })}
-            </Text>
-          </TextContent>
+          <Content component={ContentVariants.p}>{t('caches.create.configurations.feature.take-offline')}</Content>
+          <Content component={ContentVariants.small}>
+            {t('caches.create.configurations.feature.take-offline-tooltip', { brandname: brandname })}
+          </Content>
         </GridItem>
         <FormGroup
           fieldId="afterFailures"
           label={t('caches.create.configurations.feature.after-failure')}
-          labelIcon={
+          labelHelp={
             <PopoverHelp
               name="afterFailures"
               label={t('caches.create.configurations.feature.after-failure')}
@@ -132,7 +120,7 @@ const BackupSiteConfigurator = (props: {
         <FormGroup
           fieldId="minwait"
           label={t('caches.create.configurations.feature.min-wait')}
-          labelIcon={
+          labelHelp={
             <PopoverHelp
               name="minwait"
               label={t('caches.create.configurations.feature.min-wait')}
@@ -157,19 +145,17 @@ const BackupSiteConfigurator = (props: {
     return (
       <React.Fragment>
         <GridItem span={12}>
-          <TextContent>
-            <Text component={TextVariants.p}>{t('caches.create.configurations.feature.state-transfer')}</Text>
-            <Text component={TextVariants.small}>
-              {t('caches.create.configurations.feature.state-transfer-tooltip', { brandname: brandname })}
-            </Text>
-          </TextContent>
+          <Content component={ContentVariants.p}>{t('caches.create.configurations.feature.state-transfer')}</Content>
+          <Content component={ContentVariants.small}>
+            {t('caches.create.configurations.feature.state-transfer-tooltip', { brandname: brandname })}
+          </Content>
         </GridItem>
         <GridItem span={12}>
           <FormGroup
             isInline
             fieldId="mode"
             label={t('caches.create.configurations.feature.mode')}
-            labelIcon={
+            labelHelp={
               <PopoverHelp
                 name="mode"
                 label={t('caches.create.configurations.feature.mode')}
@@ -199,7 +185,7 @@ const BackupSiteConfigurator = (props: {
           <FormGroup
             fieldId="chuncksize"
             label={t('caches.create.configurations.feature.chunk-size')}
-            labelIcon={
+            labelHelp={
               <PopoverHelp
                 name="chuncksize"
                 label={t('caches.create.configurations.feature.chunk-size')}
@@ -224,7 +210,7 @@ const BackupSiteConfigurator = (props: {
           <FormGroup
             fieldId="timeout-state-transfer"
             label={t('caches.create.configurations.feature.timeout-state-transfer')}
-            labelIcon={
+            labelHelp={
               <PopoverHelp
                 name="timeout-state-transfer"
                 label={t('caches.create.configurations.feature.timeout-state-transfer')}
@@ -246,7 +232,7 @@ const BackupSiteConfigurator = (props: {
           <FormGroup
             fieldId="maxretries"
             label={t('caches.create.configurations.feature.max-retries')}
-            labelIcon={
+            labelHelp={
               <PopoverHelp
                 name="maxretries"
                 label={t('caches.create.configurations.feature.max-retries')}
@@ -271,7 +257,7 @@ const BackupSiteConfigurator = (props: {
           <FormGroup
             fieldId="wait-time"
             label={t('caches.create.configurations.feature.wait-time')}
-            labelIcon={
+            labelHelp={
               <PopoverHelp
                 name="wait-time"
                 label={t('caches.create.configurations.feature.wait-time')}
@@ -305,6 +291,7 @@ const BackupSiteConfigurator = (props: {
             aria-label="twoPhaseCommit"
             id="twoPhaseCommit"
             isChecked={twoPhaseCommit === undefined ? false : twoPhaseCommit}
+            hasCheckIcon
             onChange={() => setTwoPhaseCommit(!twoPhaseCommit)}
             label={t('caches.create.configurations.feature.two-phase-commit')}
           />
@@ -324,7 +311,7 @@ const BackupSiteConfigurator = (props: {
       <FormGroup
         fieldId="failurePolicy"
         label={t('caches.create.configurations.feature.failure-policy')}
-        labelIcon={
+        labelHelp={
           <PopoverHelp
             name="failure-policy"
             label={t('caches.create.configurations.feature.failure-policy')}
@@ -338,13 +325,12 @@ const BackupSiteConfigurator = (props: {
           selected={failurePolicy!}
           options={selectOptionProps(BackupSiteFailurePolicy)}
           onSelect={(value) => setFailurePolicy(value)}
-          toggleId='failurePolicySelector'
         />
       </FormGroup>
       <FormGroup
         fieldId="timeout"
         label={t('caches.create.configurations.feature.timeout')}
-        labelIcon={
+        labelHelp={
           <PopoverHelp
             name="timeout"
             label={t('caches.create.configurations.feature.timeout')}
@@ -364,7 +350,7 @@ const BackupSiteConfigurator = (props: {
       <FormGroup
         fieldId="failurePolicyClass"
         label={t('caches.create.configurations.feature.failure-policy-class')}
-        labelIcon={
+        labelHelp={
           <PopoverHelp
             name="failurePolicyClass"
             label={t('caches.create.configurations.feature.failure-policy-class')}

@@ -5,15 +5,16 @@ import {
   ButtonVariant,
   Card,
   CardBody,
+  CardFooter,
   CardTitle,
+  Content,
+  ContentVariants,
   Divider,
   Dropdown,
   DropdownItem,
   DropdownList,
   EmptyState,
   EmptyStateBody,
-  EmptyStateHeader,
-  EmptyStateIcon,
   EmptyStateVariant,
   Grid,
   GridItem,
@@ -24,13 +25,6 @@ import {
   PageSection,
   PageSectionVariants,
   Spinner,
-  Text,
-  TextContent,
-  TextList,
-  TextListItem,
-  TextListItemVariants,
-  TextListVariants,
-  TextVariants,
   Toolbar,
   ToolbarContent,
   ToolbarGroup,
@@ -48,6 +42,7 @@ import { ConsoleServices } from '@services/ConsoleServices';
 import { ConsoleACL } from '@services/securityService';
 import { ClearMetrics } from '@app/ClearMetrics/ClearMetrics';
 import { useConnectedUser } from '@app/services/userManagementHook';
+import { MultiContentCard, PageHeader } from '@patternfly/react-component-groups';
 
 const GlobalStats = () => {
   const { t } = useTranslation();
@@ -62,54 +57,38 @@ const GlobalStats = () => {
 
   const clusterStatsCard = () => {
     return (
-      <Card isFullHeight>
+      <Card isFullHeight isPlain>
         <CardTitle>
-          <Level>
-            <LevelItem>
-              <PopoverHelp
-                name="cluster-wide-stats"
-                label={t('global-stats.cluster-wide-stats')}
-                content={t('global-stats.cluster-wide-stats-tooltip')}
-                text={t('global-stats.cluster-wide-stats')}
-              />
-            </LevelItem>
-            <LevelItem>
-              <Link to={{ pathname: '/', search: location.search }}>
-                <Button data-cy="viewCachesLink" variant={ButtonVariant.link} icon={<ArrowIcon />}>
-                  {t('global-stats.view-caches-link')}
-                </Button>
-              </Link>
-            </LevelItem>
-          </Level>
+          <PopoverHelp
+            name="cluster-wide-stats"
+            label={t('global-stats.cluster-wide-stats')}
+            content={t('global-stats.cluster-wide-stats-tooltip')}
+            text={t('global-stats.cluster-wide-stats')}
+          />
         </CardTitle>
         <CardBody>
-          <TextContent>
-            <TextList component={TextListVariants.dl}>
-              <TextListItem component={TextListItemVariants.dt}>
-                {displayUtils.formatNumber(stats.number_of_entries)}
-              </TextListItem>
-              <TextListItem component={TextListItemVariants.dd}>{t('global-stats.no-of-entries')}</TextListItem>
-              <TextListItem component={TextListItemVariants.dt}>
-                {displayUtils.formatNumber(stats.current_number_of_entries_in_memory)}
-              </TextListItem>
-              <TextListItem component={TextListItemVariants.dd}>
-                {t('global-stats.current-entry-in-memory')}
-              </TextListItem>
-              <TextListItem component={TextListItemVariants.dt}>
-                {displayUtils.formatNumber(stats.total_number_of_entries)}
-              </TextListItem>
-              <TextListItem component={TextListItemVariants.dd}>{t('global-stats.total-no-entries')}</TextListItem>
-              <TextListItem component={TextListItemVariants.dt}>
-                {displayUtils.formatNumber(stats.data_memory_used)}
-              </TextListItem>
-              <TextListItem component={TextListItemVariants.dd}>{t('global-stats.data-memory-used')}</TextListItem>
-              <TextListItem component={TextListItemVariants.dt}>
-                {displayUtils.formatNumber(stats.off_heap_memory_used)}
-              </TextListItem>
-              <TextListItem component={TextListItemVariants.dd}>{t('global-stats.off-heap-memory-used')}</TextListItem>
-            </TextList>
-          </TextContent>
+          <Content component={ContentVariants.dl}>
+            <Content component={ContentVariants.dt}>{displayUtils.formatNumber(stats.number_of_entries)}</Content>
+            <Content component={ContentVariants.dd}>{t('global-stats.no-of-entries')}</Content>
+            <Content component={ContentVariants.dt}>
+              {displayUtils.formatNumber(stats.current_number_of_entries_in_memory)}
+            </Content>
+            <Content component={ContentVariants.dd}>{t('global-stats.current-entry-in-memory')}</Content>
+            <Content component={ContentVariants.dt}>{displayUtils.formatNumber(stats.total_number_of_entries)}</Content>
+            <Content component={ContentVariants.dd}>{t('global-stats.total-no-entries')}</Content>
+            <Content component={ContentVariants.dt}>{displayUtils.formatNumber(stats.data_memory_used)}</Content>
+            <Content component={ContentVariants.dd}>{t('global-stats.data-memory-used')}</Content>
+            <Content component={ContentVariants.dt}>{displayUtils.formatNumber(stats.off_heap_memory_used)}</Content>
+            <Content component={ContentVariants.dd}>{t('global-stats.off-heap-memory-used')}</Content>
+          </Content>
         </CardBody>
+        <CardFooter>
+          <Link to={{ pathname: '/', search: location.search }}>
+            <Button data-cy="viewCachesLink" variant={ButtonVariant.link} icon={<ArrowIcon />}>
+              {t('global-stats.view-caches-link')}
+            </Button>
+          </Link>
+        </CardFooter>
       </Card>
     );
   };
@@ -117,12 +96,12 @@ const GlobalStats = () => {
   const displayAccessStats = (name: string, value: number, label: string, tooltip: string) => {
     return (
       <React.Fragment>
-        <TextListItem component={TextListItemVariants.dt} data-cy={label.replace(/\s/g, '') + 'Val'}>
+        <Content component={ContentVariants.dt} data-cy={label.replace(/\s/g, '') + 'Val'}>
           {displayUtils.formatNumber(value)}
-        </TextListItem>
-        <TextListItem component={TextListItemVariants.dd}>
+        </Content>
+        <Content component={ContentVariants.dd}>
           <PopoverHelp name={name} label={label} content={tooltip} text={label} />
-        </TextListItem>
+        </Content>
       </React.Fragment>
     );
   };
@@ -152,55 +131,53 @@ const GlobalStats = () => {
       <Card>
         <CardTitle>{t('global-stats.data-access-stats')}</CardTitle>
         <CardBody>
-          <TextContent>
-            <TextList component={TextListVariants.dl}>
-              <TextListItem component={TextListItemVariants.dt}>{displayUtils.formatBigNumber(allOps())}</TextListItem>
-              <TextListItem component={TextListItemVariants.dd}>
-                <Text component="h5">{t('caches.cache-metrics.data-total')}</Text>
-              </TextListItem>
-            </TextList>
-          </TextContent>
+          <Content component={ContentVariants.dl}>
+            <Content component={ContentVariants.dt}>{displayUtils.formatBigNumber(allOps())}</Content>
+            <Content component={ContentVariants.dd}>
+              <Content component="h5">{t('caches.cache-metrics.data-total')}</Content>
+            </Content>
+          </Content>
+
           <Divider component="div" style={{ padding: '10px 0' }} />
-          <TextContent>
-            <TextList component={TextListVariants.dl}>
-              {displayAccessStats(
-                'hits',
-                stats.hits,
-                t('global-stats.data-access-hits'),
-                t('global-stats.data-access-hits-info')
-              )}
-              {displayAccessStats(
-                'misses',
-                stats.misses,
-                t('global-stats.data-access-misses'),
-                t('global-stats.data-access-misses-info')
-              )}
-              {displayAccessStats(
-                'stores',
-                stats.stores,
-                t('global-stats.data-access-stores'),
-                t('global-stats.data-access-stores-info')
-              )}
-              {displayAccessStats(
-                'remove_hits',
-                stats.remove_hits,
-                t('global-stats.data-access-remove-hits'),
-                t('global-stats.data-access-remove-hits-info')
-              )}
-              {displayAccessStats(
-                'remove_misses',
-                stats.remove_misses,
-                t('global-stats.data-access-remove-misses'),
-                t('global-stats.data-access-remove-misses-info')
-              )}
-              {displayAccessStats(
-                'evictions',
-                stats.evictions,
-                t('global-stats.data-access-evictions'),
-                t('global-stats.data-access-evictions-info')
-              )}
-            </TextList>
-          </TextContent>
+
+          <Content component={ContentVariants.dl}>
+            {displayAccessStats(
+              'hits',
+              stats.hits,
+              t('global-stats.data-access-hits'),
+              t('global-stats.data-access-hits-info')
+            )}
+            {displayAccessStats(
+              'misses',
+              stats.misses,
+              t('global-stats.data-access-misses'),
+              t('global-stats.data-access-misses-info')
+            )}
+            {displayAccessStats(
+              'stores',
+              stats.stores,
+              t('global-stats.data-access-stores'),
+              t('global-stats.data-access-stores-info')
+            )}
+            {displayAccessStats(
+              'remove_hits',
+              stats.remove_hits,
+              t('global-stats.data-access-remove-hits'),
+              t('global-stats.data-access-remove-hits-info')
+            )}
+            {displayAccessStats(
+              'remove_misses',
+              stats.remove_misses,
+              t('global-stats.data-access-remove-misses'),
+              t('global-stats.data-access-remove-misses-info')
+            )}
+            {displayAccessStats(
+              'evictions',
+              stats.evictions,
+              t('global-stats.data-access-evictions'),
+              t('global-stats.data-access-evictions-info')
+            )}
+          </Content>
         </CardBody>
       </Card>
     );
@@ -208,7 +185,7 @@ const GlobalStats = () => {
 
   const operationPerformanceCard = () => {
     return (
-      <Card isFullHeight>
+      <Card isFullHeight isPlain>
         <CardTitle>
           <PopoverHelp
             name={'operation-performance-values'}
@@ -218,32 +195,18 @@ const GlobalStats = () => {
           />
         </CardTitle>
         <CardBody>
-          <TextContent>
-            <TextList component={TextListVariants.dl}>
-              <TextListItem component={TextListItemVariants.dt}>
-                {displayUtils.formatNumber(stats.average_read_time)}
-              </TextListItem>
-              <TextListItem component={TextListItemVariants.dd}>{t('global-stats.average-reads')}</TextListItem>
-              <TextListItem component={TextListItemVariants.dt}>
-                {displayUtils.formatNumber(stats.average_remove_time)}
-              </TextListItem>
-              <TextListItem component={TextListItemVariants.dd}>{t('global-stats.average-writes')}</TextListItem>
-              <TextListItem component={TextListItemVariants.dt}>
-                {displayUtils.formatNumber(stats.average_write_time)}
-              </TextListItem>
-              <TextListItem component={TextListItemVariants.dd}>{t('global-stats.average-removes')}</TextListItem>
-              <TextListItem component={TextListItemVariants.dt}>
-                {displayUtils.formatNumber(stats.read_write_ratio)}
-              </TextListItem>
-              <TextListItem component={TextListItemVariants.dd}>
-                {t('global-stats.average-read-write-ratio')}
-              </TextListItem>
-              <TextListItem component={TextListItemVariants.dt}>
-                {displayUtils.formatNumber(stats.hit_ratio)}
-              </TextListItem>
-              <TextListItem component={TextListItemVariants.dd}>{t('global-stats.average-hits-ratio')}</TextListItem>
-            </TextList>
-          </TextContent>
+          <Content component={ContentVariants.dl}>
+            <Content component={ContentVariants.dt}>{displayUtils.formatNumber(stats.average_read_time)}</Content>
+            <Content component={ContentVariants.dd}>{t('global-stats.average-reads')}</Content>
+            <Content component={ContentVariants.dt}>{displayUtils.formatNumber(stats.average_remove_time)}</Content>
+            <Content component={ContentVariants.dd}>{t('global-stats.average-writes')}</Content>
+            <Content component={ContentVariants.dt}>{displayUtils.formatNumber(stats.average_write_time)}</Content>
+            <Content component={ContentVariants.dd}>{t('global-stats.average-removes')}</Content>
+            <Content component={ContentVariants.dt}>{displayUtils.formatNumber(stats.read_write_ratio)}</Content>
+            <Content component={ContentVariants.dd}>{t('global-stats.average-read-write-ratio')}</Content>
+            <Content component={ContentVariants.dt}>{displayUtils.formatNumber(stats.hit_ratio)}</Content>
+            <Content component={ContentVariants.dd}>{t('global-stats.average-hits-ratio')}</Content>
+          </Content>
         </CardBody>
       </Card>
     );
@@ -251,7 +214,7 @@ const GlobalStats = () => {
 
   const cacheManagerLifecycleCard = () => {
     return (
-      <Card isFullHeight>
+      <Card isFullHeight isPlain>
         <CardTitle>
           <Level>
             <LevelItem>
@@ -272,22 +235,14 @@ const GlobalStats = () => {
           </Level>
         </CardTitle>
         <CardBody>
-          <TextContent style={{ height: '208px' }}>
-            <TextList component={TextListVariants.dl}>
-              <TextListItem component={TextListItemVariants.dt} data-cy="cacheManagerStartTime">
-                {displayUtils.formatNumber(stats.time_since_start)}
-              </TextListItem>
-              <TextListItem component={TextListItemVariants.dd}>
-                {t('global-stats.cache-manager-start-time')}
-              </TextListItem>
-              <TextListItem component={TextListItemVariants.dt}>
-                {displayUtils.formatNumber(stats.time_since_reset)}
-              </TextListItem>
-              <TextListItem component={TextListItemVariants.dd}>
-                {t('global-stats.cache-manager-reset-time')}
-              </TextListItem>
-            </TextList>
-          </TextContent>
+          <Content component={ContentVariants.dl}>
+            <Content component={ContentVariants.dt} data-cy="cacheManagerStartTime">
+              {displayUtils.formatNumber(stats.time_since_start)}
+            </Content>
+            <Content component={ContentVariants.dd}>{t('global-stats.cache-manager-start-time')}</Content>
+            <Content component={ContentVariants.dt}>{displayUtils.formatNumber(stats.time_since_reset)}</Content>
+            <Content component={ContentVariants.dd}>{t('global-stats.cache-manager-reset-time')}</Content>
+          </Content>
         </CardBody>
       </Card>
     );
@@ -318,12 +273,12 @@ const GlobalStats = () => {
       return (
         <Card>
           <CardBody>
-            <EmptyState variant={EmptyStateVariant.full}>
-              <EmptyStateHeader
-                titleText={<>{t('global-stats.global-stats-disabled')}</>}
-                icon={<EmptyStateIcon icon={CubesIcon} />}
-                headingLevel="h5"
-              />
+            <EmptyState
+              variant={EmptyStateVariant.full}
+              titleText={<>{t('global-stats.global-stats-disabled')}</>}
+              icon={CubesIcon}
+              headingLevel="h5"
+            >
               <EmptyStateBody>{t('global-stats.global-stats-disabled-help')}</EmptyStateBody>
             </EmptyState>
           </CardBody>
@@ -333,14 +288,11 @@ const GlobalStats = () => {
 
     return (
       <Grid hasGutter={true}>
-        <GridItem span={4} rowSpan={1}>
-          {clusterStatsCard()}
-        </GridItem>
-        <GridItem span={4} rowSpan={1}>
-          {operationPerformanceCard()}
-        </GridItem>
-        <GridItem span={4} rowSpan={1}>
-          {cacheManagerLifecycleCard()}
+        <GridItem span={12}>
+          <MultiContentCard
+            withDividers
+            cards={[clusterStatsCard(), operationPerformanceCard(), cacheManagerLifecycleCard()]}
+          />
         </GridItem>
         <GridItem span={8}>
           <ClusterDistributionChart />
@@ -359,7 +311,7 @@ const GlobalStats = () => {
   };
 
   const displayActions = (
-    <ToolbarGroup align={{ default: 'alignRight' }}>
+    <ToolbarGroup align={{ default: 'alignEnd' }}>
       <ToolbarItem>
         <Dropdown
           isOpen={isOpen}
@@ -392,21 +344,7 @@ const GlobalStats = () => {
 
   return (
     <React.Fragment>
-      <PageSection variant={PageSectionVariants.light}>
-        <Toolbar id="global-stats-header">
-          <ToolbarContent>
-            <ToolbarGroup>
-              <ToolbarItem>
-                <TextContent>
-                  <Text component={TextVariants.h1}>{t('global-stats.title')}</Text>
-                  <Text component={TextVariants.p}>{descriptionText()}</Text>
-                </TextContent>
-              </ToolbarItem>
-            </ToolbarGroup>
-            {displayActions}
-          </ToolbarContent>
-        </Toolbar>
-      </PageSection>
+      <PageHeader title={t('global-stats.title')} subtitle={descriptionText()} actionMenu={displayActions} />
       <PageSection>{buildStats()}</PageSection>
       <ClearMetrics
         name={'cm'}

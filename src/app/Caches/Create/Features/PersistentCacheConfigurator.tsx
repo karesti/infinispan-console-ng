@@ -2,7 +2,8 @@ import React, { useContext, useEffect, useState } from 'react';
 import {
   Alert,
   Button,
-  FlexItem,
+  Content,
+  ContentVariants,
   FormGroup,
   Grid,
   GridItem,
@@ -12,10 +13,7 @@ import {
   HintBody,
   HintFooter,
   Switch,
-  Text,
-  TextContent,
-  TextInput,
-  TextVariants
+  TextInput
 } from '@patternfly/react-core';
 import { CodeEditor, Language } from '@patternfly/react-code-editor';
 import { useTranslation } from 'react-i18next';
@@ -24,8 +22,8 @@ import { kebabCase } from '@app/utils/convertStringCase';
 import { useCreateCache } from '@app/services/createCacheHook';
 import { FeatureCard } from '@app/Caches/Create/Features/FeatureCard';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
-import { global_spacer_md } from '@patternfly/react-tokens';
-import { ThemeContext } from '@app/providers/ThemeProvider';
+import { t_global_spacer_md } from '@patternfly/react-tokens';
+import { DARK, ThemeContext } from '@app/providers/ThemeProvider';
 import { SelectSingle } from '@app/Common/SelectSingle';
 import { selectOptionProps } from '@utils/selectOptionPropsCreator';
 import TimeQuantityInputGroup from '@app/Caches/Create/TimeQuantityInputGroup';
@@ -111,8 +109,10 @@ const PersistentCacheConfigurator = () => {
 
     return (
       <HelperText>
-        <HelperTextItem variant="warning" hasIcon>
-          {t('caches.create.configurations.feature.persistent-error', { brandname: brandname })}
+        <HelperTextItem variant="warning">
+          {t('caches.create.configurations.feature.persistent-error', {
+            brandname: brandname
+          })}
         </HelperTextItem>
       </HelperText>
     );
@@ -135,18 +135,17 @@ const PersistentCacheConfigurator = () => {
             </Button>
           </HintFooter>
         </Hint>
-        <TextContent>
-          <Text component={TextVariants.h3}>{PersistentCacheStorage[storage]}</Text>
-          <Text component={TextVariants.p}>
-            {t('caches.create.configurations.feature.' + kebabCase(storage) + '-description', {
-              brandname: brandname
-            })}
-          </Text>
-        </TextContent>
+
+        <Content component={ContentVariants.h3}>{PersistentCacheStorage[storage]}</Content>
+        <Content component={ContentVariants.p}>
+          {t('caches.create.configurations.feature.' + kebabCase(storage) + '-description', {
+            brandname: brandname
+          })}
+        </Content>
 
         {storageJARS.includes(PersistentCacheStorage[storage]) && (
           <Alert
-            style={{ margin: global_spacer_md.value + ' 0' }}
+            style={{ margin: t_global_spacer_md.value + ' 0' }}
             variant="warning"
             title={t('caches.create.configurations.feature.persistent-storage-jar-warning', {
               persistentStorage: PersistentCacheStorage[storage]
@@ -161,7 +160,7 @@ const PersistentCacheConfigurator = () => {
           onChange={changeAndValidate}
           language={Language.json}
           height={'sizeToFit'}
-          isDarkTheme={theme === 'dark'}
+          isDarkTheme={theme === DARK}
         />
         {displayValidationError()}
       </React.Fragment>
@@ -182,6 +181,7 @@ const PersistentCacheConfigurator = () => {
               id="passivation"
               isChecked={passivation}
               onChange={() => setPassivation(!passivation)}
+              hasCheckIcon
               label={t('caches.create.configurations.feature.passivation')}
             />
             <PopoverHelp
@@ -196,7 +196,7 @@ const PersistentCacheConfigurator = () => {
             isInline
             fieldId="connection-attempts"
             label={t('caches.create.configurations.feature.connection-attempts')}
-            labelIcon={
+            labelHelp={
               <PopoverHelp
                 name={'connection-attempts'}
                 label={t('caches.create.configurations.feature.connection-attempts')}
@@ -224,7 +224,7 @@ const PersistentCacheConfigurator = () => {
             isInline
             fieldId="connection-interval"
             label={t('caches.create.configurations.feature.connection-interval')}
-            labelIcon={
+            labelHelp={
               <PopoverHelp
                 name={'connection-interval'}
                 label={t('caches.create.configurations.feature.connection-interval')}
@@ -249,7 +249,7 @@ const PersistentCacheConfigurator = () => {
             isInline
             fieldId="availability-interval"
             label={t('caches.create.configurations.feature.availability-interval')}
-            labelIcon={
+            labelHelp={
               <PopoverHelp
                 name={'availability-interval'}
                 label={t('caches.create.configurations.feature.availability-interval')}
@@ -274,7 +274,7 @@ const PersistentCacheConfigurator = () => {
             fieldId="storages"
             isRequired
             label={t('caches.create.configurations.feature.storages')}
-            labelIcon={
+            labelHelp={
               <PopoverHelp
                 name={'storages'}
                 label={t('caches.create.configurations.feature.storages')}

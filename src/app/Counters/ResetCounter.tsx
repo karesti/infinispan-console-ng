@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, ButtonVariant, Modal, Text, TextContent } from '@patternfly/react-core';
+import { Button, ButtonVariant, Content, Modal, ModalBody, ModalFooter, ModalHeader } from '@patternfly/react-core';
 import { useResetCounter } from '@app/services/countersHook';
 import { useTranslation } from 'react-i18next';
 
@@ -18,16 +18,21 @@ const ResetCounter = (props: {
 
   return (
     <Modal
-      titleIconVariant={'warning'}
       id={'reset-counter-modal'}
       className="pf-m-redhat-font"
-      width={'50%'}
+      variant={'small'}
       isOpen={props.isModalOpen}
-      title={t('cache-managers.counters.modal-reset-title')}
       onClose={props.closeModal}
       aria-label={t('cache-managers.counters.modal-reset-title')}
       disableFocusTrap={true}
-      actions={[
+    >
+      <ModalHeader titleIconVariant={'warning'} title={t('cache-managers.counters.modal-reset-title')} />
+      <ModalBody>
+        <Content component={'p'} isEditorial>
+          {t('cache-managers.counters.modal-reset-content', { counter: props.name, initialValue: props.initialValue })}
+        </Content>
+      </ModalBody>
+      <ModalFooter>
         <Button
           data-cy="resetCounterButton"
           key={'Reset'}
@@ -39,7 +44,7 @@ const ResetCounter = (props: {
           }}
         >
           {t('cache-managers.counters.reset-action')}
-        </Button>,
+        </Button>
         <Button
           key={'Cancel'}
           aria-label={'Cancel'}
@@ -49,14 +54,7 @@ const ResetCounter = (props: {
         >
           {t('cache-managers.counters.modal-cancel-button')}
         </Button>
-      ]}
-    >
-      <TextContent>
-        <Text>
-          The current value of <strong>{props.name}</strong> will be restored to its initial value of{' '}
-          <strong>{props.initialValue}</strong>
-        </Text>
-      </TextContent>
+      </ModalFooter>
     </Modal>
   );
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, ButtonVariant, Modal, Text, TextContent } from '@patternfly/react-core';
+import { Button, ButtonVariant, Content, Modal, ModalBody, ModalFooter, ModalHeader } from '@patternfly/react-core';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';
@@ -21,26 +21,20 @@ const UpdateSchema = (props: { cacheName: string; isModalOpen: boolean; closeMod
   };
 
   return (
-    <Modal
-      titleIconVariant={'info'}
-      width={'50%'}
-      isOpen={props.isModalOpen}
-      title={t('caches.index.update-schema.title')}
-      onClose={props.closeModal}
-      aria-label="update schema modal"
-      actions={[
+    <Modal variant={'small'} isOpen={props.isModalOpen} onClose={props.closeModal} aria-label="update schema modal">
+      <ModalHeader titleIconVariant={'info'} title={t('caches.index.update-schema.title')} />
+      <ModalBody>
+        <Content component={'p'}>{t('caches.index.update-schema.description1')}</Content>
+        <Content component={'p'}>{t('caches.index.update-schema.description2')}</Content>
+      </ModalBody>
+      <ModalFooter>
         <Button data-cy="updateCacheSchema" key="purge" variant={ButtonVariant.primary} onClick={onClickPurgeButton}>
           {t('common.actions.update')}
-        </Button>,
+        </Button>
         <Button data-cy="cancelButton" key="cancel" variant="link" onClick={props.closeModal}>
           {t('common.actions.cancel')}
         </Button>
-      ]}
-    >
-      <TextContent>
-        <Text>{t('caches.index.update-schema.description1')}</Text>
-        <Text>{t('caches.index.update-schema.description2')}</Text>
-      </TextContent>
+      </ModalFooter>
     </Modal>
   );
 };

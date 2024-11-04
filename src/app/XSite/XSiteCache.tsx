@@ -8,36 +8,32 @@ import {
   Card,
   CardBody,
   CardFooter,
+  Content,
   EmptyState,
   EmptyStateBody,
-  EmptyStateHeader,
-  EmptyStateIcon,
   EmptyStateVariant,
   PageSection,
-  PageSectionVariants,
   Spinner,
   Switch,
-  Text,
-  TextContent,
-  TextVariants,
   Toolbar,
   ToolbarContent,
   ToolbarItem,
   ToolbarItemVariant
 } from '@patternfly/react-core';
 import { Link, useParams } from 'react-router-dom';
-import { global_spacer_xs } from '@patternfly/react-tokens';
+import { t_global_spacer_xs } from '@patternfly/react-tokens';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
 import { Table, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import { StateTransfer } from '@app/XSite/StateTransfer';
-import { Status } from '@app/Common/Status';
+import { InfinispanComponentStatus } from '@app/Common/InfinispanComponentStatus';
 import { DatabaseIcon, InfoCircleIcon } from '@patternfly/react-icons';
 import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { useConnectedUser } from '@app/services/userManagementHook';
-import { ST_IDLE, ST_SEND_CANCELED, ST_SEND_FAILED, ST_SEND_OK, ST_SENDING } from '@services/displayUtils';
+import { ST_IDLE, ST_SEND_CANCELED, ST_SEND_FAILED, ST_SEND_OK, ST_SENDING } from '@services/infinispanRefData';
 import { TableErrorState } from '@app/Common/TableErrorState';
+import { PageHeader } from '@patternfly/react-component-groups';
 
 interface StateTransferModalState {
   site: string;
@@ -53,7 +49,7 @@ const XSiteCache = (props) => {
   const cacheName = useParams()['cacheName'] as string;
   const { connectedUser } = useConnectedUser();
   const [backups, setBackups] = useState<XSite[]>([]);
-  const [stateTransferStatus, setStateTransferStatus] = useState(new Map<string, Status>());
+  const [stateTransferStatus, setStateTransferStatus] = useState(new Map<string, ComponentStatusType>());
   const [backupsStatus, setBackupsStatus] = useState(new Map());
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
@@ -157,8 +153,8 @@ const XSiteCache = (props) => {
               <Badge>
                 <InfoCircleIcon
                   style={{
-                    marginRight: global_spacer_xs.value,
-                    marginTop: global_spacer_xs.value
+                    marginRight: t_global_spacer_xs.value,
+                    marginTop: t_global_spacer_xs.value
                   }}
                 />
                 {t('caches.backups.mixed')}
@@ -183,8 +179,8 @@ const XSiteCache = (props) => {
     return (
       <Switch
         id={site + '-switch'}
-        label={t('caches.backups.take-offline-action')}
-        labelOff={t('caches.backups.bring-online-action')}
+        hasCheckIcon
+        label={status == 'online' ? t('caches.backups.take-offline-action') : t('caches.backups.bring-online-action')}
         isChecked={status == 'online'}
         onChange={() => bringOnlineTakeOffLine(site, status)}
       />
@@ -196,7 +192,7 @@ const XSiteCache = (props) => {
     if (!stStatus || stStatus == ST_IDLE) {
       return '';
     }
-    return <Status status={stateTransferStatus.get(site)} />;
+    return <InfinispanComponentStatus status={stateTransferStatus.get(site)} />;
   };
 
   const buildStateTransferButton = (backup: XSite) => {
@@ -205,7 +201,8 @@ const XSiteCache = (props) => {
 
     if (stStatus == ST_SENDING) {
       return (
-        <Button data-cy={backup.name + "-cancelStateTransferButton"}
+        <Button
+          data-cy={backup.name + '-cancelStateTransferButton'}
           variant={ButtonVariant.danger}
           onClick={() =>
             setStateTransferModal({
@@ -222,14 +219,19 @@ const XSiteCache = (props) => {
 
     if (stStatus == ST_SEND_OK || stStatus == ST_SEND_FAILED || stStatus == ST_SEND_CANCELED) {
       return (
-        <Button data-cy={backup.name + "-clearStateButton"} variant={ButtonVariant.tertiary} onClick={() => clearStateTransfer(backup.name)}>
+        <Button
+          data-cy={backup.name + '-clearStateButton'}
+          variant={ButtonVariant.tertiary}
+          onClick={() => clearStateTransfer(backup.name)}
+        >
           {t('caches.backups.clear-state-action')}
         </Button>
       );
     }
 
     return (
-      <Button data-cy={backup.name + "-startTransfer"}
+      <Button
+        data-cy={backup.name + '-startTransfer'}
         variant={ButtonVariant.secondary}
         onClick={() =>
           setStateTransferModal({
@@ -274,12 +276,12 @@ const XSiteCache = (props) => {
           <Tr>
             <Td colSpan={4}>
               <Bullseye>
-                <EmptyState variant={EmptyStateVariant.sm}>
-                  <EmptyStateHeader
-                    titleText={<>{t('caches.backups.no-backups')}</>}
-                    icon={<EmptyStateIcon icon={DatabaseIcon} />}
-                    headingLevel="h2"
-                  />
+                <EmptyState
+                  variant={EmptyStateVariant.sm}
+                  headingLevel="h2"
+                  titleText={t('caches.backups.no-backups')}
+                  icon={DatabaseIcon}
+                >
                   <EmptyStateBody>{t('caches.backups.no-backups-body')}</EmptyStateBody>
                 </EmptyState>
               </Bullseye>
@@ -331,36 +333,24 @@ const XSiteCache = (props) => {
   };
   return (
     <React.Fragment>
-      <PageSection variant={PageSectionVariants.light}>
-        <DataContainerBreadcrumb currentPage={t('caches.backups.title')} cacheName={cacheName} />
-        <Toolbar key={'title-backups'}>
-          <ToolbarContent>
-            <ToolbarItem>
-              <TextContent key={'title-backups'}>
-                <Text component={TextVariants.h1} key={'title-value-backups'}>
-                  {t('caches.backups.title')}
-                </Text>
-              </TextContent>
-            </ToolbarItem>
-          </ToolbarContent>
-        </Toolbar>
-      </PageSection>
+      <DataContainerBreadcrumb currentPage={t('caches.backups.title')} cacheName={cacheName} />
+      <PageHeader title={t('caches.backups.title')} subtitle={''} />
       <PageSection>
         <Card>
           <CardBody>{buildBody()}</CardBody>
           <CardFooter>
-            <Text key={'button-back'}>
+            <Content key={'button-back'}>
               <Link
                 to={{
                   pathname: '/cache/' + encodeURIComponent(cacheName),
                   search: location.search
                 }}
               >
-                <Button data-cy="backToCacheDetailsButton" variant={ButtonVariant.secondary} data-cy="backButton">
+                <Button variant={ButtonVariant.secondary} data-cy="backButton">
                   {t('common.actions.back')}
                 </Button>
               </Link>
-            </Text>
+            </Content>
           </CardFooter>
         </Card>
       </PageSection>

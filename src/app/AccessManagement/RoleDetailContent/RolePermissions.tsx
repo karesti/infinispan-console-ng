@@ -6,11 +6,9 @@ import {
   ButtonVariant,
   EmptyState,
   EmptyStateBody,
-  EmptyStateIcon,
   EmptyStateVariant,
   Pagination,
   SearchInput,
-  Title,
   Toolbar,
   ToolbarContent,
   ToolbarGroup,
@@ -118,11 +116,12 @@ const RolePermissions = (props: { name: string }) => {
         <Tr>
           <Td colSpan={3}>
             <Bullseye>
-              <EmptyState variant={EmptyStateVariant.sm}>
-                <EmptyStateIcon icon={SearchIcon} />
-                <Title headingLevel="h2" size="lg">
-                  {t('access-management.role.no-permissions-found')}
-                </Title>
+              <EmptyState
+                variant={EmptyStateVariant.sm}
+                title={t('access-management.role.no-permissions-found')}
+                headingLevel="h2"
+                icon={SearchIcon}
+              >
                 <EmptyStateBody>{t('access-management.role.no-filtered-permissions-body')}</EmptyStateBody>
               </EmptyState>
             </Bullseye>
@@ -186,7 +185,7 @@ const RolePermissions = (props: { name: string }) => {
       <Toolbar id="role-table-toolbar" className={'role-table-display'}>
         <ToolbarContent>
           <ToolbarGroup variant="filter-group">
-            <ToolbarItem variant={'search-filter'}>
+            <ToolbarItem>
               <SearchInput
                 placeholder={t('access-management.role.permissions-search-placeholder')}
                 value={searchValue}

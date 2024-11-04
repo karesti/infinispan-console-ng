@@ -123,7 +123,7 @@ const IndexedConfigurationTuning = () => {
         <FormGroup
           fieldId="index-reader"
           label={t('caches.create.configurations.advanced-options.refresh-interval')}
-          labelIcon={
+          labelHelp={
             <PopoverHelp
               name="refresh-interval"
               label={t('caches.create.configurations.advanced-options.refresh-interval')}
@@ -164,6 +164,7 @@ const IndexedConfigurationTuning = () => {
                 data-cy="lowLevelTrace"
                 aria-label="low-level-trace"
                 id="low-level-trace"
+                hasCheckIcon
                 isChecked={lowLevelTrace === undefined ? false : lowLevelTrace}
                 onChange={() => setLowLevelTrace(!lowLevelTrace)}
                 label={t('caches.create.configurations.advanced-options.low-level-trace')}
@@ -178,7 +179,7 @@ const IndexedConfigurationTuning = () => {
           <FormGroup
             fieldId="commit-interval"
             label={t('caches.create.configurations.advanced-options.commit-interval')}
-            labelIcon={
+            labelHelp={
               <PopoverHelp
                 name="commit-interval"
                 label={t('caches.create.configurations.advanced-options.commit-interval')}
@@ -198,7 +199,7 @@ const IndexedConfigurationTuning = () => {
           <FormGroup
             fieldId="ram-buffer-size"
             label={t('caches.create.configurations.advanced-options.ram-buffer-size')}
-            labelIcon={
+            labelHelp={
               <PopoverHelp
                 name="ram-buffer-size"
                 label={t('caches.create.configurations.advanced-options.ram-buffer-size')}
@@ -218,7 +219,7 @@ const IndexedConfigurationTuning = () => {
           <FormGroup
             fieldId="max-buffered-entries"
             label={t('caches.create.configurations.advanced-options.max-buffered-entries')}
-            labelIcon={
+            labelHelp={
               <PopoverHelp
                 name="max-buffered-entries"
                 label={t('caches.create.configurations.advanced-options.max-buffered-entries')}
@@ -231,16 +232,14 @@ const IndexedConfigurationTuning = () => {
               placeholder="32"
               value={maxBufferedEntries}
               type="number"
-              onChange={(_event, val) => {
-                isNaN(parseInt(val)) ? setMaxBufferedEntries(undefined!) : setMaxBufferedEntries(parseInt(val));
-              }}
+              onChange={(_event, val) => setMaxBufferedEntries(isNaN(parseInt(val)) ? undefined! : parseInt(val))}
               aria-label="max-buffered-entries"
             />
           </FormGroup>
           <FormGroup
             fieldId="thread-pool-size"
             label={t('caches.create.configurations.advanced-options.thread-pool-size')}
-            labelIcon={
+            labelHelp={
               <PopoverHelp
                 name="thread-pool-size"
                 label={t('caches.create.configurations.advanced-options.thread-pool-size')}
@@ -253,16 +252,14 @@ const IndexedConfigurationTuning = () => {
               placeholder="1"
               value={threadPoolSize}
               type="number"
-              onChange={(_event, val) => {
-                isNaN(parseInt(val)) ? setThreadPoolSize(undefined!) : setThreadPoolSize(parseInt(val));
-              }}
+              onChange={(_event, val) => setThreadPoolSize(isNaN(parseInt(val)) ? undefined! : parseInt(val))}
               aria-label="thread-pool-size"
             />
           </FormGroup>
           <FormGroup
             fieldId="queue-count"
             label={t('caches.create.configurations.advanced-options.queue-count')}
-            labelIcon={
+            labelHelp={
               <PopoverHelp
                 name="queue-count"
                 label={t('caches.create.configurations.advanced-options.queue-count')}
@@ -275,16 +272,14 @@ const IndexedConfigurationTuning = () => {
               placeholder="1"
               value={queueCount}
               type="number"
-              onChange={(_event, val) => {
-                isNaN(parseInt(val)) ? setQueueCount(undefined!) : setQueueCount(parseInt(val));
-              }}
+              onChange={(_event, val) => setQueueCount(isNaN(parseInt(val)) ? undefined! : parseInt(val))}
               aria-label="queue-count"
             />
           </FormGroup>
           <FormGroup
             fieldId="queue-size"
             label={t('caches.create.configurations.advanced-options.queue-size')}
-            labelIcon={
+            labelHelp={
               <PopoverHelp
                 name="queue-size"
                 label={t('caches.create.configurations.advanced-options.queue-size')}
@@ -297,9 +292,7 @@ const IndexedConfigurationTuning = () => {
               placeholder="1000"
               value={queueSize}
               type="number"
-              onChange={(_event, val) => {
-                isNaN(parseInt(val)) ? setQueueSize(undefined!) : setQueueSize(parseInt(val));
-              }}
+              onChange={(_event, val) => setQueueSize(isNaN(parseInt(val)) ? undefined! : parseInt(val))}
               aria-label="queue-size"
             />
           </FormGroup>
@@ -330,6 +323,7 @@ const IndexedConfigurationTuning = () => {
                 id="calibrate-by-deletes"
                 isChecked={calibrateByDeletes === undefined ? false : calibrateByDeletes}
                 onChange={() => setCalibrateByDeletes(!calibrateByDeletes)}
+                hasCheckIcon
                 label={t('caches.create.configurations.advanced-options.calibrate-by-deletes')}
               />
               <PopoverHelp
@@ -342,7 +336,7 @@ const IndexedConfigurationTuning = () => {
           <FormGroup
             fieldId="factor"
             label={t('caches.create.configurations.advanced-options.factor')}
-            labelIcon={
+            labelHelp={
               <PopoverHelp
                 name="factor"
                 label={t('caches.create.configurations.advanced-options.factor')}
@@ -354,16 +348,14 @@ const IndexedConfigurationTuning = () => {
               data-cy="factor"
               value={factor}
               type="number"
-              onChange={(_event, val) => {
-                isNaN(parseInt(val)) ? setFactor(undefined!) : setFactor(parseInt(val));
-              }}
+              onChange={(_event, val) => setFactor(isNaN(parseInt(val)) ? undefined! : parseInt(val))}
               aria-label="factor"
             />
           </FormGroup>
           <FormGroup
             fieldId="max-entries"
             label={t('caches.create.configurations.advanced-options.max-entries')}
-            labelIcon={
+            labelHelp={
               <PopoverHelp
                 name="max-entries"
                 label={t('caches.create.configurations.advanced-options.max-entries')}
@@ -375,16 +367,14 @@ const IndexedConfigurationTuning = () => {
               data-cy="maxEntries"
               value={maxEntries}
               type="number"
-              onChange={(_event, val) => {
-                isNaN(parseInt(val)) ? setMaxEntries(undefined!) : setMaxEntries(parseInt(val));
-              }}
+              onChange={(_event, val) => setMaxEntries(isNaN(parseInt(val)) ? undefined! : parseInt(val))}
               aria-label="max-entries"
             />
           </FormGroup>
           <FormGroup
             fieldId="min-size"
             label={t('caches.create.configurations.advanced-options.min-size')}
-            labelIcon={
+            labelHelp={
               <PopoverHelp
                 name="min-size"
                 label={t('caches.create.configurations.advanced-options.min-size')}
@@ -396,16 +386,14 @@ const IndexedConfigurationTuning = () => {
               data-cy="minSize"
               value={minSize}
               type="number"
-              onChange={(_event, val) => {
-                isNaN(parseInt(val)) ? setMinSize(undefined!) : setMinSize(parseInt(val));
-              }}
+              onChange={(_event, val) => setMinSize(isNaN(parseInt(val)) ? undefined! : parseInt(val))}
               aria-label="min-size"
             />
           </FormGroup>
           <FormGroup
             fieldId="max-size"
             label={t('caches.create.configurations.advanced-options.max-size')}
-            labelIcon={
+            labelHelp={
               <PopoverHelp
                 name="max-size"
                 label={t('caches.create.configurations.advanced-options.max-size')}
@@ -417,16 +405,14 @@ const IndexedConfigurationTuning = () => {
               data-cy="maxSize"
               value={maxSize}
               type="number"
-              onChange={(_event, val) => {
-                isNaN(parseInt(val)) ? setMaxSize(undefined!) : setMaxSize(parseInt(val));
-              }}
+              onChange={(_event, val) => setMaxSize(isNaN(parseInt(val)) ? undefined! : parseInt(val))}
               aria-label="max-size"
             />
           </FormGroup>
           <FormGroup
             fieldId="max-forced-size"
             label={t('caches.create.configurations.advanced-options.max-forced-size')}
-            labelIcon={
+            labelHelp={
               <PopoverHelp
                 name="max-forced-size"
                 label={t('caches.create.configurations.advanced-options.max-forced-size')}
@@ -438,9 +424,7 @@ const IndexedConfigurationTuning = () => {
               data-cy="maxForcedSize"
               value={maxForcedSize}
               type="number"
-              onChange={(_event, val) => {
-                isNaN(parseInt(val)) ? setMaxForcedSize(undefined!) : setMaxForcedSize(parseInt(val));
-              }}
+              onChange={(_event, val) => setMaxForcedSize(isNaN(parseInt(val)) ? undefined! : parseInt(val))}
               aria-label="max-forced-size"
             />
           </FormGroup>

@@ -7,6 +7,8 @@ import {
   Card,
   CardBody,
   CardHeader,
+  Content,
+  ContentVariants,
   Flex,
   FlexItem,
   Gallery,
@@ -14,8 +16,6 @@ import {
   Spinner,
   Stack,
   StackItem,
-  Text,
-  TextVariants,
   Title,
   TitleSizes
 } from '@patternfly/react-core';
@@ -93,7 +93,10 @@ const Welcome = () => {
       <Button
         size="lg"
         onClick={onClickGoToConsole}
-        style={{ backgroundColor: chart_color_blue_500.value, color: chart_global_Fill_Color_white.value }}
+        style={{
+          backgroundColor: chart_color_blue_500.value,
+          color: chart_global_Fill_Color_white.value
+        }}
       >
         {goToTheConsole}
       </Button>
@@ -114,23 +117,30 @@ const Welcome = () => {
         <StackItem className={'version-text'}>
           <Flex>
             <FlexItem>
-              <Text>{t('welcome-page.current-version')}</Text>
+              <Content component={ContentVariants.p}>{t('welcome-page.current-version')}</Content>
             </FlexItem>
             <FlexItem>
-              <Badge style={{ backgroundColor: 'white', color: chart_color_blue_500.value }}>{version}</Badge>
+              <Badge
+                style={{
+                  backgroundColor: 'white',
+                  color: chart_color_blue_500.value
+                }}
+              >
+                {version}
+              </Badge>
             </FlexItem>
           </Flex>
         </StackItem>
       )}
       <StackItem className={'description'}>
-        <Text component={TextVariants.p}>{description1}</Text>
-        <Text component={TextVariants.p}>{description2}</Text>
-        <Text component={TextVariants.p}>
+        <Content component={ContentVariants.p}>{description1}</Content>
+        <Content component={ContentVariants.p}>{description2}</Content>
+        <Content component={ContentVariants.p}>
           {license}{' '}
           <a style={{ color: 'white', textDecoration: 'underline' }} href={apacheLicenseLink} target="blank">
             {t('welcome-page.apache-license')}
           </a>
-        </Text>
+        </Content>
       </StackItem>
       <StackItem>{buildConsoleButton()}</StackItem>
     </Stack>
@@ -154,10 +164,10 @@ const Welcome = () => {
               name: 'clickable-card'
             }}
           >
-            <Text>
+            <Content>
               <CatalogIcon />
               {t('welcome-page.blog')}
-            </Text>
+            </Content>
           </CardHeader>
           <CardBody className={'card-contents'}>{t('welcome-page.blog-description')}</CardBody>
         </Card>
@@ -178,10 +188,10 @@ const Welcome = () => {
             }}
             className={'card-heading'}
           >
-            <Text>
+            <Content>
               <DownloadIcon />
               {t('welcome-page.download')}
-            </Text>
+            </Content>
           </CardHeader>
           <CardBody className={'card-contents'}>{t('welcome-page.connect', { brandname: brandname })}</CardBody>
         </Card>
@@ -202,10 +212,10 @@ const Welcome = () => {
             }}
             className={'card-heading'}
           >
-            <Text>
+            <Content>
               <UnknownIcon />
               {t('welcome-page.learn-more')}
-            </Text>
+            </Content>
           </CardHeader>
           <CardBody className={'card-contents'}>{t('welcome-page.servers', { brandname: brandname })}</CardBody>
         </Card>
@@ -226,10 +236,10 @@ const Welcome = () => {
             }}
             className={'card-heading'}
           >
-            <Text>
+            <Content>
               <GithubIcon />
               {t('welcome-page.tutorials')}
-            </Text>
+            </Content>
           </CardHeader>
           <CardBody className={'card-contents'}>{t('welcome-page.develop', { brandname: brandname })}</CardBody>
         </Card>

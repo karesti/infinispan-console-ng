@@ -3,20 +3,15 @@ import { useState } from 'react';
 import {
   Card,
   CardBody,
-  Divider,
   Flex,
   FlexItem,
   Icon,
-  Nav,
-  NavItem,
-  NavList,
   PageSection,
   PageSectionVariants,
   Spinner,
-  Text,
-  TextContent,
-  TextVariants,
-  Title,
+  Tab,
+  Tabs,
+  TabTitleText,
   Toolbar,
   ToolbarContent,
   ToolbarItem
@@ -25,8 +20,9 @@ import { CacheTableDisplay } from '@app/CacheManagers/CacheTableDisplay';
 import { CounterTableDisplay } from '@app/CacheManagers/CounterTableDisplay';
 import { TasksTableDisplay } from '@app/CacheManagers/TasksTableDisplay';
 import { ProtobufSchemasDisplay } from '@app/ProtoSchema/ProtobufSchemasDisplay';
-import { Status } from '@app/Common/Status';
-import { global_spacer_md, global_spacer_sm } from '@patternfly/react-tokens';
+import { InfinispanComponentStatus } from '@app/Common/InfinispanComponentStatus';
+
+import { t_global_spacer_md } from '@patternfly/react-tokens';
 import { TableErrorState } from '@app/Common/TableErrorState';
 import { useDataContainer } from '@app/services/dataContainerHooks';
 import { useTranslation } from 'react-i18next';
@@ -36,6 +32,7 @@ import { ConsoleACL } from '@services/securityService';
 import { RebalancingCacheManager } from '@app/Rebalancing/RebalancingCacheManager';
 import { ClusterIcon } from '@patternfly/react-icons';
 import { TracingEnabled } from '@app/Common/TracingEnabled';
+import { PageHeader } from '@patternfly/react-component-groups';
 
 const CacheManagers = () => {
   const { connectedUser } = useConnectedUser();
@@ -51,13 +48,12 @@ const CacheManagers = () => {
   const [showSerializationContext, setShowSerializationContext] = useState(false);
   const { t } = useTranslation();
 
-  const handleTabClick = (nav) => {
-    const tabIndex = nav.itemId;
-    setActiveTabKey(tabIndex);
-    setShowCaches(tabIndex == '0');
-    setShowCounters(tabIndex == '1');
-    setShowTasks(tabIndex == '2');
-    setShowSerializationContext(tabIndex == '3');
+  const handleTabClick = (index) => {
+    setActiveTabKey(index);
+    setShowCaches(index == '0');
+    setShowCounters(index == '1');
+    setShowTasks(index == '2');
+    setShowSerializationContext(index == '3');
   };
 
   interface ContainerTab {
@@ -73,37 +69,47 @@ const CacheManagers = () => {
 
     const tabs: ContainerTab[] = [
       { name: t('cache-managers.caches-tab'), count: cachesCount, key: '0' },
-      { name: t('cache-managers.counters-tab'), count: countersCount, key: '1' }
+      {
+        name: t('cache-managers.counters-tab'),
+        count: countersCount,
+        key: '1'
+      }
     ];
 
     if (ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
-      tabs.push({ name: t('cache-managers.tasks-tab'), count: tasksCount, key: '2' });
+      tabs.push({
+        name: t('cache-managers.tasks-tab'),
+        count: tasksCount,
+        key: '2'
+      });
     }
 
     if (ConsoleServices.security().hasConsoleACL(ConsoleACL.BULK_READ, connectedUser)) {
-      tabs.push({ name: t('cache-managers.schemas-tab'), count: protoSchemasCount, key: '3' });
+      tabs.push({
+        name: t('cache-managers.schemas-tab'),
+        count: protoSchemasCount,
+        key: '3'
+      });
     }
 
     return (
-      <Nav
+      <Tabs
         data-cy="navigationTabs"
-        onSelect={(_event, nav) => handleTabClick(nav)}
-        variant={'tertiary'}
-        style={{ marginTop: global_spacer_md.value }}
+        onSelect={(_event, tab) => handleTabClick(tab)}
+        style={{ marginTop: t_global_spacer_md.value }}
+        activeKey={activeTabKey}
       >
-        <NavList>
+        <>
           {tabs.map((tab) => (
-            <NavItem
+            <Tab
               aria-label={'nav-item-' + tab.name}
               key={'nav-item-' + tab.key}
-              itemId={tab.key}
-              isActive={activeTabKey === tab.key}
-            >
-              <strong style={{ marginRight: global_spacer_sm.value }}>{tab.count}</strong> {tab.name}
-            </NavItem>
+              eventKey={tab.key}
+              title={<TabTitleText>{tab.count + ' ' + tab.name}</TabTitleText>}
+            ></Tab>
           ))}
-        </NavList>
-      </Nav>
+        </>
+      </Tabs>
     );
   };
 
@@ -145,64 +151,50 @@ const CacheManagers = () => {
   const buildHeader = () => {
     const title = t('cache-managers.title');
     if (!cm) {
-      return (
-        <PageSection variant={PageSectionVariants.light}>
-          <Flex id="cluster-manager-header">
-            <FlexItem>
-              <TextContent>
-                <Text component={TextVariants.h1}>{title}</Text>
-              </TextContent>
-            </FlexItem>
-          </Flex>
-        </PageSection>
-      );
+      return <PageHeader title={title} subtitle={''} />;
     }
 
     return (
-      <PageSection variant={PageSectionVariants.light} style={{ paddingBottom: 0 }}>
-        <Toolbar id="cluster-manager-header">
-          <ToolbarContent>
-            <ToolbarItem>
-              <Title headingLevel={'h1'}>{title}</Title>
-            </ToolbarItem>
-          </ToolbarContent>
-        </Toolbar>
-        <Toolbar id="cluster-manager-sub-header">
-          <ToolbarContent>
-            {cm.local_site != null && cm.local_site !== '' && (
-              <>
-                <ToolbarItem>
-                  <Flex data-cy="localSite">
-                    <FlexItem spacer={{ default: 'spacerXs' }}>
-                      <Icon>
-                        <ClusterIcon />
-                      </Icon>
-                    </FlexItem>
-                    <FlexItem>{cm.local_site}</FlexItem>
-                  </Flex>
-                </ToolbarItem>
-                <ToolbarItem variant="separator"></ToolbarItem>
-              </>
-            )}
-            <ToolbarItem>
-              <Status status={cm.cache_manager_status} />
-            </ToolbarItem>
-            {cm.tracing_enabled && (
-              <React.Fragment>
-                <ToolbarItem variant="separator"></ToolbarItem>
-                <ToolbarItem>
-                  <TracingEnabled enabled={cm.tracing_enabled} />
-                </ToolbarItem>
-              </React.Fragment>
-            )}
-            <ToolbarItem variant="separator"></ToolbarItem>
-            <ToolbarItem>
-              <RebalancingCacheManager />
-            </ToolbarItem>
-          </ToolbarContent>
-        </Toolbar>
-        {buildTabs()}
-      </PageSection>
+      <>
+        <PageHeader data-cy="cluster-manager-header" title={title} subtitle={''} />
+        <PageSection>
+          <Toolbar id="cluster-manager-sub-header">
+            <ToolbarContent>
+              {cm.local_site != null && cm.local_site !== '' && (
+                <>
+                  <ToolbarItem>
+                    <Flex data-cy="localSite">
+                      <FlexItem spacer={{ default: 'spacerXs' }}>
+                        <Icon>
+                          <ClusterIcon />
+                        </Icon>
+                      </FlexItem>
+                      <FlexItem>{cm.local_site}</FlexItem>
+                    </Flex>
+                  </ToolbarItem>
+                  <ToolbarItem variant="separator"></ToolbarItem>
+                </>
+              )}
+              <ToolbarItem>
+                <InfinispanComponentStatus status={cm.cache_manager_status} />
+              </ToolbarItem>
+              {cm.tracing_enabled && (
+                <React.Fragment>
+                  <ToolbarItem variant="separator"></ToolbarItem>
+                  <ToolbarItem>
+                    <TracingEnabled enabled={cm.tracing_enabled} />
+                  </ToolbarItem>
+                </React.Fragment>
+              )}
+              <ToolbarItem variant="separator"></ToolbarItem>
+              <ToolbarItem>
+                <RebalancingCacheManager />
+              </ToolbarItem>
+            </ToolbarContent>
+          </Toolbar>
+          {buildTabs()}
+        </PageSection>
+      </>
     );
   };
 

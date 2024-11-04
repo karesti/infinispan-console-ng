@@ -33,9 +33,13 @@ const RebalancingCacheManager = () => {
           <FlexItem>
             <Switch
               data-cy="rebalancingSwitch"
-              label={t('cache-managers.rebalancing.enabled')}
-              labelOff={t('cache-managers.rebalancing.disabled')}
+              label={
+                cm.rebalancing_enabled
+                  ? t('cache-managers.rebalancing.enabled')
+                  : t('cache-managers.rebalancing.disabled')
+              }
               isChecked={cm.rebalancing_enabled}
+              hasCheckIcon
               onChange={() => setConfirmationModalOpened(true)}
             />
             <RebalancingConfirmationModal

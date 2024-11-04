@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, ButtonVariant, Modal, Text, TextContent } from '@patternfly/react-core';
+import { Button, ButtonVariant, Content, Modal, ModalBody, ModalFooter, ModalHeader } from '@patternfly/react-core';
 import { useDeleteCounter } from '@app/services/countersHook';
 import { useTranslation } from 'react-i18next';
 
@@ -19,16 +19,20 @@ const DeleteCounter = (props: {
 
   return (
     <Modal
-      titleIconVariant={'warning'}
       id={'delete-counter-modal'}
       className="pf-m-redhat-font"
-      width={'50%'}
+      variant={'small'}
       isOpen={props.isModalOpen}
-      title={t('cache-managers.counters.modal-delete-modal')}
       onClose={props.closeModal}
-      aria-label={t('cache-managers.counters.modal-delete-modal')}
+      aria-label={t('cache-managers.counters.modal-delete-title')}
       disableFocusTrap={true}
-      actions={[
+    >
+      <ModalHeader titleIconVariant={'warning'} title={t('cache-managers.counters.modal-delete-title')} />
+      <ModalBody>
+        <Content component={'p'}>{t('cache-managers.counters.modal-delete-content')}</Content>
+      </ModalBody>
+
+      <ModalFooter>
         <Button
           data-cy="deleteCounterButton"
           key={t('cache-managers.counters.modal-confirm-button')}
@@ -41,7 +45,7 @@ const DeleteCounter = (props: {
           isDisabled={props.isDisabled}
         >
           {t('cache-managers.counters.delete-action')}
-        </Button>,
+        </Button>
         <Button
           key={'Cancel'}
           aria-label={'Cancel'}
@@ -51,13 +55,7 @@ const DeleteCounter = (props: {
         >
           {t('cache-managers.counters.modal-cancel-button')}
         </Button>
-      ]}
-    >
-      <TextContent>
-        <Text>
-          The counter and its state will be permanently deleted from the cluster <strong>{`'${props.name}'`}</strong>
-        </Text>
-      </TextContent>
+      </ModalFooter>
     </Modal>
   );
 };

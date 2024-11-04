@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Modal, Text, TextContent } from '@patternfly/react-core';
+import { Button, Modal, Content, ModalHeader, ModalBody, ModalFooter } from '@patternfly/react-core';
 import { useCaches } from '@app/services/dataContainerHooks';
 import { useTranslation } from 'react-i18next';
 import { CheckCircleIcon } from '@patternfly/react-icons';
@@ -11,7 +11,6 @@ import { useSetAvailableCache } from '@app/services/cachesHook';
 const SetAvailableCache = (props: { cacheName: string; isModalOpen: boolean; closeModal: (boolean) => void }) => {
   const { reloadCaches } = useCaches();
   const { onSetAvailable } = useSetAvailableCache(props.cacheName);
-
   const { t } = useTranslation();
 
   const clearSetAvailableCacheModal = (setAvailableDone: boolean) => {
@@ -28,27 +27,26 @@ const SetAvailableCache = (props: { cacheName: string; isModalOpen: boolean; clo
 
   return (
     <Modal
-      titleIconVariant={CheckCircleIcon}
       className="pf-m-redhat-font"
-      width={'50%'}
+      variant={'small'}
       isOpen={props.isModalOpen}
-      title={t('caches.availability.modal-available-title')}
       onClose={() => clearSetAvailableCacheModal(false)}
       aria-label="make-cache-available"
-      actions={[
+    >
+      <ModalHeader titleIconVariant={CheckCircleIcon} title={t('caches.availability.modal-available-title')} />
+      <ModalBody>
+        <Content>
+          <strong>{`'${props.cacheName}'`}</strong> {t('caches.availability.modal-available-description')}
+        </Content>
+      </ModalBody>
+      <ModalFooter>
         <Button aria-label="Confirm" key="available" onClick={handleAvailableButton}>
           {t('caches.availability.modal-available-button-done')}
-        </Button>,
+        </Button>
         <Button aria-label="Cancel" key="cancel" variant="link" onClick={() => clearSetAvailableCacheModal(false)}>
           {t('caches.availability.modal-available-button-cancel')}
         </Button>
-      ]}
-    >
-      <TextContent>
-        <Text>
-          <strong>{`'${props.cacheName}'`}</strong> {t('caches.availability.modal-available-description')}
-        </Text>
-      </TextContent>
+      </ModalFooter>
     </Modal>
   );
 };

@@ -7,15 +7,11 @@ import {
   EmptyState,
   EmptyStateBody,
   EmptyStateFooter,
-  EmptyStateHeader,
-  EmptyStateIcon,
   EmptyStateVariant,
   Label,
   LabelGroup,
   Pagination,
   SearchInput,
-  Text,
-  TextContent,
   Title,
   Toolbar,
   ToolbarContent,
@@ -27,7 +23,7 @@ import { ActionsColumn, IAction, Table, Tbody, Td, Th, Thead, Tr } from '@patter
 import { useTranslation } from 'react-i18next';
 import { DatabaseIcon, SearchIcon } from '@patternfly/react-icons';
 import { useFetchAvailablePrincipals } from '@app/services/principalsHook';
-import { global_spacer_sm, global_spacer_xl } from '@patternfly/react-tokens';
+import { t_global_spacer_sm, t_global_spacer_xl } from '@patternfly/react-tokens';
 import { TableErrorState } from '@app/Common/TableErrorState';
 import { TableLoadingState } from '@app/Common/TableLoadingState';
 import { GrantNewAccess } from '@app/AccessManagement/GrantNewAccess';
@@ -172,14 +168,15 @@ const PrincipalTableDisplay = () => {
       <Tr>
         <Td colSpan={3}>
           <Bullseye>
-            <EmptyState variant={EmptyStateVariant.sm}>
-              <EmptyStateIcon icon={SearchIcon} />
+            <EmptyState variant={EmptyStateVariant.sm} icon={SearchIcon}>
               <Title headingLevel="h2" size="lg">
                 {t('access-management.principals.no-principals-found')}
               </Title>
               <EmptyStateBody>
                 {principals.length == 0
-                  ? t('access-management.principals.no-principals-body', { brandname: brandname })
+                  ? t('access-management.principals.no-principals-body', {
+                      brandname: brandname
+                    })
                   : t('access-management.principals.no-filtered-principals-body')}
               </EmptyStateBody>
             </EmptyState>
@@ -190,8 +187,12 @@ const PrincipalTableDisplay = () => {
   };
 
   const grantAccessButtonHelper = (isEmptyPage?: boolean) => {
-    const emptyPageButtonProp = { style: { marginTop: global_spacer_xl.value } };
-    const normalPageButtonProps = { style: { marginLeft: global_spacer_sm.value } };
+    const emptyPageButtonProp = {
+      style: { marginTop: t_global_spacer_xl.value }
+    };
+    const normalPageButtonProps = {
+      style: { marginLeft: t_global_spacer_sm.value }
+    };
     return (
       <Button
         variant={ButtonVariant.primary}
@@ -208,14 +209,16 @@ const PrincipalTableDisplay = () => {
   const displayContent = () => {
     if (principals.length === 0) {
       return (
-        <EmptyState variant={EmptyStateVariant.lg}>
-          <EmptyStateHeader
-            titleText={t('access-management.principals.no-principals-status')}
-            icon={<EmptyStateIcon icon={DatabaseIcon} />}
-            headingLevel="h4"
-          />
+        <EmptyState
+          variant={EmptyStateVariant.lg}
+          titleText={t('access-management.principals.no-principals-status')}
+          icon={DatabaseIcon}
+          headingLevel="h4"
+        >
           <EmptyStateBody>
-            {t('access-management.principals.no-principals-body', { brandname: brandname })}
+            {t('access-management.principals.no-principals-body', {
+              brandname: brandname
+            })}
           </EmptyStateBody>
           <EmptyStateFooter>{grantAccessButtonHelper(true)}</EmptyStateFooter>
         </EmptyState>
@@ -235,7 +238,7 @@ const PrincipalTableDisplay = () => {
         <Toolbar id="principal-table-toolbar" className={'principal-table-display'}>
           <ToolbarContent>
             <ToolbarGroup variant="filter-group">
-              <ToolbarItem variant={'search-filter'}>
+              <ToolbarItem>
                 <SearchInput
                   placeholder={t('access-management.principals.search-placeholder')}
                   value={searchValue}

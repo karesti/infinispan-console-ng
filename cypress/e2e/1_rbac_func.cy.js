@@ -121,7 +121,7 @@ describe('RBAC Functionality Tests', () => {
       cy.get('[data-cy=rebalancingSwitch]').should('not.exist'); // rebalancing status
     }
 
-    cy.get('#cluster-manager-header').should('exist');
+    cy.get('[data-cy=cluster-manager-header]').should('exist');
     cy.get('[data-cy=cacheManagerStatus]').should('exist');
     cy.get('[data-cy=navigationTabs]').should('exist');
     cy.contains(/^\d+ Caches$/);
@@ -344,7 +344,7 @@ describe('RBAC Functionality Tests', () => {
         cy.get('button[aria-label="Show Filters"]').click();
       }
     })
-    
+
     cy.get('[data-cy=counterFilterSelectExpanded]').should('exist');
     //Checking delete counter functionality
     cy.contains('td', 'strong-1').parent()

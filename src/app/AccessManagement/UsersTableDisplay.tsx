@@ -3,7 +3,6 @@ import {
   Bullseye,
   EmptyState,
   EmptyStateBody,
-  EmptyStateIcon,
   EmptyStateVariant,
   Pagination,
   SearchInput,
@@ -46,7 +45,7 @@ const UsersTableDisplay = () => {
 
   useEffect(() => {
     if (realms.size > 0) {
-      setRealm(realms.keys().next().value);
+      setRealm(realms.keys().next().value as string);
     }
   }, [realms, loading]);
 
@@ -118,8 +117,7 @@ const UsersTableDisplay = () => {
       <Tr>
         <Td colSpan={3}>
           <Bullseye>
-            <EmptyState variant={EmptyStateVariant.sm}>
-              <EmptyStateIcon icon={SearchIcon} />
+            <EmptyState variant={EmptyStateVariant.sm} icon={SearchIcon}>
               <Title headingLevel="h2" size="lg">
                 {t('access-management.users.no-users-found')}
               </Title>
@@ -163,7 +161,7 @@ const UsersTableDisplay = () => {
               </ToolbarItem>
             </ToolbarGroup>
             <ToolbarGroup variant={'filter-group'}>
-              <ToolbarItem variant={'search-filter'}>
+              <ToolbarItem>
                 <SearchInput
                   placeholder={t('access-management.users.search-placeholder')}
                   value={searchValue}

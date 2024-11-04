@@ -8,15 +8,12 @@ import {
   GridItem,
   HelperText,
   HelperTextItem,
-  InputGroup,
-  InputGroupItem,
   NumberInput,
   Radio,
   SelectOptionProps,
-  Switch,
-  TextInput
+  Switch
 } from '@patternfly/react-core';
-import { CacheMode, CacheType, EncodingType, TimeUnits } from '@services/infinispanRefData';
+import { CacheMode, CacheType, EncodingType } from '@services/infinispanRefData';
 import { useTranslation } from 'react-i18next';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
 import { useCreateCache } from '@app/services/createCacheHook';
@@ -115,7 +112,7 @@ const BasicCacheConfigConfigurator = () => {
         isInline
         label={t('caches.create.configurations.basic.mode-title')}
         fieldId="topology"
-        labelIcon={
+        labelHelp={
           <PopoverHelp
             name={'Cache mode'}
             label={t('caches.create.configurations.basic.mode-title')}
@@ -151,7 +148,7 @@ const BasicCacheConfigConfigurator = () => {
         isInline
         fieldId="mode"
         label={t('caches.create.configurations.basic.cluster-repl-title')}
-        labelIcon={
+        labelHelp={
           <PopoverHelp
             name={'mode'}
             label={t('caches.create.configurations.basic.cluster-repl-title')}
@@ -181,7 +178,7 @@ const BasicCacheConfigConfigurator = () => {
     return (
       <FormGroup
         label={t('caches.create.configurations.basic.number-owners')}
-        labelIcon={
+        labelHelp={
           <PopoverHelp
             name={'number-of-owners'}
             label={t('caches.create.configurations.basic.number-owners')}
@@ -221,8 +218,12 @@ const BasicCacheConfigConfigurator = () => {
           id="statistics"
           isChecked={isStatistics}
           onChange={() => setIsStatistics(!isStatistics)}
-          label={t('caches.create.configurations.basic.statistics-enable')}
-          labelOff={t('caches.create.configurations.basic.statistics-disable')}
+          hasCheckIcon
+          label={
+            isStatistics
+              ? t('caches.create.configurations.basic.statistics-disable')
+              : t('caches.create.configurations.basic.statistics-enable')
+          }
         />
       </FormGroup>
     );
@@ -235,7 +236,7 @@ const BasicCacheConfigConfigurator = () => {
         isInline
         isRequired
         fieldId="field-encoding-cache"
-        labelIcon={
+        labelHelp={
           <PopoverHelp
             name={'encoding'}
             label={t('caches.create.configurations.basic.encoding-cache-title')}
@@ -263,8 +264,12 @@ const BasicCacheConfigConfigurator = () => {
           id="expiration"
           isChecked={isExpiration}
           onChange={() => setIsExpiration(!isExpiration)}
-          labelOff={t('caches.create.configurations.basic.expiration-disable')}
-          label={t('caches.create.configurations.basic.expiration-enable')}
+          hasCheckIcon
+          label={
+            isExpiration
+              ? t('caches.create.configurations.basic.expiration-enable')
+              : t('caches.create.configurations.basic.expiration-disable')
+          }
         />
         <PopoverHelp
           name={'expiration'}
@@ -290,7 +295,7 @@ const BasicCacheConfigConfigurator = () => {
           <FormGroup
             fieldId="form-life-span"
             label={t('caches.create.configurations.basic.lifespan')}
-            labelIcon={
+            labelHelp={
               <PopoverHelp
                 name={'lifespan'}
                 label={t('caches.create.configurations.basic.lifespan')}
@@ -322,7 +327,7 @@ const BasicCacheConfigConfigurator = () => {
           <FormGroup
             fieldId="form-max-idle"
             label={t('caches.create.configurations.basic.max-idle')}
-            labelIcon={
+            labelHelp={
               <PopoverHelp
                 name={'maxidle'}
                 label={t('caches.create.configurations.basic.max-idle')}

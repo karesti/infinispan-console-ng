@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, ButtonVariant, Modal, Text, TextContent } from '@patternfly/react-core';
+import { Button, ButtonVariant, Content, Modal, ModalBody, ModalFooter, ModalHeader } from '@patternfly/react-core';
 import { useTranslation } from 'react-i18next';
 import { useDeleteRole } from '@app/services/rolesHook';
 
@@ -10,16 +10,24 @@ const DeleteRole = (props: { name: string; isModalOpen: boolean; submitModal: ()
 
   return (
     <Modal
-      titleIconVariant={'danger'}
       id={'delete-role-modal'}
-      className="pf-m-redhat-font"
-      width={'50%'}
+      variant={'small'}
       isOpen={props.isModalOpen}
-      title={t('access-management.roles.modal-delete-title', { name: props.name })}
       onClose={props.closeModal}
       aria-label="modal-role-delete"
       disableFocusTrap={true}
-      actions={[
+    >
+      <ModalHeader
+        titleIconVariant={'danger'}
+        title={t('access-management.roles.modal-delete-title', { name: props.name })}
+      />
+      <ModalBody>
+        <Content>
+          {t('access-management.roles.modal-delete-description-1', { name: props.name, brandname: brandname })}
+        </Content>
+        <Content>{t('access-management.roles.modal-delete-description-2')}</Content>
+      </ModalBody>
+      <ModalFooter>
         <Button
           key={'Delete'}
           aria-label={'Delete'}
@@ -29,7 +37,7 @@ const DeleteRole = (props: { name: string; isModalOpen: boolean; submitModal: ()
           }}
         >
           {t('common.actions.delete')}
-        </Button>,
+        </Button>
         <Button
           key={'Cancel'}
           aria-label={'Cancel'}
@@ -39,14 +47,7 @@ const DeleteRole = (props: { name: string; isModalOpen: boolean; submitModal: ()
         >
           {t('common.actions.cancel')}
         </Button>
-      ]}
-    >
-      <TextContent>
-        <Text>
-          {t('access-management.roles.modal-delete-description-1', { name: props.name, brandname: brandname })}
-        </Text>
-        <Text>{t('access-management.roles.modal-delete-description-2')}</Text>
-      </TextContent>
+      </ModalFooter>
     </Modal>
   );
 };

@@ -11,7 +11,7 @@ describe('Data Container Overview', () => {
     cy.contains('Running'); // cluster status
     cy.contains('Tracing is enabled');
     cy.contains('Cluster rebalancing on'); // rebalancing status
-    cy.get('#cluster-manager-header').should('exist');
+    cy.get('[data-cy=cluster-manager-header]').should('exist');
     cy.get('[data-cy=cacheManagerStatus]').should('exist');
     cy.get('[data-cy=rebalancingSwitch]').should('exist');
     cy.get('[data-cy=navigationTabs]').should('exist');
@@ -310,7 +310,7 @@ describe('Data Container Overview', () => {
     cy.get('[data-cy=dataContainerLink]').click(); //Clicking on breadcrumb link.
 
     //Is redirected to Data Container page
-    cy.get('#cluster-manager-header').should('exist');
+    cy.get('[data-cy=cluster-manager-header]').should('exist');
     cy.get('[data-cy=cacheManagerStatus]').should('exist');
     cy.get('[data-cy=rebalancingSwitch]').should('exist');
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, ButtonVariant, Modal, Text, TextContent } from '@patternfly/react-core';
+import { Button, ButtonVariant, Modal, Content, ModalFooter, ModalHeader, ModalBody } from '@patternfly/react-core';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { useCacheDetail } from '@app/services/cachesHook';
 import { useTranslation } from 'react-i18next';
@@ -71,29 +71,28 @@ const DeleteEntry = (props: {
 
   return (
     <Modal
-      titleIconVariant={'warning'}
       className="pf-m-redhat-font"
-      width={'50%'}
+      variant={'small'}
       isOpen={props.isModalOpen}
-      title={'Delete entry?'}
       onClose={props.closeModal}
-      aria-label={t('caches.entries.modal-delete-label')}
-      actions={[
+      aria-label={t('caches.entries.modal-delete-title')}
+    >
+      <ModalHeader titleIconVariant={'warning'} title={t('caches.entries.modal-delete-title')} />
+      <ModalBody>
+        <Content>
+          {t('caches.entries.modal-delete-body-line-one')} <strong>&quot;{props.entryKey}&quot;</strong>{' '}
+          {t('caches.entries.modal-delete-body-line-two')} <strong>{props.cacheName}</strong>.
+        </Content>
+        <Content>{t('caches.entries.modal-delete-body-line-three')}</Content>
+      </ModalBody>
+      <ModalFooter>
         <Button data-cy="deleteEntryButton" key="confirm" variant={ButtonVariant.danger} onClick={onClickDeleteButton}>
           {t('caches.entries.modal-button-delete')}
-        </Button>,
+        </Button>
         <Button data-cy="cancelDeleteEntry" key="cancel" variant="link" onClick={props.closeModal}>
           {t('caches.entries.modal-button-cancel')}
         </Button>
-      ]}
-    >
-      <TextContent>
-        <Text>
-          {t('caches.entries.modal-delete-body-line-one')} <strong>&quot;{props.entryKey}&quot;</strong>{' '}
-          {t('caches.entries.modal-delete-body-line-two')} <strong>{props.cacheName}</strong>.
-        </Text>
-        <Text>{t('caches.entries.modal-delete-body-line-three')}</Text>
-      </TextContent>
+      </ModalFooter>
     </Modal>
   );
 };

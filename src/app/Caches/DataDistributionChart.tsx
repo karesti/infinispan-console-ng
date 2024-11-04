@@ -6,8 +6,6 @@ import {
   CardTitle,
   EmptyState,
   EmptyStateBody,
-  EmptyStateHeader,
-  EmptyStateIcon,
   EmptyStateVariant,
   Level,
   LevelItem,
@@ -20,7 +18,7 @@ import {
   ToolbarItemVariant
 } from '@patternfly/react-core';
 import { Table, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
-import { Chart, ChartBar, ChartGroup, ChartThemeColor, ChartVoronoiContainer } from '@patternfly/react-charts';
+import { Chart, ChartBar, ChartGroup, ChartThemeColor, ChartVoronoiContainer } from '@patternfly/react-charts/victory';
 import { SearchIcon } from '@patternfly/react-icons';
 import { TableErrorState } from '@app/Common/TableErrorState';
 import { useTranslation } from 'react-i18next';
@@ -55,7 +53,7 @@ const DataDistributionChart = (props: { cacheName: string }) => {
     if (filteredData) {
       const initSlice = (tablePagination.page - 1) * tablePagination.perPage;
       const updateRows = filteredData.slice(initSlice, initSlice + tablePagination.perPage);
-      updateRows.length > 0 ? setTableRow(updateRows) : setTableRow([]);
+      setTableRow(updateRows);
     }
   }, [tablePagination, filteredData]);
 
@@ -120,7 +118,7 @@ const DataDistributionChart = (props: { cacheName: string }) => {
     <React.Fragment>
       <Toolbar id="distribution-table-toolbar">
         <ToolbarContent>
-          <ToolbarItem variant="search-filter">{searchInput}</ToolbarItem>
+          <ToolbarItem>{searchInput}</ToolbarItem>
           <ToolbarItem variant={ToolbarItemVariant.pagination}>{pagination}</ToolbarItem>
         </ToolbarContent>
       </Toolbar>
@@ -138,12 +136,12 @@ const DataDistributionChart = (props: { cacheName: string }) => {
             <Tr>
               <Td colSpan={6}>
                 <Bullseye>
-                  <EmptyState variant={EmptyStateVariant.sm}>
-                    <EmptyStateHeader
-                      titleText={<>{t('caches.cache-metrics.data-distribution-no-filtered')}</>}
-                      icon={<EmptyStateIcon icon={SearchIcon} />}
-                      headingLevel="h2"
-                    />
+                  <EmptyState
+                    variant={EmptyStateVariant.sm}
+                    titleText={<>{t('caches.cache-metrics.data-distribution-no-filtered')}</>}
+                    icon={SearchIcon}
+                    headingLevel="h2"
+                  >
                     <EmptyStateBody>{t('caches.cache-metrics.data-distribution-no-filtered-body')}</EmptyStateBody>
                   </EmptyState>
                 </Bullseye>
@@ -201,7 +199,14 @@ const DataDistributionChart = (props: { cacheName: string }) => {
   });
 
   const distributionChart = (
-    <div style={{ height: '458px', width: '100%', maxWidth: '700px', margin: 'auto' }}>
+    <div
+      style={{
+        height: '393px',
+        width: '100%',
+        maxWidth: '700px',
+        margin: 'auto'
+      }}
+    >
       <Chart
         ariaDesc={t('caches.cache-metrics.data-distribution')}
         ariaTitle={t('caches.cache-metrics.data-distribution')}
@@ -247,7 +252,7 @@ const DataDistributionChart = (props: { cacheName: string }) => {
         }}
         width={700}
         themeColor={
-          statsOption === DataDistributionStatsOption.MemoryUsed ? ChartThemeColor.cyan : ChartThemeColor.blue
+          statsOption === DataDistributionStatsOption.MemoryUsed ? ChartThemeColor.purple : ChartThemeColor.blue
         }
       >
         {statsOption === DataDistributionStatsOption.MemoryUsed ? (

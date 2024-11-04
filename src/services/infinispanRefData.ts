@@ -9,13 +9,6 @@ import {
 
 export const TracingCategories = ['container', 'x-site', 'cluster', 'persistence'];
 
-export enum ComponentHealth {
-  HEALTHY = 'HEALTHY',
-  HEALTHY_REBALANCING = 'HEALTHY_REBALANCING',
-  DEGRADED = 'DEGRADED',
-  FAILED = 'FAILED',
-  UNKNOWN = 'UNKNOWN'
-}
 /**
  * Cache configuration utils class
  *
@@ -272,3 +265,82 @@ export const ROLES_MAP = new Map<string, string>([
   ['LIFECYCLE', 'access-management.roles.permission-lifecycle'],
   ['NONE', 'access-management.roles.permission-none']
 ]);
+
+export const UNKNOWN: ComponentStatusType = {
+  name: 'Unknown',
+  status: 'custom'
+};
+export const OK_STATUS: ComponentStatusType = {
+  name: 'Ok',
+  status: 'success'
+};
+export const RUNNING_STATUS: ComponentStatusType = {
+  name: 'Running',
+  status: 'success'
+};
+export const INIT_STATUS: ComponentStatusType = {
+  name: 'Initializing',
+  status: 'warning'
+};
+export const CANCEL_STATUS: ComponentStatusType = {
+  name: 'Cancelling',
+  status: 'warning'
+};
+
+export const ERROR_STATUS: ComponentStatusType = {
+  name: 'Error',
+  status: 'danger'
+};
+export const TERMINATED_STATUS: ComponentStatusType = {
+  name: 'Terminated',
+  status: 'info'
+};
+export const STOPPING_STATUS: ComponentStatusType = {
+  name: 'Stopping',
+  status: 'info'
+};
+export const INSTANTIATED_STATUS: ComponentStatusType = {
+  name: 'Instantiated',
+  status: 'info'
+};
+
+export const ST_IDLE: ComponentStatusType = {
+  name: 'Inactive',
+  status: 'success'
+};
+export const ST_SENDING: ComponentStatusType = {
+  name: 'Sending',
+  status: 'info'
+};
+export const ST_SEND_OK: ComponentStatusType = {
+  name: 'Transfer Ok',
+  status: 'success'
+};
+export const ST_SEND_FAILED: ComponentStatusType = {
+  name: 'Transfer Failed',
+  status: 'danger'
+};
+export const ST_SEND_CANCELED: ComponentStatusType = {
+  name: 'Transfer Cancelled',
+  status: 'warning'
+};
+
+export const HEALTHY_HEALTH: ComponentStatusType = {
+  name: 'Healthy',
+  status: 'success'
+};
+
+export const HEALTHY_REBALANCING_HEALTH: ComponentStatusType = {
+  name: 'Healthy rebalancing',
+  status: 'info'
+};
+
+export const DEGRADED_HEALTH: ComponentStatusType = {
+  name: 'Degraded',
+  status: 'warning'
+};
+
+export const FAILED: ComponentStatusType = {
+  name: 'Failed',
+  status: 'danger'
+};

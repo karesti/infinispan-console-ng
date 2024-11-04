@@ -52,9 +52,9 @@ const RebalancingCache = () => {
       <ToolbarItem>
         <Switch
           id="rebalancing-switch"
-          label={t('caches.rebalancing.enabled')}
-          labelOff={t('caches.rebalancing.disabled')}
+          label={cache.rebalancing_enabled ? t('caches.rebalancing.enabled') : t('caches.rebalancing.disabled')}
           isChecked={cache.rebalancing_enabled}
+          hasCheckIcon
           onChange={() => setConfirmationModalOpened(true)}
         />
         <RebalancingConfirmationModal

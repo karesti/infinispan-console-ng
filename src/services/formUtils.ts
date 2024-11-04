@@ -1,5 +1,5 @@
-import { SelectOptionObject } from '@patternfly/react-core/deprecated';
 import React from 'react';
+import { SelectOption } from '@patternfly/react-core';
 
 export interface IField {
   value: string;
@@ -10,7 +10,7 @@ export interface IField {
 }
 
 export interface ISelectField {
-  selected: string | SelectOptionObject | (string | SelectOptionObject)[];
+  selected: string | typeof SelectOption | (string | typeof SelectOption)[];
   expanded: boolean;
   helperText: string;
 }

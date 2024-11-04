@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, ButtonVariant, Modal, Text, TextContent } from '@patternfly/react-core';
+import { Button, ButtonVariant, Content, Modal, ModalBody, ModalFooter, ModalHeader } from '@patternfly/react-core';
 import { useTranslation } from 'react-i18next';
 import { useRemovePermission } from '@app/services/rolesHook';
 
@@ -16,16 +16,28 @@ const RemovePermission = (props: {
 
   return (
     <Modal
-      titleIconVariant={'warning'}
       id={'delete-permission-modal'}
-      className="pf-m-redhat-font"
-      width={'50%'}
+      variant={'small'}
       isOpen={props.isModalOpen}
-      title={t('access-management.role.modal-remove-permission-title', { name: props.remove })}
       onClose={props.closeModal}
       aria-label="modal-role-delete"
       disableFocusTrap={true}
-      actions={[
+    >
+      <ModalHeader
+        titleIconVariant={'warning'}
+        title={t('access-management.role.modal-remove-permission-title', {
+          name: props.remove
+        })}
+      />
+      <ModalBody>
+        <Content>
+          {t('access-management.role.modal-remove-permission-description-1', {
+            roleName: props.name
+          })}
+        </Content>
+        <Content>{t('access-management.role.modal-remove-permission-description-2')}</Content>
+      </ModalBody>
+      <ModalFooter>
         <Button
           key={'Remove'}
           aria-label={'Remove'}
@@ -35,7 +47,7 @@ const RemovePermission = (props: {
           }}
         >
           {t('common.actions.remove')}
-        </Button>,
+        </Button>
         <Button
           key={'Cancel'}
           aria-label={'Cancel'}
@@ -45,12 +57,7 @@ const RemovePermission = (props: {
         >
           {t('common.actions.cancel')}
         </Button>
-      ]}
-    >
-      <TextContent>
-        <Text>{t('access-management.role.modal-remove-permission-description-1', { roleName: props.name })}</Text>
-        <Text>{t('access-management.role.modal-remove-permission-description-2')}</Text>
-      </TextContent>
+      </ModalFooter>
     </Modal>
   );
 };

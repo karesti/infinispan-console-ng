@@ -6,14 +6,11 @@ import {
   AlertVariant,
   Bullseye,
   EmptyState,
-  EmptyStateHeader,
-  EmptyStateIcon,
   PageSection,
   PageSectionVariants,
   Spinner,
-  Text,
-  TextContent,
-  TextVariants,
+  Content,
+  ContentVariants,
   Toolbar,
   ToolbarContent
 } from '@patternfly/react-core';
@@ -26,6 +23,7 @@ import { TableErrorState } from '@app/Common/TableErrorState';
 import { ConsoleACL } from '@services/securityService';
 import { useConnectedUser } from '@app/services/userManagementHook';
 import { useDataContainer } from '@app/services/dataContainerHooks';
+import { PageHeader } from '@patternfly/react-component-groups';
 
 const CreateCache = () => {
   const { t } = useTranslation();
@@ -45,7 +43,7 @@ const CreateCache = () => {
 
   const displayError = () => {
     return (
-      <PageSection variant={PageSectionVariants.light}>
+      <PageSection>
         <TableErrorState error={error} />
       </PageSection>
     );
@@ -53,11 +51,9 @@ const CreateCache = () => {
 
   const displayLoading = () => {
     return (
-      <PageSection variant={PageSectionVariants.light}>
+      <PageSection>
         <Bullseye>
-          <EmptyState>
-            <EmptyStateHeader titleText="Loading" icon={<EmptyStateIcon icon={Spinner} />} headingLevel="h4" />
-          </EmptyState>
+          <EmptyState titleText="Loading" icon={Spinner} headingLevel="h4" />
         </Bullseye>
       </PageSection>
     );
@@ -68,30 +64,16 @@ const CreateCache = () => {
 
   return (
     <CreateCacheProvider>
-      <PageSection variant={PageSectionVariants.light}>
-        {create && <DataContainerBreadcrumb currentPage={t('caches.create.breadcrumb')} />}
-        <Toolbar id={`${id}-cache-header`}>
-          <ToolbarContent style={{ paddingLeft: 0 }}>
-            <TextContent>
-              <Text component={TextVariants.h1}>
-                {localSite == ''
-                  ? t(`caches.${id}.page-title`)
-                  : t(`caches.${id}.page-title-with-backups`, { localsite: localSite })}
-              </Text>
-            </TextContent>
-          </ToolbarContent>
-          {!canCreateCache && (
-            <ToolbarContent style={{ paddingLeft: 0 }}>
-              <Alert
-                title={t('caches.setup.page-title-description', { brandname: brandname })}
-                variant={AlertVariant.info}
-                isPlain
-                isInline
-              />
-            </ToolbarContent>
-          )}
-        </Toolbar>
-      </PageSection>
+      {create && <DataContainerBreadcrumb currentPage={t('caches.create.breadcrumb')} />}
+      <PageHeader
+        title={
+          localSite == ''
+            ? t(`caches.${id}.page-title`)
+            : t(`caches.${id}.page-title-with-backups`, { localsite: localSite })
+        }
+        subtitle={t(`caches.${id}.page-title-description`, { brandname: brandname })}
+      />
+
       {loading && displayLoading()}
       {error != '' && displayError()}
       {cm && <CreateCacheWizard cacheManager={cm} create={create} />}

@@ -2,14 +2,16 @@ import React, { useContext, useEffect, useState } from 'react';
 
 import {
   Brand,
+  Button,
+  Content,
+  ContentVariants,
   Dropdown,
   DropdownGroup,
   DropdownItem,
-  Flex,
-  FlexItem,
   Masthead,
   MastheadBrand,
   MastheadContent,
+  MastheadLogo,
   MastheadMain,
   MastheadToggle,
   MenuToggle,
@@ -20,26 +22,24 @@ import {
   Page,
   PageSidebar,
   PageSidebarBody,
-  PageToggleButton,
   SkipToContent,
   Spinner,
-  Switch,
-  Text,
-  TextContent,
-  TextVariants,
+  ToggleGroup,
+  ToggleGroupItem,
   Toolbar,
   ToolbarContent,
   ToolbarGroup,
   ToolbarItem,
   Tooltip
 } from '@patternfly/react-core';
-import icon from '!!url-loader!@app/assets/images/brand.svg';
-import { Link, NavLink } from 'react-router-dom';
+import brandLight from '!!url-loader!@app/assets/images/brand.svg';
+import brandDark from '!!url-loader!@app/assets/images/brand_dark.svg';
+import { NavLink } from 'react-router-dom';
 import { IAppRoute, routes } from '@app/routes';
 import { APIAlertProvider } from '@app/providers/APIAlertProvider';
 import { ActionResponseAlert } from '@app/Common/ActionResponseAlert';
 import { Navigate, useLocation, useNavigate } from 'react-router';
-import { global_spacer_sm } from '@patternfly/react-tokens';
+import { t_global_spacer_sm } from '@patternfly/react-tokens';
 import { About } from '@app/About/About';
 import { ErrorBoundary } from '@app/ErrorBoundary';
 import { BannerAlert } from '@app/Common/BannerAlert';
@@ -47,9 +47,16 @@ import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { useAppInitState, useConnectedUser } from '@app/services/userManagementHook';
 import { KeycloakService } from '@services/keycloakService';
-import { BarsIcon, ExternalLinkAltIcon, InfoCircleIcon, QuestionCircleIcon } from '@patternfly/react-icons';
+import {
+  BarsIcon,
+  ExternalLinkAltIcon,
+  InfoCircleIcon,
+  MoonIcon,
+  QuestionCircleIcon,
+  SunIcon
+} from '@patternfly/react-icons';
 import { ConsoleACL } from '@services/securityService';
-import { ThemeContext } from '@app/providers/ThemeProvider';
+import { DARK, LIGHT, ThemeContext } from '@app/providers/ThemeProvider';
 
 interface IAppLayout {
   children: React.ReactNode;
@@ -61,6 +68,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
   const { theme, toggleTheme } = useContext(ThemeContext);
   const { pathname } = useLocation();
   const navigate = useNavigate();
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const { connectedUser } = useConnectedUser();
 
   const [isWelcomePage, setIsWelcomePage] = useState(ConsoleServices.isWelcomePage());
@@ -73,88 +81,102 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
   }, [pathname]);
 
   const Logo = (
-    <Flex alignItems={{ default: 'alignItemsCenter' }}>
-      <FlexItem style={{ marginTop: global_spacer_sm.value }}>
-        <Link to={{ pathname: '/' /*, search: location.search */ }}>
-          <Brand src={icon} alt={t('layout.console-name')} widths={{ default: '150px' }}>
-            <source srcSet={icon} />
-          </Brand>
-        </Link>
-      </FlexItem>
-      <FlexItem>
-        <TextContent>
-          <Text component={TextVariants.h2}>{t('layout.console-name')}</Text>
-        </TextContent>
-      </FlexItem>
-    </Flex>
+    <Brand src={theme == DARK ? brandDark : brandLight} alt={t('layout.console-name')} widths={{ default: '150px' }}>
+      <source srcSet={theme == DARK ? brandDark : brandLight} />
+    </Brand>
   );
 
   const userActions = () => {
     const chromeAgent = navigator.userAgent.toString().indexOf('Chrome') > -1;
     if (chromeAgent || (KeycloakService.Instance.isInitialized() && KeycloakService.Instance.authenticated())) {
       return (
-        <ToolbarGroup>
-          <ToolbarItem>
-            <Dropdown
-              onSelect={() => setIsDropdownOpen(!isDropdownOpen)}
-              isOpen={isDropdownOpen}
-              toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
-                <MenuToggle
-                  ref={toggleRef}
-                  isFullHeight
-                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  isExpanded={isDropdownOpen}
-                >
-                  {connectedUser.name}
-                </MenuToggle>
-              )}
-              shouldFocusToggleOnSelect
-            >
-              <DropdownGroup key="user-action-group">
-                <DropdownItem
-                  key="user-action-group-1 logout"
-                  onClick={() => {
-                    if (KeycloakService.Instance.isInitialized() && KeycloakService.Instance.authenticated()) {
-                      KeycloakService.Instance.logout(ConsoleServices.landing());
-                    } else {
-                      ConsoleServices.authentication().logOutLink();
-                      navigate('/welcome');
-                      window.location.reload();
-                    }
-                  }}
-                >
-                  {t('layout.logout')}
-                </DropdownItem>
-              </DropdownGroup>
-            </Dropdown>
-          </ToolbarItem>
-        </ToolbarGroup>
+        <ToolbarItem>
+          <Dropdown
+            onSelect={() => setIsDropdownOpen(!isDropdownOpen)}
+            isOpen={isDropdownOpen}
+            toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+              <MenuToggle
+                ref={toggleRef}
+                isFullHeight
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                isExpanded={isDropdownOpen}
+              >
+                {connectedUser.name}
+              </MenuToggle>
+            )}
+            shouldFocusToggleOnSelect
+          >
+            <DropdownGroup key="user-action-group">
+              <DropdownItem
+                key="user-action-group-1 logout"
+                onClick={() => {
+                  if (KeycloakService.Instance.isInitialized() && KeycloakService.Instance.authenticated()) {
+                    KeycloakService.Instance.logout(ConsoleServices.landing());
+                  } else {
+                    ConsoleServices.authentication().logOutLink();
+                    navigate('/welcome');
+                    window.location.reload();
+                  }
+                }}
+              >
+                {t('layout.logout')}
+              </DropdownItem>
+            </DropdownGroup>
+          </Dropdown>
+        </ToolbarItem>
       );
     }
     return (
-      <ToolbarItem>
-        {connectedUser.name}
-        <Tooltip position="left" content={<Text>{t('layout.close-browser-message')}</Text>}>
-          <span aria-label={t('layout.close-browser-message')} tabIndex={0}>
-            <InfoCircleIcon style={{ marginLeft: global_spacer_sm.value, marginTop: global_spacer_sm.value }} />
-          </span>
-        </Tooltip>
-      </ToolbarItem>
+      <ToolbarGroup variant="label-group">
+        <ToolbarItem>
+          {connectedUser.name}
+          <Tooltip position="left" content={<Content>{t('layout.close-browser-message')}</Content>}>
+            <span aria-label={t('layout.close-browser-message')} tabIndex={0}>
+              <InfoCircleIcon
+                style={{
+                  marginLeft: t_global_spacer_sm.value,
+                  marginTop: t_global_spacer_sm.value
+                }}
+              />
+            </span>
+          </Tooltip>
+        </ToolbarItem>
+      </ToolbarGroup>
     );
   };
 
   const headerToolbar = (
-    <Toolbar id="toolbar" isFullHeight isStatic>
+    <Toolbar id="toolbar" isFullHeight>
       <ToolbarContent>
-        <ToolbarGroup
-          variant="icon-button-group"
-          align={{ default: 'alignRight' }}
-          spacer={{ default: 'spacerNone', md: 'spacerMd' }}
-        >
+        <ToolbarGroup variant="label-group">
+          <ToolbarItem>
+            <Content component={ContentVariants.h2}>{t('layout.console-name')}</Content>
+          </ToolbarItem>
+        </ToolbarGroup>
+        <ToolbarGroup align={{ default: 'alignEnd' }}>
+          <ToolbarItem>
+            <ToggleGroup>
+              <ToggleGroupItem
+                icon={<SunIcon />}
+                aria-label={'Light mode'}
+                isSelected={theme == LIGHT}
+                onChange={() => toggleTheme(true)}
+                buttonId="themeLight"
+              />
+              <ToggleGroupItem
+                icon={<MoonIcon />}
+                isSelected={theme == DARK}
+                aria-label={'Dark mode'}
+                onChange={() => toggleTheme(false)}
+                buttonId="themeDark"
+              />
+            </ToggleGroup>
+          </ToolbarItem>
           <ToolbarItem>
             <Dropdown
               id="aboutInfoQuestionMark"
               onSelect={() => setIsHelpOpen(!isHelpOpen)}
+              popperProps={{ position: 'right' }}
               isOpen={isHelpOpen}
               toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
                 <MenuToggle
@@ -181,31 +203,27 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
               </DropdownItem>
             </Dropdown>
           </ToolbarItem>
-          <ToolbarItem>
-            <Switch
-              id="darkThemeSwitch"
-              isChecked={theme === 'dark'}
-              onChange={toggleTheme}
-              ouiaId="DarkThemeOuiaId"
-              label={t('layout.dark-theme')}
-              className="darkThemeSwitch"
-            />
-          </ToolbarItem>
+          {!ConsoleServices.authentication().isNotSecured() && userActions()}
         </ToolbarGroup>
-        {!ConsoleServices.authentication().isNotSecured() && userActions()}
       </ToolbarContent>
     </Toolbar>
   );
 
   const Header = (
     <Masthead>
-      <MastheadToggle>
-        <PageToggleButton variant="plain" aria-label="Global navigation">
-          <BarsIcon />
-        </PageToggleButton>
-      </MastheadToggle>
       <MastheadMain>
-        <MastheadBrand component={(props) => Logo} />
+        <MastheadToggle>
+          <Button
+            data-cy="sideBarToggle"
+            icon={<BarsIcon />}
+            variant="plain"
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            aria-label="Global navigation"
+          />
+        </MastheadToggle>
+        <MastheadBrand>
+          <MastheadLogo>{Logo}</MastheadLogo>
+        </MastheadBrand>
       </MastheadMain>
       <MastheadContent>{headerToolbar}</MastheadContent>
     </Masthead>
@@ -244,7 +262,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
   };
 
   const Navigation = (
-    <Nav id="nav-primary-simple" theme="dark">
+    <Nav id="nav-primary-simple">
       <NavList id="nav-list-simple">
         {filteredRoutes.map(
           (route, idx) =>
@@ -279,19 +297,19 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
       return <Navigate to="/welcome" />;
     }
 
+    const Sidebar = (
+      <PageSidebar>
+        <PageSidebarBody>{Navigation}</PageSidebarBody>
+      </PageSidebar>
+    );
+
     return (
       <Page
         mainContainerId="primary-app-container"
-        header={isWelcomePage ? null : Header}
+        masthead={isWelcomePage ? null : Header}
+        isContentFilled
         skipToContent={PageSkipToContent}
-        sidebar={
-          isWelcomePage ? null : (
-            <PageSidebar theme="dark">
-              <PageSidebarBody>{Navigation}</PageSidebarBody>
-            </PageSidebar>
-          )
-        }
-        isManagedSidebar
+        sidebar={!isWelcomePage && sidebarOpen && Sidebar}
       >
         <ActionResponseAlert />
         <BannerAlert />

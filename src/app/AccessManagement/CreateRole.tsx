@@ -8,6 +8,9 @@ import {
   HelperText,
   HelperTextItem,
   Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   ModalVariant,
   SelectOptionProps,
   TextInput
@@ -120,93 +123,93 @@ const CreateRole = (props: { isModalOpen: boolean; submitModal: () => void; clos
     <Modal
       position={'top'}
       tabIndex={0}
-      titleIconVariant={AddCircleOIcon}
       variant={ModalVariant.small}
       id={'create-role-modal'}
-      className="pf-m-redhat-font"
       isOpen={props.isModalOpen}
-      title={t('access-management.roles.modal-create-title')}
       onClose={onCloseModal}
       aria-label={'roles-modal-create-title'}
       disableFocusTrap={true}
-      actions={[
+    >
+      <ModalHeader titleIconVariant={AddCircleOIcon} title={t('access-management.roles.modal-create-title')} />
+      <ModalBody>
+        <Form
+          onSubmit={(e) => {
+            e.preventDefault();
+          }}
+        >
+          <FormGroup isRequired isInline label={t('access-management.roles.modal-role-name')}>
+            <TextInput
+              validated={roleName.validated}
+              value={roleName.value}
+              type="text"
+              onChange={(_event, value) =>
+                formUtils.validateRequiredField(value, t('access-management.roles.modal-role-name'), setRoleName)
+              }
+              aria-label="role-name-input"
+            />
+            {roleName.validated === 'error' && (
+              <FormHelperText>
+                <HelperText>
+                  <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
+                    {roleName.invalidText}
+                  </HelperTextItem>
+                </HelperText>
+              </FormHelperText>
+            )}
+          </FormGroup>
+          <FormGroup isInline label={t('access-management.roles.modal-role-description')}>
+            <TextInput
+              validated={roleDescription.validated}
+              value={roleDescription.value}
+              type="text"
+              onChange={(_event, value) =>
+                formUtils.validateRequiredField(
+                  value,
+                  t('access-management.roles.modal-role-description'),
+                  setRoleDescription
+                )
+              }
+              aria-label="role-description-input"
+            />
+            {roleDescription.validated === 'error' && (
+              <FormHelperText>
+                <HelperText>
+                  <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
+                    {roleDescription.invalidText}
+                  </HelperTextItem>
+                </HelperText>
+              </FormHelperText>
+            )}
+          </FormGroup>
+          <FormGroup fieldId="permissions" isRequired isInline label={t('access-management.roles.modal-permissions')}>
+            <SelectMultiWithChips
+              id="permissions"
+              placeholder={t('access-management.roles.modal-permissions-list-placeholder')}
+              options={initialSelectOptions}
+              selection={selectedPermissions}
+              onSelect={onSelectPermission}
+              onClear={() => setSelectedPermissions([])}
+            />
+            {rolePermissionsField.validated === 'error' && (
+              <FormHelperText>
+                <HelperText>
+                  <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
+                    {rolePermissionsField.invalidText}
+                  </HelperTextItem>
+                </HelperText>
+              </FormHelperText>
+            )}
+          </FormGroup>
+        </Form>
+      </ModalBody>
+      <ModalFooter>
         <Button key={'Create'} aria-label={'Create'} variant={ButtonVariant.primary} onClick={handleSubmit}>
           {t('common.actions.save')}
-        </Button>,
+        </Button>
         <Button key={'Cancel'} aria-label={'Cancel'} variant={ButtonVariant.link} onClick={onCloseModal}>
           {t('common.actions.cancel')}
         </Button>
-      ]}
-    >
-      <Form
-        onSubmit={(e) => {
-          e.preventDefault();
-        }}
-      >
-        <FormGroup isRequired isInline label={t('access-management.roles.modal-role-name')}>
-          <TextInput
-            validated={roleName.validated}
-            value={roleName.value}
-            type="text"
-            onChange={(_event, value) =>
-              formUtils.validateRequiredField(value, t('access-management.roles.modal-role-name'), setRoleName)
-            }
-            aria-label="role-name-input"
-          />
-          {roleName.validated === 'error' && (
-            <FormHelperText>
-              <HelperText>
-                <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
-                  {roleName.invalidText}
-                </HelperTextItem>
-              </HelperText>
-            </FormHelperText>
-          )}
-        </FormGroup>
-        <FormGroup isInline label={t('access-management.roles.modal-role-description')}>
-          <TextInput
-            validated={roleDescription.validated}
-            value={roleDescription.value}
-            type="text"
-            onChange={(_event, value) =>
-              formUtils.validateRequiredField(
-                value,
-                t('access-management.roles.modal-role-description'),
-                setRoleDescription
-              )
-            }
-            aria-label="role-description-input"
-          />
-          {roleDescription.validated === 'error' && (
-            <FormHelperText>
-              <HelperText>
-                <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
-                  {roleDescription.invalidText}
-                </HelperTextItem>
-              </HelperText>
-            </FormHelperText>
-          )}
-        </FormGroup>
-        <FormGroup fieldId="permissions" isRequired isInline label={t('access-management.roles.modal-permissions')}>
-          <SelectMultiWithChips
-            id="permissions"
-            placeholder={t('access-management.roles.modal-permissions-list-placeholder')}
-            options={initialSelectOptions}
-            selection={selectedPermissions}
-            onSelect={onSelectPermission}
-            onClear={() => setSelectedPermissions([])}
-          />
-          {rolePermissionsField.validated === 'error' && (
-            <FormHelperText>
-              <HelperText>
-                <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
-                  {rolePermissionsField.invalidText}
-                </HelperTextItem>
-              </HelperText>
-            </FormHelperText>
-          )}
-        </FormGroup>
-      </Form>
+      </ModalFooter>
     </Modal>
   );
 };

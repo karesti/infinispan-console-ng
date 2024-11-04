@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import {
   Bullseye,
+  Content,
   FormGroup,
   FormHelperText,
   HelperText,
   HelperTextItem,
-  Spinner,
-  Text,
-  TextContent
+  Spinner
 } from '@patternfly/react-core';
 import { useTranslation } from 'react-i18next';
 import { useCreateCache } from '@app/services/createCacheHook';
@@ -66,9 +65,7 @@ const SecuredCacheConfigurator = (props: { isEnabled: boolean }) => {
       return (
         <Bullseye>
           <Spinner size={'md'} isInline />
-          <TextContent>
-            <Text>{t('caches.create.configurations.feature.roles-loading')}</Text>
-          </TextContent>
+          <Content>{t('caches.create.configurations.feature.roles-loading')}</Content>
         </Bullseye>
       );
     }

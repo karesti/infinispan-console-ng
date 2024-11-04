@@ -5,18 +5,13 @@ import {
   Card,
   CardBody,
   CardTitle,
+  Content,
+  ContentVariants,
   Divider,
   DividerVariant,
   Level,
   LevelItem,
-  Spinner,
-  Text,
-  TextContent,
-  TextList,
-  TextListItem,
-  TextListItemVariants,
-  TextListVariants,
-  TextVariants
+  Spinner
 } from '@patternfly/react-core';
 import { TableErrorState } from '@app/Common/TableErrorState';
 import { ClearMetrics } from '@app/ClearMetrics/ClearMetrics';
@@ -52,41 +47,37 @@ const QueryMetrics = (props: { cacheName: string }) => {
     }
 
     return (
-      <TextContent>
+      <>
         {stats.query.map((queryStat, num) => (
           <React.Fragment key={'stat-fragment-' + num}>
-            <Text component={TextVariants.small} key={'name-' + num}>
+            <Content component={ContentVariants.small} key={'name-' + num}>
               {' '}
               {queryStat.name} <Divider component={DividerVariant.hr} />
-            </Text>
-            <TextList component={TextListVariants.dl} key={'stats-' + num}>
-              <TextListItem component={TextListItemVariants.dt} style={{ width: 250 }} key={'stats-count-label-' + num}>
+            </Content>
+            <Content component={ContentVariants.dl} key={'stats-' + num}>
+              <Content component={ContentVariants.dt} style={{ width: 250 }} key={'stats-count-label-' + num}>
                 {t('caches.query.stat-count')}
-              </TextListItem>
-              <TextListItem component={TextListItemVariants.dd} key={'stats-count-value-' + num}>
+              </Content>
+              <Content component={ContentVariants.dd} key={'stats-count-value-' + num}>
                 {queryStat.count}
-              </TextListItem>
-              <TextListItem
-                component={TextListItemVariants.dt}
-                style={{ width: 250 }}
-                key={'stats-qverage-label-' + num}
-              >
+              </Content>
+              <Content component={ContentVariants.dt} style={{ width: 250 }} key={'stats-qverage-label-' + num}>
                 {t('caches.query.stat-average')}
-              </TextListItem>
-              <TextListItem component={TextListItemVariants.dd} key={'stats-average-value-' + num}>
+              </Content>
+              <Content component={ContentVariants.dd} key={'stats-average-value-' + num}>
                 {queryStat.average}
-              </TextListItem>
-              <TextListItem component={TextListItemVariants.dt} style={{ width: 250 }} key={'stats-max-label-' + num}>
+              </Content>
+              <Content component={ContentVariants.dt} style={{ width: 250 }} key={'stats-max-label-' + num}>
                 {t('caches.query.stat-max')}
-              </TextListItem>
-              <TextListItem component={TextListItemVariants.dd} key={'stats-max-value-' + num}>
+              </Content>
+              <Content component={ContentVariants.dd} key={'stats-max-value-' + num}>
                 {queryStat.max}
-              </TextListItem>
+              </Content>
               {displaySlowest(queryStat, num)}
-            </TextList>
+            </Content>
           </React.Fragment>
         ))}
-      </TextContent>
+      </>
     );
   };
 
@@ -96,12 +87,12 @@ const QueryMetrics = (props: { cacheName: string }) => {
     }
     return (
       <React.Fragment>
-        <TextListItem component={TextListItemVariants.dt} style={{ width: 250 }} key={'stats-slowest-label-' + num}>
+        <Content component={ContentVariants.dt} style={{ width: 250 }} key={'stats-slowest-label-' + num}>
           {t('caches.query.stat-slowest')}
-        </TextListItem>
-        <TextListItem component={TextListItemVariants.dd} key={'stats-slowest-value-' + num}>
+        </Content>
+        <Content component={ContentVariants.dd} key={'stats-slowest-value-' + num}>
           <code>{queryStat.slowest}</code>
-        </TextListItem>
+        </Content>
       </React.Fragment>
     );
   };

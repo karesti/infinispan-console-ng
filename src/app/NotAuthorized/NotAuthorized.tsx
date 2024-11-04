@@ -1,14 +1,6 @@
 import * as React from 'react';
-import { useLocation, useNavigate } from 'react-router';
-import {
-  Button,
-  EmptyState,
-  EmptyStateBody,
-  EmptyStateIcon,
-  PageSection,
-  EmptyStateHeader,
-  EmptyStateFooter
-} from '@patternfly/react-core';
+import { useNavigate } from 'react-router';
+import { Button, EmptyState, EmptyStateBody, EmptyStateFooter, PageSection } from '@patternfly/react-core';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons';
 import { useTranslation } from 'react-i18next';
 
@@ -27,12 +19,7 @@ const NotAuthorized = () => {
 
   return (
     <PageSection>
-      <EmptyState variant="full">
-        <EmptyStateHeader
-          titleText={<>{t('not-auth-page.title')}</>}
-          icon={<EmptyStateIcon icon={ExclamationTriangleIcon} />}
-          headingLevel="h1"
-        />
+      <EmptyState variant="full" icon={ExclamationTriangleIcon} headingLevel="h1" titleText={t('not-auth-page.title')}>
         <EmptyStateBody>{t('not-auth-page.description')}</EmptyStateBody>
         <EmptyStateFooter>
           <GoHomeBtn />

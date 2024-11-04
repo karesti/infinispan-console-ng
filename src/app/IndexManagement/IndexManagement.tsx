@@ -5,28 +5,22 @@ import {
   ButtonVariant,
   Card,
   CardBody,
+  Content,
+  ContentVariants,
   EmptyState,
   EmptyStateBody,
-  EmptyStateIcon,
   EmptyStateVariant,
   Grid,
   GridItem,
   PageSection,
   PageSectionVariants,
   Spinner,
-  Text,
-  TextContent,
-  TextList,
-  TextListItem,
-  TextListItemVariants,
-  TextListVariants,
-  TextVariants,
   Toolbar,
   ToolbarContent,
   ToolbarItem
 } from '@patternfly/react-core';
 import { Link, useParams } from 'react-router-dom';
-import { global_spacer_md } from '@patternfly/react-tokens';
+import { t_global_spacer_md } from '@patternfly/react-tokens';
 import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
 import { TableErrorState } from '@app/Common/TableErrorState';
 import { PurgeIndex } from '@app/IndexManagement/PurgeIndex';
@@ -40,6 +34,7 @@ import { DatabaseIcon } from '@patternfly/react-icons';
 import { UpdateSchema } from '@app/IndexManagement/UpdateSchema';
 import { useIndexMetamodel } from '@app/services/searchHook';
 import { ViewMetamodel } from '@app/IndexManagement/ViewMetamodel';
+import { PageHeader } from '@patternfly/react-component-groups';
 
 const IndexManagement = () => {
   const { t } = useTranslation();
@@ -143,28 +138,26 @@ const IndexManagement = () => {
         <Grid hasGutter>
           {stats.index.map((indexData, num) => (
             <GridItem span={6} key={'grid-item-index-' + num}>
-              <TextContent style={{ marginTop: global_spacer_md.value }} key={'index-className-' + num}>
-                <TextList component={TextListVariants.dl}>
-                  <TextListItem component={TextListItemVariants.dt}>{t('caches.index.class-name')}</TextListItem>
-                  <TextListItem component={TextListItemVariants.dd} key={'classNameValue'}>
-                    <Text component={'a'} onClick={() => setIndexMetamodelName(indexData.name)}>
-                      {indexData.name}
-                    </Text>
-                  </TextListItem>
-                  <TextListItem component={TextListItemVariants.dt} key={'entriesCount'}>
-                    {t('caches.index.entities-number')}
-                  </TextListItem>
-                  <TextListItem component={TextListItemVariants.dd} key={'entriesCountValue'}>
-                    <Text>{indexData.count}</Text>
-                  </TextListItem>
-                  <TextListItem component={TextListItemVariants.dt} key={'sizes'}>
-                    {t('caches.index.size')}
-                  </TextListItem>
-                  <TextListItem component={TextListItemVariants.dd} key={'sizesValue'}>
-                    <Text>{indexData.size}</Text>
-                  </TextListItem>
-                </TextList>
-              </TextContent>
+              <Content component={ContentVariants.dl} key={'index-className-' + num}>
+                <Content component={ContentVariants.dt}>{t('caches.index.class-name')}</Content>
+                <Content component={ContentVariants.dd} key={'classNameValue'}>
+                  <Content component={'a'} onClick={() => setIndexMetamodelName(indexData.name)}>
+                    {indexData.name}
+                  </Content>
+                </Content>
+                <Content component={ContentVariants.dt} key={'entriesCount'}>
+                  {t('caches.index.entities-number')}
+                </Content>
+                <Content component={ContentVariants.dd} key={'entriesCountValue'}>
+                  <Content>{indexData.count}</Content>
+                </Content>
+                <Content component={ContentVariants.dt} key={'sizes'}>
+                  {t('caches.index.size')}
+                </Content>
+                <Content component={ContentVariants.dd} key={'sizesValue'}>
+                  <Content>{indexData.size}</Content>
+                </Content>
+              </Content>
             </GridItem>
           ))}
         </Grid>
@@ -172,8 +165,7 @@ const IndexManagement = () => {
     }
 
     return (
-      <EmptyState variant={EmptyStateVariant.sm}>
-        <EmptyStateIcon icon={DatabaseIcon} />
+      <EmptyState variant={EmptyStateVariant.sm} icon={DatabaseIcon} status={'info'}>
         <EmptyStateBody>{t('caches.index.empty')}</EmptyStateBody>
       </EmptyState>
     );
@@ -181,45 +173,29 @@ const IndexManagement = () => {
 
   return (
     <React.Fragment>
-      <PageSection variant={PageSectionVariants.light}>
-        <DataContainerBreadcrumb currentPage={t('caches.index.title')} cacheName={cacheName} />
-        <Toolbar key={'title-indexing'}>
-          <ToolbarContent>
+      <DataContainerBreadcrumb currentPage={t('caches.index.title')} cacheName={cacheName} />
+      <PageHeader title={t('caches.index.title')} subtitle={t('caches.index.description')} />
+      <PageSection>
+        {buildIndexPageContent()}
+        <Toolbar id="indexing-page-toolbar">
+          <ToolbarContent style={{ paddingLeft: 0, paddingTop: t_global_spacer_md.value }}>
+            {buildUpdateSchemaAction()}
+            {buildReindexAction()}
+            {buildPurgeIndexButton()}
             <ToolbarItem>
-              <TextContent>
-                <Text component={TextVariants.h1} key={'title-value-indexing'}>
-                  {t('caches.index.indexing-status')}
-                </Text>
-              </TextContent>
+              <Link
+                to={{
+                  pathname: '/cache/' + encodeURIComponent(cacheName),
+                  search: location.search
+                }}
+              >
+                <Button variant={ButtonVariant.link} data-cy="backButton">
+                  {t('common.actions.back')}
+                </Button>
+              </Link>
             </ToolbarItem>
           </ToolbarContent>
         </Toolbar>
-      </PageSection>
-      <PageSection>
-        <Card>
-          <CardBody>
-            {buildIndexPageContent()}
-            <Toolbar id="indexing-page-toolbar">
-              <ToolbarContent style={{ paddingLeft: 0, paddingTop: global_spacer_md.value }}>
-                {buildUpdateSchemaAction()}
-                {buildReindexAction()}
-                {buildPurgeIndexButton()}
-                <ToolbarItem>
-                  <Link
-                    to={{
-                      pathname: '/cache/' + encodeURIComponent(cacheName),
-                      search: location.search
-                    }}
-                  >
-                    <Button variant={ButtonVariant.link} data-cy="backButton">
-                      {t('common.actions.back')}
-                    </Button>
-                  </Link>
-                </ToolbarItem>
-              </ToolbarContent>
-            </Toolbar>
-          </CardBody>
-        </Card>
       </PageSection>
       <PurgeIndex cacheName={cacheName} isModalOpen={purgeModalOpen} closeModal={closePurgeModal} />
       <Reindex cacheName={cacheName} isModalOpen={reindexModalOpen} closeModal={closeReindexModal} />

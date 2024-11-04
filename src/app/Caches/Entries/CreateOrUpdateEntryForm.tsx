@@ -10,13 +10,16 @@ import {
   HelperText,
   HelperTextItem,
   Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   SelectOptionProps,
   Spinner,
   TextArea,
   TextInput
 } from '@patternfly/react-core';
 import { useApiAlert } from '@app/utils/useApiAlert';
-import { global_spacer_md } from '@patternfly/react-tokens';
+import { t_global_spacer_md } from '@patternfly/react-tokens';
 import formUtils, { IField, ISelectField } from '@services/formUtils';
 import { useCacheDetail } from '@app/services/cachesHook';
 import { useTranslation } from 'react-i18next';
@@ -47,14 +50,14 @@ const CreateOrUpdateEntryForm = (props: {
     isValid: false,
     invalidText: t('caches.entries.add-entry-key-invalid'),
     helperText: t('caches.entries.add-entry-key-help'),
-    validated: t('caches.entries.add-entry-key-validated')
+    validated: 'default'
   };
   const valueInitialState: IField = {
     value: '',
     isValid: false,
     invalidText: t('caches.entries.add-entry-value-invalid'),
     helperText: t('caches.entries.add-entry-value-help'),
-    validated: t('caches.entries.add-entry-value-validated')
+    validated: 'default'
   };
 
   const keyContentTypeInitialState: ISelectField = {
@@ -74,14 +77,14 @@ const CreateOrUpdateEntryForm = (props: {
     isValid: true,
     invalidText: t('caches.entries.add-entry-maxidle-invalid'),
     helperText: t('caches.entries.add-entry-maxidle-help'),
-    validated: t('caches.entries.add-entry-maxidle-validated')
+    validated: 'default'
   };
   const timeToLiveInitialState: IField = {
     value: '',
     isValid: true,
     invalidText: t('caches.entries.add-entry-lifespan-invalid'),
     helperText: t('caches.entries.add-entry-lifespan-help'),
-    validated: t('caches.entries.add-entry-lifespan-validated')
+    validated: 'default'
   };
   const flagsInitialState: ISelectField = {
     selected: [],
@@ -361,7 +364,7 @@ const CreateOrUpdateEntryForm = (props: {
     return (
       <FormGroup
         label={t('caches.entries.add-entry-form-key-type-label')}
-        labelIcon={props.cacheEncoding.key == EncodingType.Protobuf ? helper : undefined}
+        labelHelp={props.cacheEncoding.key == EncodingType.Protobuf ? helper : undefined}
         fieldId="key-content-type-helper"
         placeholder={t('caches.entries.add-entry-form-key-type')}
         disabled={isEdition}
@@ -414,7 +417,7 @@ const CreateOrUpdateEntryForm = (props: {
     return (
       <FormGroup
         label={t('caches.entries.add-entry-form-key')}
-        labelIcon={props.cacheEncoding.key == EncodingType.Protobuf ? helper : undefined}
+        labelHelp={props.cacheEncoding.key == EncodingType.Protobuf ? helper : undefined}
         isRequired
         fieldId="key-entry"
         disabled={isEdition}
@@ -433,7 +436,9 @@ const CreateOrUpdateEntryForm = (props: {
           <HelperText>
             <HelperTextItem
               variant={key.validated}
-              {...(key.validated === 'error' && { icon: <ExclamationCircleIcon /> })}
+              {...(key.validated === 'error' && {
+                icon: <ExclamationCircleIcon />
+              })}
             >
               {key.validated === 'error' ? key.invalidText : key.helperText}
             </HelperTextItem>
@@ -464,7 +469,7 @@ const CreateOrUpdateEntryForm = (props: {
     return (
       <FormGroup
         label={t('caches.entries.add-entry-form-value')}
-        labelIcon={props.cacheEncoding.value == EncodingType.Protobuf ? helper : undefined}
+        labelHelp={props.cacheEncoding.value == EncodingType.Protobuf ? helper : undefined}
         isRequired
         fieldId="value-entry"
       >
@@ -481,7 +486,9 @@ const CreateOrUpdateEntryForm = (props: {
           <HelperText>
             <HelperTextItem
               variant={value.validated}
-              {...(value.validated === 'error' && { icon: <ExclamationCircleIcon /> })}
+              {...(value.validated === 'error' && {
+                icon: <ExclamationCircleIcon />
+              })}
             >
               {value.validated === 'error' ? value.invalidText : value.helperText}
             </HelperTextItem>
@@ -495,7 +502,7 @@ const CreateOrUpdateEntryForm = (props: {
     return (
       <FormGroup
         label={t('caches.entries.add-entry-form-lifespan')}
-        labelIcon={
+        labelHelp={
           <PopoverHelp
             name="lifespan"
             label={t('caches.entries.add-entry-form-lifespan')}
@@ -522,7 +529,9 @@ const CreateOrUpdateEntryForm = (props: {
           <HelperText>
             <HelperTextItem
               variant={timeToLiveField.validated}
-              {...(timeToLiveField.validated === 'error' && { icon: <ExclamationCircleIcon /> })}
+              {...(timeToLiveField.validated === 'error' && {
+                icon: <ExclamationCircleIcon />
+              })}
             >
               {timeToLiveField.validated === 'error' ? timeToLiveField.invalidText : timeToLiveField.helperText}
             </HelperTextItem>
@@ -536,7 +545,7 @@ const CreateOrUpdateEntryForm = (props: {
     return (
       <FormGroup
         label={t('caches.entries.add-entry-form-maxidle')}
-        labelIcon={
+        labelHelp={
           <PopoverHelp
             name="maxidle"
             label={t('caches.entries.add-entry-form-maxidle')}
@@ -564,7 +573,9 @@ const CreateOrUpdateEntryForm = (props: {
           <HelperText>
             <HelperTextItem
               variant={maxIdleField.validated}
-              {...(maxIdleField.validated === 'error' && { icon: <ExclamationCircleIcon /> })}
+              {...(maxIdleField.validated === 'error' && {
+                icon: <ExclamationCircleIcon />
+              })}
             >
               {maxIdleField.validated === 'error' ? maxIdleField.invalidText : maxIdleField.helperText}
             </HelperTextItem>
@@ -585,7 +596,7 @@ const CreateOrUpdateEntryForm = (props: {
     return (
       <FormGroup
         label={t('caches.entries.add-entry-form-value-type-label')}
-        labelIcon={props.cacheEncoding.value == EncodingType.Protobuf ? helper : undefined}
+        labelHelp={props.cacheEncoding.value == EncodingType.Protobuf ? helper : undefined}
         fieldId="value-content-type-helper"
         isRequired
       >
@@ -616,7 +627,7 @@ const CreateOrUpdateEntryForm = (props: {
       />
     );
     return (
-      <FormGroup label={t('caches.entries.add-entry-form-flags')} labelIcon={helper} fieldId="flags-helper">
+      <FormGroup label={t('caches.entries.add-entry-form-flags')} labelHelp={helper} fieldId="flags-helper">
         <SelectMultiWithChips
           id="ispnFlags"
           placeholder={t('caches.entries.add-entry-form-flags-label')}
@@ -636,48 +647,52 @@ const CreateOrUpdateEntryForm = (props: {
 
   return (
     <Modal
-      titleIconVariant={isEdition ? PencilAltIcon : AddCircleOIcon}
       className="pf-m-redhat-font"
-      width={'50%'}
+      variant={'small'}
       isOpen={props.isModalOpen}
-      title={isEdition ? 'Edit entry' : 'Add new entry'}
       onClose={onClose}
       aria-label={isEdition ? 'Edit entry form' : 'Add new entry form'}
-      actions={[
-        <Button data-cy="addButton" key="putEntryButton" onClick={handleAddOrUpdateEntryButton}>
-          {isEdition ? 'Edit' : 'Add'}
-        </Button>,
-        <Button data-cy="cancelButton" key="cancel" variant="link" onClick={onClose}>
-          {t('caches.entries.modal-button-cancel')}
-        </Button>
-      ]}
     >
-      {loading ? <Spinner size={'sm'} /> : ''}
-      <Form
-        onSubmit={(e) => {
-          e.preventDefault();
-        }}
-        style={{ marginBottom: global_spacer_md.value }}
-      >
-        {error != '' && <Alert variant={AlertVariant.danger} isInline title={error} />}
-
-        {cacheNameFormGroup()}
-        {keyContentTypeFormGroup()}
-        {keyFormGroup()}
-        {valueContentTypeFormGroup()}
-        {valueFormGroup()}
-        {lifespanFormGroup()}
-        {maxIdleFormGroup()}
-      </Form>
-      <ExpandableSection toggleText={t('caches.entries.add-entry-form-options')}>
+      <ModalHeader
+        titleIconVariant={isEdition ? PencilAltIcon : AddCircleOIcon}
+        title={isEdition ? t('caches.entries.modal-edit-title') : t('caches.entries.modal-add-title')}
+      />
+      <ModalBody>
+        {loading ? <Spinner size={'sm'} /> : <></>}
         <Form
           onSubmit={(e) => {
             e.preventDefault();
           }}
+          style={{ marginBottom: t_global_spacer_md.value }}
         >
-          {flagsFormGroup()}
+          {error != '' && <Alert variant={AlertVariant.danger} isInline title={error} />}
+
+          {cacheNameFormGroup()}
+          {keyContentTypeFormGroup()}
+          {keyFormGroup()}
+          {valueContentTypeFormGroup()}
+          {valueFormGroup()}
+          {lifespanFormGroup()}
+          {maxIdleFormGroup()}
         </Form>
-      </ExpandableSection>
+        <ExpandableSection toggleText={t('caches.entries.add-entry-form-options')}>
+          <Form
+            onSubmit={(e) => {
+              e.preventDefault();
+            }}
+          >
+            {flagsFormGroup()}
+          </Form>
+        </ExpandableSection>
+      </ModalBody>
+      <ModalFooter>
+        <Button data-cy="addButton" key="putEntryButton" onClick={handleAddOrUpdateEntryButton}>
+          {isEdition ? t('caches.entries.action-edit') : t('caches.entries.action-add')}
+        </Button>
+        <Button data-cy="cancelButton" key="cancel" variant="link" onClick={onClose}>
+          {t('caches.entries.modal-button-cancel')}
+        </Button>
+      </ModalFooter>
     </Modal>
   );
 };

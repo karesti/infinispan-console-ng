@@ -5,6 +5,8 @@ import {
   ButtonVariant,
   Card,
   CardBody,
+  Content,
+  ContentVariants,
   Form,
   FormGroup,
   FormHelperText,
@@ -14,15 +16,12 @@ import {
   PageSectionVariants,
   Spinner,
   Switch,
-  Text,
-  TextContent,
-  TextVariants,
   Toolbar,
   ToolbarContent,
   ToolbarItem
 } from '@patternfly/react-core';
 import { Link, useParams } from 'react-router-dom';
-import { global_spacer_md } from '@patternfly/react-tokens';
+import { t_global_spacer_md } from '@patternfly/react-tokens';
 import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
 import { useTranslation } from 'react-i18next';
 import { useConnectedUser } from '@app/services/userManagementHook';
@@ -35,6 +34,7 @@ import { ConsoleServices } from '@services/ConsoleServices';
 import { ConsoleACL } from '@services/securityService';
 import { useFetchTracingConfig } from '@app/services/configHook';
 import { TableErrorState } from '@app/Common/TableErrorState';
+import { PageHeader } from '@patternfly/react-component-groups';
 
 const TracingManagement = () => {
   const { t } = useTranslation();
@@ -56,8 +56,8 @@ const TracingManagement = () => {
             setChange(true);
             setTracingEnabled(!tracingEnabled);
           }}
-          labelOff={t('caches.tracing.tracing-disable')}
-          label={t('caches.tracing.tracing-enable')}
+          hasCheckIcon
+          label={tracingEnabled ? t('caches.tracing.tracing-enabled') : t('caches.tracing.tracing-disabled')}
         />
         <PopoverHelp name={'tracing'} label={t('caches.tracing.title')} content={t('caches.tracing.tracing-tooltip')} />
       </FormGroup>
@@ -147,43 +147,27 @@ const TracingManagement = () => {
 
   return (
     <React.Fragment>
-      <PageSection variant={PageSectionVariants.light}>
-        <DataContainerBreadcrumb currentPage={t('caches.tracing.title')} cacheName={cacheName} />
-        <Toolbar key={'title-tracing'}>
-          <ToolbarContent>
+      <DataContainerBreadcrumb currentPage={t('caches.tracing.title')} cacheName={cacheName} />
+      <PageHeader title={t('caches.tracing.title')} subtitle={''} />
+      <PageSection>
+        {buildTracingPageContent()}
+        <Toolbar id="tracing-page-toolbar">
+          <ToolbarContent style={{ paddingLeft: 0, paddingTop: t_global_spacer_md.value }}>
             <ToolbarItem>
-              <TextContent>
-                <Text component={TextVariants.h1} key={'title-value-tracing'}>
-                  {t('caches.tracing.title')}
-                </Text>
-              </TextContent>
+              {displaySave()}
+              <Link
+                to={{
+                  pathname: '/cache/' + encodeURIComponent(cacheName),
+                  search: location.search
+                }}
+              >
+                <Button variant={ButtonVariant.link} data-cy="backButton">
+                  {t('common.actions.back')}
+                </Button>
+              </Link>
             </ToolbarItem>
           </ToolbarContent>
         </Toolbar>
-      </PageSection>
-      <PageSection>
-        <Card>
-          <CardBody>
-            {buildTracingPageContent()}
-            <Toolbar id="tracing-page-toolbar">
-              <ToolbarContent style={{ paddingLeft: 0, paddingTop: global_spacer_md.value }}>
-                <ToolbarItem>
-                  {displaySave()}
-                  <Link
-                    to={{
-                      pathname: '/cache/' + encodeURIComponent(cacheName),
-                      search: location.search
-                    }}
-                  >
-                    <Button variant={ButtonVariant.link} data-cy="backButton">
-                      {t('common.actions.back')}
-                    </Button>
-                  </Link>
-                </ToolbarItem>
-              </ToolbarContent>
-            </Toolbar>
-          </CardBody>
-        </Card>
       </PageSection>
     </React.Fragment>
   );

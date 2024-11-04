@@ -1,8 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { Button, ButtonVariant, Modal, Text, TextContent, TextArea } from '@patternfly/react-core';
+import React, { useEffect, useState } from 'react';
+import {
+  Button,
+  ButtonVariant,
+  Content,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  TextArea
+} from '@patternfly/react-core';
 import { useTranslation } from 'react-i18next';
 import { useEditProtobufSchema, useFetchProtobufSchemaContent } from '@app/services/protobufHooks';
-import { global_FontSize_sm } from '@patternfly/react-tokens';
+import { t_global_font_size_sm } from '@patternfly/react-tokens';
 
 const EditSchema = (props: {
   schemaName: string;
@@ -41,14 +50,33 @@ const EditSchema = (props: {
 
   return (
     <Modal
-      titleIconVariant={'warning'}
-      className="pf-m-redhat-font"
-      width={'50%'}
       isOpen={props.isModalOpen}
-      title={t('schemas.edit.heading')}
+      className="pf-m-redhat-font"
       onClose={props.closeModal}
       aria-label="Edit schema modal"
-      actions={[
+      variant={'small'}
+    >
+      <ModalHeader titleIconVariant={'warning'} title={t('schemas.edit.heading')} />
+      <ModalBody>
+        <Content style={{ paddingBottom: '1rem' }}>
+          {t('schemas.edit.modal-description-1')}
+          <strong>{props.schemaName}</strong>
+          {t('schemas.edit.modal-description-2')}
+        </Content>
+
+        <TextArea
+          id="schema-edit-area"
+          data-cy="schemaEditArea"
+          aria-label={'edit-schema-content'}
+          value={editSchemaContent}
+          onChange={(_event, val) => setEditSchemaContent(val)}
+          isRequired
+          validated={formValidate}
+          style={{ fontSize: t_global_font_size_sm.value }}
+          rows={15}
+        />
+      </ModalBody>
+      <ModalFooter>
         <Button
           id="confirm-edit-schema-button"
           name="confirm-edit-schema-button"
@@ -59,7 +87,7 @@ const EditSchema = (props: {
           isDisabled={formValidate === 'error'}
         >
           {t('schemas.save-button')}
-        </Button>,
+        </Button>
         <Button
           id="cancel-edit-schema-button"
           name="cancel-edit-schema-button"
@@ -70,26 +98,7 @@ const EditSchema = (props: {
         >
           {t('schemas.cancel-button')}
         </Button>
-      ]}
-    >
-      <TextContent style={{ paddingBottom: '1rem' }}>
-        <Text>
-          {t('schemas.edit.modal-description-1')}
-          <strong>{props.schemaName}</strong>
-          {t('schemas.edit.modal-description-2')}
-        </Text>
-      </TextContent>
-      <TextArea
-        id="schema-edit-area"
-        data-cy="schemaEditArea"
-        aria-label={'edit-schema-content'}
-        value={editSchemaContent}
-        onChange={(_event, val) => setEditSchemaContent(val)}
-        isRequired
-        validated={formValidate}
-        style={{ fontSize: global_FontSize_sm.value }}
-        rows={15}
-      />
+      </ModalFooter>
     </Modal>
   );
 };

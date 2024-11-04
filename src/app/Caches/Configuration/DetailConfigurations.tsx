@@ -1,40 +1,37 @@
 import * as React from 'react';
-import { useEffect, useState, useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import {
-  Button,
   Bullseye,
+  Button,
   Card,
   CardBody,
+  Content,
+  ContentVariants,
   EmptyState,
+  EmptyStateActions,
   EmptyStateBody,
-  EmptyStateIcon,
+  EmptyStateFooter,
   EmptyStateVariant,
   PageSection,
   PageSectionVariants,
   Pagination,
   SearchInput,
   Spinner,
-  Text,
-  TextContent,
-  TextVariants,
   Toolbar,
   ToolbarContent,
-  ToolbarItem,
-  EmptyStateActions,
-  EmptyStateHeader,
-  EmptyStateFooter
+  ToolbarItem
 } from '@patternfly/react-core';
-import { Table, Thead, Tr, Th, Tbody, Td, ExpandableRowContent } from '@patternfly/react-table';
+import { ExpandableRowContent, Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { useTranslation } from 'react-i18next';
-import { SearchIcon, CubeIcon } from '@patternfly/react-icons';
+import { CubeIcon, SearchIcon } from '@patternfly/react-icons';
 import { useFetchCacheTemplates } from '@app/services/cachesHook';
 import { TableErrorState } from '@app/Common/TableErrorState';
 import { onSearch } from '@app/utils/searchFilter';
-import { global_spacer_sm, global_spacer_md } from '@patternfly/react-tokens';
+import { t_global_spacer_sm } from '@patternfly/react-tokens';
 import { ThemeContext } from '@app/providers/ThemeProvider';
-import { useParams } from 'react-router-dom';
+import { PageHeader } from '@patternfly/react-component-groups';
 
 const DetailConfigurations = () => {
   const { t } = useTranslation();
@@ -93,12 +90,12 @@ const DetailConfigurations = () => {
   };
 
   const emptyPage = (
-    <EmptyState variant={EmptyStateVariant.lg}>
-      <EmptyStateHeader
-        titleText={<>{t('caches.configuration.no-templates')}</>}
-        icon={<EmptyStateIcon icon={CubeIcon} />}
-        headingLevel="h4"
-      />
+    <EmptyState
+      variant={EmptyStateVariant.lg}
+      titleText={<>{t('caches.configuration.no-templates')}</>}
+      icon={CubeIcon}
+      headingLevel="h4"
+    >
       <EmptyStateBody>{t('caches.configuration.no-templates-body')}</EmptyStateBody>
     </EmptyState>
   );
@@ -128,7 +125,7 @@ const DetailConfigurations = () => {
   const toolbar = (
     <Toolbar>
       <ToolbarContent>
-        <ToolbarItem variant="search-filter">{searchInput}</ToolbarItem>
+        <ToolbarItem>{searchInput}</ToolbarItem>
         {filteredTemplates.length !== 0 && <ToolbarItem variant="pagination">{toolbarPagination}</ToolbarItem>}
       </ToolbarContent>
     </Toolbar>
@@ -137,7 +134,7 @@ const DetailConfigurations = () => {
   const buildCacheTemplatePage = () => {
     if (loading) {
       return (
-        <Card>
+        <Card isPlain>
           <CardBody>
             <Spinner size="xl" />
           </CardBody>
@@ -147,7 +144,7 @@ const DetailConfigurations = () => {
 
     if (error) {
       return (
-        <Card>
+        <Card isPlain>
           <CardBody>
             <TableErrorState error={error} />
           </CardBody>
@@ -160,7 +157,7 @@ const DetailConfigurations = () => {
     }
 
     return (
-      <Card>
+      <Card isPlain>
         <CardBody>
           {toolbar}
           <Table
@@ -179,15 +176,15 @@ const DetailConfigurations = () => {
                 <Tr>
                   <Td colSpan={6}>
                     <Bullseye>
-                      <EmptyState variant={EmptyStateVariant.sm}>
-                        <EmptyStateHeader
-                          titleText={<>{t('caches.configuration.no-filtered-templates')}</>}
-                          icon={<EmptyStateIcon icon={SearchIcon} />}
-                          headingLevel="h2"
-                        />
+                      <EmptyState
+                        variant={EmptyStateVariant.sm}
+                        titleText={<>{t('caches.configuration.no-filtered-templates')}</>}
+                        icon={SearchIcon}
+                        headingLevel="h2"
+                      >
                         <EmptyStateBody>{t('caches.configuration.no-filtered-templates-body')}</EmptyStateBody>
                         <EmptyStateFooter>
-                          <EmptyStateActions style={{ marginTop: global_spacer_sm.value }}>
+                          <EmptyStateActions style={{ marginTop: t_global_spacer_sm.value }}>
                             <Button variant={'link'} onClick={() => setSearchValue('')}>
                               {t('caches.configuration.clear-filter')}
                             </Button>
@@ -248,16 +245,8 @@ const DetailConfigurations = () => {
 
   return (
     <React.Fragment>
-      <PageSection variant={PageSectionVariants.light}>
-        <DataContainerBreadcrumb currentPage={pageTitle} />
-        <Toolbar id="detail-config-header">
-          <ToolbarContent style={{ paddingLeft: 0 }}>
-            <TextContent>
-              <Text component={TextVariants.h1}>{pageTitle}</Text>
-            </TextContent>
-          </ToolbarContent>
-        </Toolbar>
-      </PageSection>
+      <DataContainerBreadcrumb currentPage={pageTitle} />
+      <PageHeader title={pageTitle} subtitle={''} />
       <PageSection>{buildCacheTemplatePage()}</PageSection>
     </React.Fragment>
   );

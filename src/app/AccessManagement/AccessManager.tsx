@@ -3,6 +3,8 @@ import { useState } from 'react';
 import {
   Card,
   CardBody,
+  Content,
+  ContentVariants,
   Dropdown,
   DropdownItem,
   DropdownList,
@@ -13,9 +15,9 @@ import {
   NavList,
   PageSection,
   PageSectionVariants,
-  Text,
-  TextContent,
-  TextVariants,
+  Tab,
+  Tabs,
+  TabTitleText,
   Toolbar,
   ToolbarContent,
   ToolbarGroup,
@@ -26,11 +28,12 @@ import { RoleTableDisplay } from '@app/AccessManagement/RoleTableDisplay';
 import { FlushRoleCacheModal } from '@app/AccessManagement/FlushRoleCacheModal';
 import { PrincipalTableDisplay } from '@app/AccessManagement/PrincipalTableDisplay';
 import { UsersTableDisplay } from '@app/AccessManagement/UsersTableDisplay';
+import { PageHeader } from '@patternfly/react-component-groups';
 
 const AccessManager = () => {
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
-  const [activeTabKey, setActiveTabKey] = useState<'roles' | 'users' | 'principals'>('roles');
+  const [activeTabKey, setActiveTabKey] = useState<number>(0);
   const [showRoles, setShowRoles] = useState(true);
   const [showUsers, setShowUsers] = useState(false);
   const [showAccessControl, setShowAccessControl] = useState(false);
@@ -40,44 +43,40 @@ const AccessManager = () => {
   interface AccessTab {
     key: string;
     name: string;
+    eventKey: number;
   }
 
-  const handleTabClick = (ev, nav) => {
-    const tabIndex = nav.itemId;
-    setActiveTabKey(tabIndex);
-    setShowRoles(tabIndex == 'roles');
-    setShowAccessControl(tabIndex == 'principals');
-    setShowUsers(tabIndex == 'users');
+  const handleTabClick = (index: number) => {
+    setActiveTabKey(index);
+    setShowRoles(index == 0);
+    setShowAccessControl(index == 1);
+    setShowUsers(index == 2);
   };
 
   const buildTabs = () => {
     const tabs: AccessTab[] = [
-      { name: t('access-management.tab-roles'), key: 'roles' },
-      { name: t('access-management.tab-users'), key: 'users' },
-      { name: t('access-management.tab-access-control'), key: 'principals' }
+      { name: t('access-management.tab-roles'), key: 'roles', eventKey: 0 },
+      { name: t('access-management.tab-users'), key: 'users', eventKey: 1 },
+      { name: t('access-management.tab-access-control'), key: 'principals', eventKey: 2 }
     ];
 
     return (
-      <Nav onSelect={handleTabClick} variant={'tertiary'}>
-        <NavList>
-          {tabs.map((tab) => (
-            <NavItem
-              data-cy={'nav-item-' + tab.key}
-              aria-label={'nav-item-' + tab.key}
-              key={'nav-item-' + tab.key}
-              itemId={tab.key}
-              isActive={activeTabKey === tab.key}
-            >
-              {tab.name}
-            </NavItem>
-          ))}
-        </NavList>
-      </Nav>
+      <Tabs data-cy="navigationTabs" activeKey={activeTabKey} onSelect={(_event, tab) => handleTabClick(tab as number)}>
+        {tabs.map((tab) => (
+          <Tab
+            data-cy={'nav-item-' + tab.name}
+            aria-label={'nav-item-' + tab.key}
+            key={'nav-item-' + tab.key}
+            eventKey={tab.eventKey}
+            title={<TabTitleText>{tab.name}</TabTitleText>}
+          />
+        ))}
+      </Tabs>
     );
   };
 
   const buildSelectedContent = (
-    <Card>
+    <Card isFullHeight isPlain>
       <CardBody>
         {showRoles && <RoleTableDisplay />}
         {showAccessControl && <PrincipalTableDisplay />}
@@ -87,7 +86,7 @@ const AccessManager = () => {
   );
 
   const displayActions = (
-    <ToolbarGroup align={{ default: 'alignRight' }}>
+    <ToolbarGroup align={{ default: 'alignStart' }}>
       <ToolbarItem>
         <Dropdown
           isOpen={isOpen}
@@ -118,23 +117,13 @@ const AccessManager = () => {
 
   return (
     <React.Fragment>
-      <PageSection variant={PageSectionVariants.light} style={{ paddingBottom: 0 }}>
-        <Toolbar id="access-management-toolbar">
-          <ToolbarContent>
-            <ToolbarGroup>
-              <ToolbarItem>
-                <TextContent>
-                  <Text component={TextVariants.h1}>{t('access-management.title')}</Text>
-                  <Text component={TextVariants.p}>{t('access-management.description', { brandname: brandname })}</Text>
-                </TextContent>
-              </ToolbarItem>
-            </ToolbarGroup>
-            {displayActions}
-          </ToolbarContent>
-        </Toolbar>
-        {buildTabs()}
-      </PageSection>
+      <PageHeader
+        title={t('access-management.title')}
+        subtitle={t('access-management.description', { brandname: brandname })}
+        actionMenu={displayActions}
+      />
       <PageSection variant={PageSectionVariants.default}>
+        {buildTabs()}
         {buildSelectedContent}
         <FlushRoleCacheModal
           isModalOpen={isFlushCache}

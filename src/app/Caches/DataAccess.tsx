@@ -1,28 +1,21 @@
 import React, { useState } from 'react';
 import {
+  Button,
+  ButtonVariant,
   Card,
   CardBody,
   CardTitle,
+  DescriptionList,
   Divider,
-  TextContent,
-  Text,
-  TextList,
-  TextListItem,
-  TextListVariants,
-  TextListItemVariants,
-  LevelItem,
   Level,
-  Button,
-  ButtonVariant
+  LevelItem
 } from '@patternfly/react-core';
 import { useTranslation } from 'react-i18next';
-import { PopoverHelp } from '@app/Common/PopoverHelp';
-import displayUtils from '@services/displayUtils';
-import { global_spacer_sm } from '@patternfly/react-tokens';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { ConsoleACL } from '@services/securityService';
 import { ClearMetrics } from '@app/ClearMetrics/ClearMetrics';
 import { useConnectedUser } from '@app/services/userManagementHook';
+import { MetricDescriptionListGroup } from '@app/Caches/Metrics/MetricDescriptionListGroup';
 
 const DataAccess = (props: { cacheName: string; stats: CacheStats }) => {
   const { t } = useTranslation();
@@ -38,16 +31,14 @@ const DataAccess = (props: { cacheName: string; stats: CacheStats }) => {
     props.stats.misses +
     props.stats.evictions;
 
-  const displayStats = (name: string, value: number, label: string, tooltip: string) => {
+  const displayStats = (name: string, stat: number, label: string) => {
     return (
-      <React.Fragment>
-        <TextListItem component={TextListItemVariants.dt} data-cy={label.replace(/\s/g, '') + 'Val'}>
-          {displayUtils.formatNumber(value)}
-        </TextListItem>
-        <TextListItem component={TextListItemVariants.dd}>
-          <PopoverHelp name={name} label={label} content={tooltip} text={label} />
-        </TextListItem>
-      </React.Fragment>
+      <MetricDescriptionListGroup
+        dataCy={'stat' + name + 'Val'}
+        metricName={label}
+        metricValue={stat}
+        ariaLabel={label}
+      />
     );
   };
 
@@ -84,64 +75,23 @@ const DataAccess = (props: { cacheName: string; stats: CacheStats }) => {
         </Level>
       </CardTitle>
       <CardBody>
-        <TextContent>
-          <TextList component={TextListVariants.dl}>
-            <TextListItem component={TextListItemVariants.dt}>{all}</TextListItem>
-            <TextListItem component={TextListItemVariants.dd}>
-              <Text component="h5">{t('caches.cache-metrics.data-total')}</Text>
-            </TextListItem>
-          </TextList>
-        </TextContent>
-        <Divider
-          component="div"
-          style={{ paddingTop: global_spacer_sm.value, paddingBottom: global_spacer_sm.value }}
-        />
-        <TextContent>
-          <TextList component={TextListVariants.dl}>
-            {displayStats(
-              'hits',
-              props.stats.hits,
-              t('caches.cache-metrics.data-access-hits'),
-              t('caches.cache-metrics.data-access-hits-info')
-            )}
-            {displayStats(
-              'misses',
-              props.stats.misses,
-              t('caches.cache-metrics.data-access-misses'),
-              t('caches.cache-metrics.data-access-misses-info')
-            )}
-            {displayStats(
-              'stores',
-              props.stats.stores,
-              t('caches.cache-metrics.data-access-stores'),
-              t('caches.cache-metrics.data-access-stores-info')
-            )}
-            {displayStats(
-              'retrievals',
-              props.stats.retrievals,
-              t('caches.cache-metrics.data-access-retrievals'),
-              t('caches.cache-metrics.data-access-retrievals-info')
-            )}
-            {displayStats(
-              'remove_hits',
-              props.stats.remove_hits,
-              t('caches.cache-metrics.data-access-remove-hits'),
-              t('caches.cache-metrics.data-access-remove-hits-info')
-            )}
-            {displayStats(
-              'remove_misses',
-              props.stats.remove_misses,
-              t('caches.cache-metrics.data-access-remove-misses'),
-              t('caches.cache-metrics.data-access-remove-misses-info')
-            )}
-            {displayStats(
-              'evictions',
-              props.stats.evictions,
-              t('caches.cache-metrics.data-access-evictions'),
-              t('caches.cache-metrics.data-access-evictions-info')
-            )}
-          </TextList>
-        </TextContent>
+        <DescriptionList isHorizontal isCompact>
+          <MetricDescriptionListGroup
+            metricName="caches.cache-metrics.data-total"
+            metricValue={all}
+            ariaLabel="view-cache-metrics-data-total"
+          />
+        </DescriptionList>
+        <Divider component="li" role="none" />
+        <DescriptionList isHorizontal isCompact>
+          {displayStats('hits', props.stats.hits, 'caches.cache-metrics.data-access-hits')}
+          {displayStats('misses', props.stats.misses, 'caches.cache-metrics.data-access-misses')}
+          {displayStats('stores', props.stats.stores, 'caches.cache-metrics.data-access-stores')}
+          {displayStats('retrievals', props.stats.retrievals, 'caches.cache-metrics.data-access-retrievals')}
+          {displayStats('remove_hits', props.stats.remove_hits, 'caches.cache-metrics.data-access-remove-hits')}
+          {displayStats('remove_misses', props.stats.remove_misses, 'caches.cache-metrics.data-access-remove-misses')}
+          {displayStats('evictions', props.stats.evictions, 'caches.cache-metrics.data-access-evictions')}
+        </DescriptionList>
       </CardBody>
     </Card>
   );

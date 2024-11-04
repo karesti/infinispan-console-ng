@@ -20,7 +20,7 @@ import {
   ChartThemeColor,
   ChartStack,
   ChartTooltip
-} from '@patternfly/react-charts';
+} from '@patternfly/react-charts/victory';
 import { TableErrorState } from '@app/Common/TableErrorState';
 import { useTranslation } from 'react-i18next';
 import { useClusterDistribution } from '@app/services/dataDistributionHook';

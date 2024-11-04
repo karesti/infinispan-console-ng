@@ -1,44 +1,35 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import {
-  Button,
   Bullseye,
+  Button,
   Card,
   CardBody,
-  Divider,
+  Content,
+  ContentVariants,
   EmptyState,
   EmptyStateBody,
-  EmptyStateIcon,
   EmptyStateVariant,
-  Flex,
-  FlexItem,
   PageSection,
-  PageSectionVariants,
   Pagination,
   SearchInput,
   Spinner,
-  Text,
-  TextContent,
-  TextVariants,
+  Title,
   Toolbar,
   ToolbarContent,
-  ToolbarItem,
-  EmptyStateHeader,
-  ToolbarGroup,
-  Title
+  ToolbarItem
 } from '@patternfly/react-core';
-import { CubesIcon, SearchIcon, DownloadIcon } from '@patternfly/react-icons';
-import { Table, Thead, Tr, Th, Tbody, Td } from '@patternfly/react-table';
-import { Health } from '@app/Common/Health';
+import { CubesIcon, DownloadIcon, SearchIcon } from '@patternfly/react-icons';
+import { Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import { TableErrorState } from '@app/Common/TableErrorState';
 import { useTranslation } from 'react-i18next';
 import { useDownloadServerReport, useFetchClusterMembers } from '@app/services/clusterHook';
-import { global_spacer_md } from '@patternfly/react-tokens';
+import { t_global_spacer_md } from '@patternfly/react-tokens';
 import { onSearch } from '@app/utils/searchFilter';
+import { InfinispanComponentStatus } from '@app/Common/InfinispanComponentStatus';
 
-const ClusterStatus = () => {
+const ClusterMembership = () => {
   const { t } = useTranslation();
-  const brandname = t('brandname.brandname');
   const { downloadServerReport, downloading, downloadNodeName } = useDownloadServerReport();
 
   const { clusterMembers, cacheManager, loading, error, reload } = useFetchClusterMembers();
@@ -63,7 +54,7 @@ const ClusterStatus = () => {
     if (filteredClusterMembers) {
       const initSlice = (clusterMembersPagination.page - 1) * clusterMembersPagination.perPage;
       const updateRows = filteredClusterMembers.slice(initSlice, initSlice + clusterMembersPagination.perPage);
-      updateRows.length > 0 ? setRows(updateRows) : setRows([]);
+      setRows(updateRows);
     }
   }, [clusterMembersPagination, filteredClusterMembers]);
 
@@ -90,11 +81,7 @@ const ClusterStatus = () => {
 
   const buildHeader = () => {
     if (!cacheManager) {
-      return (
-        <TextContent>
-          <Text component={TextVariants.h1}>-</Text>
-        </TextContent>
-      );
+      return <Content component={ContentVariants.h1}>-</Content>;
     }
 
     const member = cacheManager.cluster_size > 1 ? ' members ' : ' member ';
@@ -112,13 +99,11 @@ const ClusterStatus = () => {
         <Toolbar id="cluster-status-info">
           <ToolbarContent>
             <ToolbarItem>
-              <Health health={cacheManager.health} />
+              <InfinispanComponentStatus status={cacheManager.health} />
             </ToolbarItem>
             <ToolbarItem variant="separator" />
             <ToolbarItem>
-              <TextContent>
-                <Text component={TextVariants.p}>{sizeLabel}</Text>
-              </TextContent>
+              <Content component={ContentVariants.p}>{sizeLabel}</Content>
             </ToolbarItem>
           </ToolbarContent>
         </Toolbar>
@@ -174,87 +159,82 @@ const ClusterStatus = () => {
 
     if (!cacheManager) {
       return (
-        <EmptyState variant={EmptyStateVariant.full}>
-          <EmptyStateHeader icon={<EmptyStateIcon icon={CubesIcon} />} />
+        <EmptyState variant={EmptyStateVariant.full} icon={CubesIcon}>
           <EmptyStateBody>{t('cluster-membership.empty-cluster')}</EmptyStateBody>
         </EmptyState>
       );
     }
 
     return (
-      <Card>
-        <CardBody>
-          <Toolbar id="cluster-table-toolbar" style={{ marginBottom: global_spacer_md.value }}>
-            <ToolbarContent>
-              <ToolbarItem variant="search-filter">{searchInput}</ToolbarItem>
-              <ToolbarItem variant="pagination">{toolbarPagination('down')}</ToolbarItem>
-            </ToolbarContent>
-          </Toolbar>
-          <Table className={'cluster-membership-table'} aria-label={t('cluster-membership.title')} variant={'compact'}>
-            <Thead>
+      <>
+        <Toolbar id="cluster-table-toolbar" style={{ marginBottom: t_global_spacer_md.value }}>
+          <ToolbarContent>
+            <ToolbarItem>{searchInput}</ToolbarItem>
+            <ToolbarItem variant="pagination">{toolbarPagination('down')}</ToolbarItem>
+          </ToolbarContent>
+        </Toolbar>
+        <Table className={'cluster-membership-table'} aria-label={t('cluster-membership.title')} variant={'compact'}>
+          <Thead>
+            <Tr>
+              <Th colSpan={1}>{columnNames.name}</Th>
+              <Th colSpan={1}>{columnNames.physicalAdd}</Th>
+              <Th style={{ width: '28%' }} />
+            </Tr>
+          </Thead>
+          <Tbody>
+            {filteredClusterMembers.length == 0 ? (
               <Tr>
-                <Th colSpan={1}>{columnNames.name}</Th>
-                <Th colSpan={1}>{columnNames.physicalAdd}</Th>
-                <Th style={{ width: '28%' }} />
+                <Td colSpan={6}>
+                  <Bullseye>
+                    <EmptyState
+                      variant={EmptyStateVariant.sm}
+                      titleText={<>{t('cluster-membership.no-cluster-title')}</>}
+                      icon={SearchIcon}
+                      headingLevel="h2"
+                    >
+                      <EmptyStateBody>{t('cluster-membership.no-cluster-body')}</EmptyStateBody>
+                    </EmptyState>
+                  </Bullseye>
+                </Td>
               </Tr>
-            </Thead>
-            <Tbody>
-              {filteredClusterMembers.length == 0 ? (
-                <Tr>
-                  <Td colSpan={6}>
-                    <Bullseye>
-                      <EmptyState variant={EmptyStateVariant.sm}>
-                        <EmptyStateHeader
-                          titleText={<>{t('cluster-membership.no-cluster-title')}</>}
-                          icon={<EmptyStateIcon icon={SearchIcon} />}
-                          headingLevel="h2"
-                        />
-                        <EmptyStateBody>{t('cluster-membership.no-cluster-body')}</EmptyStateBody>
-                      </EmptyState>
-                    </Bullseye>
-                  </Td>
-                </Tr>
-              ) : (
-                rows.map((row) => {
-                  const isDownloading = downloading && downloadNodeName === row.name;
-                  return (
-                    <Tr key={row.name}>
-                      <Td dataLabel={columnNames.name}>{row.name}</Td>
-                      <Td dataLabel={columnNames.physicalAdd}>{row.physical_address}</Td>
-                      <Td dataLabel={columnNames.physicalAdd}>
-                        <Button
-                          data-cy="downloadReportLink"
-                          variant="link"
-                          isInline
-                          isLoading={isDownloading}
-                          icon={!isDownloading ? <DownloadIcon /> : null}
-                          onClick={() => downloadServerReport(row.name)}
-                        >
-                          {isDownloading
-                            ? t('cluster-membership.downloading')
-                            : t('cluster-membership.download-report')}
-                        </Button>
-                      </Td>
-                    </Tr>
-                  );
-                })
-              )}
-            </Tbody>
-          </Table>
-          <Toolbar id="cluster-membership-table-toolbar" className={'cluster-membership-table-display'}>
-            <ToolbarItem variant="pagination">{toolbarPagination('up')}</ToolbarItem>
-          </Toolbar>
-        </CardBody>
-      </Card>
+            ) : (
+              rows.map((row) => {
+                const isDownloading = downloading && downloadNodeName === row.name;
+                return (
+                  <Tr key={row.name}>
+                    <Td dataLabel={columnNames.name}>{row.name}</Td>
+                    <Td dataLabel={columnNames.physicalAdd}>{row.physical_address}</Td>
+                    <Td dataLabel={columnNames.physicalAdd}>
+                      <Button
+                        data-cy="downloadReportLink"
+                        variant="link"
+                        isInline
+                        isLoading={isDownloading}
+                        icon={!isDownloading ? <DownloadIcon /> : null}
+                        onClick={() => downloadServerReport(row.name)}
+                      >
+                        {isDownloading ? t('cluster-membership.downloading') : t('cluster-membership.download-report')}
+                      </Button>
+                    </Td>
+                  </Tr>
+                );
+              })
+            )}
+          </Tbody>
+        </Table>
+        <Toolbar id="cluster-membership-table-toolbar" className={'cluster-membership-table-display'}>
+          <ToolbarItem variant="pagination">{toolbarPagination('up')}</ToolbarItem>
+        </Toolbar>
+      </>
     );
   };
 
   return (
     <React.Fragment>
-      <PageSection variant={PageSectionVariants.light}>{buildHeader()}</PageSection>
+      <PageSection>{buildHeader()}</PageSection>
       <PageSection>{buildClusterStatus()}</PageSection>
     </React.Fragment>
   );
 };
 
-export { ClusterStatus };
+export { ClusterMembership };

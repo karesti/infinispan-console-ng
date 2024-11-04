@@ -118,7 +118,7 @@ const BackupsCacheConfigurator = (props: { isEnabled: boolean }) => {
         isRequired
         isInline
         label={t('caches.create.configurations.feature.backups-site')}
-        labelIcon={
+        labelHelp={
           <PopoverHelp
             name="backup-sites"
             label={t('caches.create.configurations.feature.backups-site')}
@@ -132,7 +132,6 @@ const BackupsCacheConfigurator = (props: { isEnabled: boolean }) => {
           options={selectOptionPropsFromArray(availableSites)}
           onSelect={helperAddSite}
           onClear={clearSelection}
-          toggleId="backup-selector"
           create={true}
           selection={sites.some((s) => s.siteName !== undefined) ? sites.map((s) => s.siteName as string) : []}
         />
@@ -205,7 +204,7 @@ const BackupsCacheConfigurator = (props: { isEnabled: boolean }) => {
           isInline
           isRequired
           label={t('caches.create.configurations.feature.remote-cache')}
-          labelIcon={
+          labelHelp={
             <PopoverHelp
               name="remote-cache"
               label={t('caches.create.configurations.feature.remote-cache')}
@@ -230,7 +229,7 @@ const BackupsCacheConfigurator = (props: { isEnabled: boolean }) => {
           isInline
           isRequired
           label={t('caches.create.configurations.feature.remote-site')}
-          labelIcon={
+          labelHelp={
             <PopoverHelp
               name="remote-site"
               label={t('caches.create.configurations.feature.remote-site')}
@@ -245,7 +244,6 @@ const BackupsCacheConfigurator = (props: { isEnabled: boolean }) => {
             onSelect={(selection) => setRemoteSite(selection)}
             selected={remoteSite}
             isFullWidth={true}
-            toggleId='remote-site-selector'
           />
           {validateBackupsForField(remoteSite) === 'error' && (
             <FormHelperText>
@@ -278,8 +276,8 @@ const BackupsCacheConfigurator = (props: { isEnabled: boolean }) => {
           aria-label="backupfor"
           id="backupfor"
           isChecked={enableBackupFor}
+          hasCheckIcon
           onChange={() => setEnableBackupFor(!enableBackupFor)}
-          labelOff={t('caches.create.configurations.feature.backup-for')}
           label={t('caches.create.configurations.feature.backup-for')}
         />
         <PopoverHelp

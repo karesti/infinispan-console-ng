@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   Alert,
   AlertVariant,
@@ -8,23 +8,21 @@ import {
   Card,
   CardBody,
   EmptyState,
+  EmptyStateActions,
   EmptyStateBody,
-  EmptyStateIcon,
+  EmptyStateFooter,
   EmptyStateVariant,
   Pagination,
-  Spinner,
   SearchInput,
+  Spinner,
   Toolbar,
   ToolbarContent,
   ToolbarItem,
-  ToolbarItemVariant,
-  EmptyStateActions,
-  EmptyStateHeader,
-  EmptyStateFooter
+  ToolbarItemVariant
 } from '@patternfly/react-core';
-import { Table, Thead, Tr, Th, Tbody, Td, ExpandableRowContent, ActionsColumn, IAction } from '@patternfly/react-table';
+import { ActionsColumn, ExpandableRowContent, IAction, Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import { DatabaseIcon, SearchIcon } from '@patternfly/react-icons';
-import { global_spacer_md, global_spacer_sm, global_spacer_xl } from '@patternfly/react-tokens';
+import { t_global_spacer_md, t_global_spacer_sm, t_global_spacer_xl } from '@patternfly/react-tokens';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { useTranslation } from 'react-i18next';
@@ -41,13 +39,12 @@ import { ThemeContext } from '@app/providers/ThemeProvider';
 
 const ProtobufSchemasDisplay = (props: { setProtoSchemasCount: (number) => void; isVisible: boolean }) => {
   const { t } = useTranslation();
-  const brandname = t('brandname.brandname');
   const { addAlert } = useApiAlert();
   const protobufService = ConsoleServices.protobuf();
   const { connectedUser } = useConnectedUser();
   const { schemas, loading, reload, error } = useFetchProtobufSchemas();
   const [filteredSchemas, setFilteredSchemas] = useState<ProtoSchema[]>([]);
-  const [rows, setRows] = useState<(string | any)[]>([]);
+  const [rows, setRows] = useState<ProtoSchema[]>([]);
   const [schemasContent, setSchemasContent] = useState(new Map<string, string>());
   const [createSchemaFormOpen, setCreateSchemaFormOpen] = useState<boolean>(false);
   const [deleteSchemaName, setDeleteSchemaName] = useState<string>('');
@@ -114,7 +111,7 @@ const ProtobufSchemasDisplay = (props: { setProtoSchemasCount: (number) => void;
     if (filteredSchemas) {
       const initSlice = (schemasPagination.page - 1) * schemasPagination.perPage;
       const updateRows = filteredSchemas.slice(initSlice, initSlice + schemasPagination.perPage);
-      updateRows.length > 0 ? setRows(updateRows) : setRows([]);
+      setRows(updateRows);
     }
   }, [schemasPagination, filteredSchemas]);
 
@@ -170,8 +167,12 @@ const ProtobufSchemasDisplay = (props: { setProtoSchemasCount: (number) => void;
   };
 
   const createSchemaButtonHelper = (isEmptyPage?: boolean) => {
-    const emptyPageButtonProp = { style: { marginTop: global_spacer_xl.value } };
-    const normalPageButtonProps = { style: { marginLeft: global_spacer_sm.value } };
+    const emptyPageButtonProp = {
+      style: { marginTop: t_global_spacer_xl.value }
+    };
+    const normalPageButtonProps = {
+      style: { marginLeft: t_global_spacer_sm.value }
+    };
     return (
       <Button
         variant={ButtonVariant.primary}
@@ -231,12 +232,12 @@ const ProtobufSchemasDisplay = (props: { setProtoSchemasCount: (number) => void;
   };
 
   const emptyPage = (
-    <EmptyState variant={EmptyStateVariant.lg}>
-      <EmptyStateHeader
-        titleText={<>{t('schemas.no-schema-status')}</>}
-        icon={<EmptyStateIcon icon={DatabaseIcon} />}
-        headingLevel="h4"
-      />
+    <EmptyState
+      variant={EmptyStateVariant.lg}
+      titleText={t('schemas.no-schema-status')}
+      icon={DatabaseIcon}
+      headingLevel="h4"
+    >
       <EmptyStateBody>{t('schemas.no-schema-body')}</EmptyStateBody>
       <EmptyStateFooter>{createSchemaButtonHelper(true)}</EmptyStateFooter>
     </EmptyState>
@@ -271,99 +272,94 @@ const ProtobufSchemasDisplay = (props: { setProtoSchemasCount: (number) => void;
     return <span />;
   }
 
+  if (schemas.length == 0) {
+    return emptyPage;
+  }
+
   return (
     <React.Fragment>
-      {schemas.length == 0 ? (
-        emptyPage
-      ) : (
-        <Card>
-          <CardBody>
-            <Toolbar id="schema-table-toolbar" style={{ marginBottom: global_spacer_md.value }}>
-              <ToolbarContent>
-                <ToolbarItem variant="search-filter">{searchInput}</ToolbarItem>
-                <ToolbarItem
-                  variant={ToolbarItemVariant.separator}
-                  style={{ marginInline: global_spacer_sm.value }}
-                ></ToolbarItem>
-                {buildCreateSchemaButton()}
-                <ToolbarItem variant="pagination">{toolbarPagination('down')}</ToolbarItem>
-              </ToolbarContent>
-            </Toolbar>
-            <Table
-              data-cy="schemaTable"
-              className={'schema-table'}
-              aria-label={'schema-table-label'}
-              variant="compact"
-              style={{ marginTop: global_spacer_md.value }}
-            >
-              <Thead>
+      <Toolbar id="schema-table-toolbar">
+        <ToolbarContent>
+          <ToolbarItem>{searchInput}</ToolbarItem>
+          <ToolbarItem variant={ToolbarItemVariant.separator}></ToolbarItem>
+          {buildCreateSchemaButton()}
+          <ToolbarItem variant="pagination">{toolbarPagination('down')}</ToolbarItem>
+        </ToolbarContent>
+      </Toolbar>
+      <Table
+        data-cy="schemaTable"
+        className={'schema-table'}
+        aria-label={'schema-table-label'}
+        variant="compact"
+        style={{ marginTop: t_global_spacer_md.value }}
+      >
+        <Thead>
+          <Tr>
+            <Th />
+            <Th width={30}>{columnNames.name}</Th>
+            <Th width={60}>{columnNames.status}</Th>
+          </Tr>
+        </Thead>
+        {filteredSchemas.length == 0 ? (
+          <Tbody>
+            <Tr>
+              <Td colSpan={6}>
+                <Bullseye>
+                  <EmptyState
+                    variant={EmptyStateVariant.sm}
+                    titleText={t('schemas.no-filter-schema')}
+                    icon={SearchIcon}
+                    headingLevel="h2"
+                  >
+                    <EmptyStateBody>{t('schemas.no-filter-schema-body')}</EmptyStateBody>
+                    <EmptyStateFooter>
+                      <EmptyStateActions style={{ marginTop: t_global_spacer_sm.value }}>
+                        <Button variant={'link'} onClick={() => setSearchValue('')}>
+                          {t('schemas.create-button')}
+                        </Button>
+                      </EmptyStateActions>
+                    </EmptyStateFooter>
+                  </EmptyState>
+                </Bullseye>
+              </Td>
+            </Tr>
+          </Tbody>
+        ) : (
+          rows.map((row, rowIndex) => {
+            return (
+              <Tbody key={row.name} isExpanded={isSchemaExpanded(row)}>
                 <Tr>
-                  <Th />
-                  <Th width={30}>{columnNames.name}</Th>
-                  <Th width={60}>{columnNames.status}</Th>
+                  <Td
+                    data-cy={row.name + 'Config'}
+                    expand={{
+                      rowIndex,
+                      isExpanded: isSchemaExpanded(row),
+                      onToggle: () => {
+                        setLoadingSchema(true);
+                        setSchemaExpanded(row, !isSchemaExpanded(row));
+                      }
+                    }}
+                  />
+                  <Td dataLabel={columnNames.name}>{row.name}</Td>
+                  <Td dataLabel={columnNames.status}>{displayProtoError(row.error)}</Td>
+                  <Td isActionCell data-cy={'actions-' + row.name}>
+                    <ActionsColumn items={displayActions(row)} />
+                  </Td>
                 </Tr>
-              </Thead>
-              {filteredSchemas.length == 0 ? (
-                <Tbody>
-                  <Tr>
-                    <Td colSpan={6}>
-                      <Bullseye>
-                        <EmptyState variant={EmptyStateVariant.sm}>
-                          <EmptyStateHeader
-                            titleText={<>{t('schemas.no-filter-schema')}</>}
-                            icon={<EmptyStateIcon icon={SearchIcon} />}
-                            headingLevel="h2"
-                          />
-                          <EmptyStateBody>{t('schemas.no-filter-schema-body')}</EmptyStateBody>
-                          <EmptyStateFooter>
-                            <EmptyStateActions style={{ marginTop: global_spacer_sm.value }}>
-                              <Button variant={'link'} onClick={() => setSearchValue('')}>
-                                {t('schemas.create-button')}
-                              </Button>
-                            </EmptyStateActions>
-                          </EmptyStateFooter>
-                        </EmptyState>
-                      </Bullseye>
-                    </Td>
-                  </Tr>
-                </Tbody>
-              ) : (
-                rows.map((row, rowIndex) => {
-                  return (
-                    <Tbody key={row.name} isExpanded={isSchemaExpanded(row)}>
-                      <Tr>
-                        <Td
-                          data-cy={row.name + 'Config'}
-                          expand={{
-                            rowIndex,
-                            isExpanded: isSchemaExpanded(row),
-                            onToggle: () => {
-                              setLoadingSchema(true);
-                              setSchemaExpanded(row, !isSchemaExpanded(row));
-                            }
-                          }}
-                        />
-                        <Td dataLabel={columnNames.name}>{row.name}</Td>
-                        <Td dataLabel={columnNames.status}>{displayProtoError(row.error)}</Td>
-                        <Td isActionCell data-cy={'actions-' + row.name}>
-                          <ActionsColumn items={displayActions(row)} />
-                        </Td>
-                      </Tr>
-                      <Tr isExpanded={isSchemaExpanded(row)}>
-                        <Td />
-                        <Td className="app-prefix--m-scroll-content" colSpan={3}>
-                          {isSchemaExpanded(row) && buildSchemaContent(row.name)}
-                        </Td>
-                      </Tr>
-                    </Tbody>
-                  );
-                })
-              )}
-            </Table>
-            <ToolbarItem variant="pagination">{toolbarPagination('up')}</ToolbarItem>
-          </CardBody>
-        </Card>
-      )}
+                <Tr isExpanded={isSchemaExpanded(row)}>
+                  <Td />
+                  <Td className="app-prefix--m-scroll-content" colSpan={3}>
+                    {isSchemaExpanded(row) && buildSchemaContent(row.name)}
+                  </Td>
+                </Tr>
+              </Tbody>
+            );
+          })
+        )}
+      </Table>
+      <Toolbar>
+        <ToolbarItem variant="pagination">{toolbarPagination('up')}</ToolbarItem>
+      </Toolbar>
       <CreateProtoSchema isModalOpen={createSchemaFormOpen} closeModal={closeCreateSchemaModal} />
       <EditSchema
         schemaName={editSchemaName}

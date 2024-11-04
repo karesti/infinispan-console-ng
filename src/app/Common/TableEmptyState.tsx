@@ -1,14 +1,5 @@
-import {
-  Bullseye,
-  EmptyState,
-  EmptyStateBody,
-  EmptyStateIcon,
-  EmptyStateVariant,
-  Spinner,
-  EmptyStateHeader
-} from '@patternfly/react-core';
-import { ExclamationCircleIcon, SearchIcon } from '@patternfly/react-icons';
-import { global_danger_color_100 } from '@patternfly/react-tokens';
+import { Bullseye, EmptyState, EmptyStateBody, EmptyStateVariant, Spinner } from '@patternfly/react-core';
+import { SearchIcon } from '@patternfly/react-icons';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -26,12 +17,12 @@ const TableEmptyState = (props: { loading: boolean; error: string; empty: string
   if (props.error != '') {
     return (
       <Bullseye>
-        <EmptyState variant={EmptyStateVariant.sm}>
-          <EmptyStateHeader
-            titleText="There was an error retrieving the data"
-            icon={<EmptyStateIcon icon={ExclamationCircleIcon} color={global_danger_color_100.value} />}
-            headingLevel="h2"
-          />
+        <EmptyState
+          variant={EmptyStateVariant.sm}
+          headingLevel="h2"
+          titleText="There was an error retrieving the data"
+          status={'danger'}
+        >
           <EmptyStateBody>{props.error}</EmptyStateBody>
         </EmptyState>
       </Bullseye>
@@ -40,13 +31,12 @@ const TableEmptyState = (props: { loading: boolean; error: string; empty: string
 
   return (
     <Bullseye data-cy="emptyStateTable">
-      <EmptyState variant={EmptyStateVariant.sm}>
-        <EmptyStateHeader
-          titleText={<>{props.empty}</>}
-          icon={<EmptyStateIcon icon={SearchIcon} />}
-          headingLevel="h2"
-        />
-      </EmptyState>
+      <EmptyState
+        variant={EmptyStateVariant.sm}
+        icon={SearchIcon}
+        headingLevel="h2"
+        titleText={<>{props.empty}</>}
+      ></EmptyState>
     </Bullseye>
   );
 };

@@ -9,6 +9,7 @@
   <security>
     <authorization/>
   </security>
+  <local-cache name="default"/>
   <distributed-cache name="people" statistics="true">
     <encoding media-type="application/x-protostream"/>
     <transaction mode="NON_XA"/>
@@ -50,7 +51,7 @@
 </cache-container>
   <server>
   <endpoints>
-    <endpoint  socket-binding="default" security-realm="default" >
+    <endpoint socket-binding="default" security-realm="default" >
       <hotrod-connector name="hotrod">
         <authentication>
           <sasl mechanisms="PLAIN" server-name="infinispan"/>

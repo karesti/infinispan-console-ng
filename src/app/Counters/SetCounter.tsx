@@ -2,14 +2,16 @@ import React from 'react';
 import {
   Button,
   ButtonVariant,
+  Content,
   Form,
   FormGroup,
   FormHelperText,
   HelperText,
   HelperTextItem,
   Modal,
-  Text,
-  TextContent,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   TextInput
 } from '@patternfly/react-core';
 import { useSetCounter } from '@app/services/countersHook';
@@ -43,37 +45,19 @@ const SetCounter = (props: {
     <Modal
       id={'set-counter-modal'}
       className="pf-m-redhat-font"
-      width={'50%'}
+      variant={'small'}
       isOpen={props.isModalOpen}
-      title={t('cache-managers.counters.modal-set-title')}
       onClose={props.closeModal}
       aria-label={t('cache-managers.counters.modal-set-title')}
       disableFocusTrap={true}
-      actions={[
-        <Button
-          key={'Confirm'}
-          aria-label={'Confirm'}
-          variant={ButtonVariant.danger}
-          onClick={handleSubmit}
-          data-cy="confirmSetbutton"
-        >
-          {t('cache-managers.counters.modal-confirm-button')}
-        </Button>,
-        <Button
-          key={'Cancel'}
-          aria-label={'Cancel'}
-          variant={ButtonVariant.link}
-          onClick={props.closeModal}
-          data-cy="cancelSetButton"
-        >
-          {t('cache-managers.counters.modal-cancel-button')}
-        </Button>
-      ]}
     >
-      <TextContent>
-        <Text>
-          Edit value for counter <strong>{props.name}</strong>.
-        </Text>
+      <ModalHeader title={t('cache-managers.counters.modal-set-title')} />
+      <ModalBody>
+        <Content component={'p'} isEditorial>
+          {t('cache-managers.counters.modal-set-content', {
+            counter: props.name
+          })}
+        </Content>
         <Form
           onSubmit={(e) => {
             e.preventDefault();
@@ -99,7 +83,27 @@ const SetCounter = (props: {
             )}
           </FormGroup>
         </Form>
-      </TextContent>
+      </ModalBody>
+      <ModalFooter>
+        <Button
+          key={'Confirm'}
+          aria-label={'Confirm'}
+          variant={ButtonVariant.danger}
+          onClick={handleSubmit}
+          data-cy="confirmSetbutton"
+        >
+          {t('cache-managers.counters.modal-confirm-button')}
+        </Button>
+        <Button
+          key={'Cancel'}
+          aria-label={'Cancel'}
+          variant={ButtonVariant.link}
+          onClick={props.closeModal}
+          data-cy="cancelSetButton"
+        >
+          {t('cache-managers.counters.modal-cancel-button')}
+        </Button>
+      </ModalFooter>
     </Modal>
   );
 };

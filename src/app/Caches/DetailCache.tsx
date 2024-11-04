@@ -4,8 +4,8 @@ import {
   AlertVariant,
   Button,
   ButtonVariant,
-  Card,
-  CardBody,
+  Content,
+  ContentVariants,
   Divider,
   Dropdown,
   DropdownItem,
@@ -14,8 +14,6 @@ import {
   EmptyStateActions,
   EmptyStateBody,
   EmptyStateFooter,
-  EmptyStateHeader,
-  EmptyStateIcon,
   EmptyStateVariant,
   Flex,
   FlexItem,
@@ -30,9 +28,6 @@ import {
   Tabs,
   TabsComponent,
   TabTitleText,
-  Text,
-  TextContent,
-  TextVariants,
   Toolbar,
   ToolbarContent,
   ToolbarGroup,
@@ -44,14 +39,8 @@ import { CacheEntries } from '@app/Caches/Entries/CacheEntries';
 import { CacheConfiguration } from '@app/Caches/Configuration/CacheConfiguration';
 import { CacheTypeBadge } from '@app/Common/CacheTypeBadge';
 import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
-import {
-  global_BackgroundColor_100,
-  global_danger_color_200,
-  global_info_color_200,
-  global_spacer_xs,
-  global_warning_color_100
-} from '@patternfly/react-tokens';
-import { ExclamationCircleIcon, InfoCircleIcon, InfoIcon, RedoIcon } from '@patternfly/react-icons';
+import { t_global_background_color_100, t_global_spacer_xs } from '@patternfly/react-tokens';
+import { ExclamationCircleIcon, InfoCircleIcon, RedoIcon } from '@patternfly/react-icons';
 import { QueryEntries } from '@app/Caches/Query/QueryEntries';
 import { Link } from 'react-router-dom';
 import { useCacheDetail } from '@app/services/cachesHook';
@@ -60,11 +49,12 @@ import { ConsoleACL } from '@services/securityService';
 import { useConnectedUser } from '@app/services/userManagementHook';
 import { useTranslation } from 'react-i18next';
 import { RebalancingCache } from '@app/Rebalancing/RebalancingCache';
-import { ThemeContext } from '@app/providers/ThemeProvider';
+import { DARK, ThemeContext } from '@app/providers/ThemeProvider';
 import { useNavigate } from 'react-router';
 import { TracingEnabled } from '@app/Common/TracingEnabled';
 import { AlertIcon } from '@patternfly/react-core/dist/js/components/Alert/AlertIcon';
-import { Health } from '@app/Common/Health';
+import { InfinispanComponentStatus } from '@app/Common/InfinispanComponentStatus';
+import { PageHeader } from '@patternfly/react-component-groups';
 
 const DetailCache = (props: { cacheName: string }) => {
   const cacheName = props.cacheName;
@@ -111,11 +101,11 @@ const DetailCache = (props: { cacheName: string }) => {
     return (
       <Tabs
         unmountOnExit
-        isSecondary={false}
+        isSubtab={true}
         activeKey={activeTabKey2}
         aria-label="Entries tab"
         component={TabsComponent.nav}
-        style={theme === 'dark' ? {} : { backgroundColor: global_BackgroundColor_100.value }}
+        style={theme === DARK ? {} : { backgroundColor: t_global_background_color_100.value }}
         onSelect={(event, tabIndex) => setActiveTabKey2(tabIndex)}
       >
         <Tab
@@ -139,41 +129,32 @@ const DetailCache = (props: { cacheName: string }) => {
   const buildDetailContent = () => {
     if (error.length > 0) {
       return (
-        <Card>
-          <CardBody>
-            <EmptyState variant={EmptyStateVariant.sm}>
-              <EmptyStateHeader
-                titleText={<>{`An error occurred while retrieving cache ${cacheName}`}</>}
-                icon={<EmptyStateIcon icon={ExclamationCircleIcon} color={global_danger_color_200.value} />}
-                headingLevel="h2"
-              />
-              <EmptyStateBody>{error}</EmptyStateBody>
-              <EmptyStateFooter>
-                <EmptyStateActions>
-                  <Link
-                    to={{
-                      pathname: '/',
-                      search: location.search
-                    }}
-                  >
-                    <Button variant={ButtonVariant.secondary}>{t('common.actions.back')}</Button>
-                  </Link>
-                </EmptyStateActions>
-              </EmptyStateFooter>
-            </EmptyState>
-          </CardBody>
-        </Card>
+        <EmptyState
+          variant={EmptyStateVariant.sm}
+          titleText={`An error occurred while retrieving cache ${cacheName}`}
+          headingLevel="h2"
+          status="danger"
+          icon={ExclamationCircleIcon}
+        >
+          <EmptyStateBody>{error}</EmptyStateBody>
+          <EmptyStateFooter>
+            <EmptyStateActions>
+              <Link
+                to={{
+                  pathname: '/',
+                  search: location.search
+                }}
+              >
+                <Button variant={ButtonVariant.secondary}>{t('common.actions.back')}</Button>
+              </Link>
+            </EmptyStateActions>
+          </EmptyStateFooter>
+        </EmptyState>
       );
     }
 
     if (loading || !cache) {
-      return (
-        <Card>
-          <CardBody>
-            <Spinner size="xl" />
-          </CardBody>
-        </Card>
-      );
+      return <Spinner size="xl" />;
     }
 
     if (activeTabKey1 == 0) {
@@ -194,12 +175,7 @@ const DetailCache = (props: { cacheName: string }) => {
     return <CacheMetrics cacheName={cacheName} display={activeTabKey1 == 2} />;
 
     return (
-      <EmptyState variant={EmptyStateVariant.sm}>
-        <EmptyStateHeader
-          titleText={<>{`Empty ${cacheName}`}</>}
-          icon={<EmptyStateIcon icon={InfoIcon} color={global_info_color_200.value} />}
-          headingLevel="h2"
-        />
+      <EmptyState variant={EmptyStateVariant.sm} titleText={`Empty ${cacheName}`} status="info" headingLevel="h2">
         <EmptyStateBody>{error}</EmptyStateBody>
         <EmptyStateFooter>
           <EmptyStateActions>
@@ -259,18 +235,10 @@ const DetailCache = (props: { cacheName: string }) => {
         <ToolbarItem>
           <Flex data-cy="rebuildingIndex">
             <FlexItem spacer={{ default: 'spacerXs' }}>
-              <AlertIcon
-                variant={AlertVariant.warning}
-                style={{
-                  color: global_warning_color_100.value,
-                  display: 'inline'
-                }}
-              />
+              <AlertIcon variant={AlertVariant.warning} />
             </FlexItem>
             <FlexItem>
-              <TextContent>
-                <Text component={TextVariants.p}>{t('caches.rebuilding-index')}</Text>
-              </TextContent>
+              <Content component={ContentVariants.p}>{t('caches.rebuilding-index')}</Content>
             </FlexItem>
           </Flex>
         </ToolbarItem>
@@ -336,17 +304,37 @@ const DetailCache = (props: { cacheName: string }) => {
   };
 
   const buildFeaturesChip = () => {
-    if (!cache?.features) return;
+    if (!cache || !cache.started) {
+      return;
+    }
+
     return (
-      <ToolbarItem>
-        <LabelGroup categoryName={t('caches.info.features')} numLabels={8}>
-          {displayUtils.createFeaturesChipGroup(cache.features).map((feature) => (
-            <Label isCompact icon={<InfoCircleIcon />} key={feature}>
-              {feature}
+      <Flex>
+        {cache && cache.aliases && (
+          <FlexItem>
+            <LabelGroup categoryName={t('caches.info.aliases')}>
+              {cache.aliases.map((feature) => (
+                <Label isCompact key={feature}>
+                  {feature}
+                </Label>
+              ))}
+            </LabelGroup>
+          </FlexItem>
+        )}
+        <FlexItem>
+          <LabelGroup categoryName={t('caches.info.features')} numLabels={8}>
+            <Label color={'blue'} isCompact key={cache.type} icon={<InfoCircleIcon />}>
+              {cache.type}
             </Label>
-          ))}
-        </LabelGroup>
-      </ToolbarItem>
+            {cache.features &&
+              displayUtils.createFeaturesChipGroup(cache.features).map((feature) => (
+                <Label isCompact key={feature} icon={<InfoCircleIcon />}>
+                  {feature}
+                </Label>
+              ))}
+          </LabelGroup>
+        </FlexItem>
+      </Flex>
     );
   };
 
@@ -369,11 +357,14 @@ const DetailCache = (props: { cacheName: string }) => {
   };
 
   const buildShowMorePanel = () => {
+    if (loading || error !== '' || !cache || !cache.started) {
+      return;
+    }
+
     return (
       <Toolbar id="cache-header-actions">
         <ToolbarContent>
           <ToolbarGroup>
-            {buildAliasesChips()}
             {cacheManager.tracing_enabled && (
               <React.Fragment>
                 <ToolbarItem>
@@ -401,7 +392,9 @@ const DetailCache = (props: { cacheName: string }) => {
         eventKey={0}
         title={
           cache.size
-            ? t('caches.tabs.entries-size', { size: displayUtils.formatNumber(cache?.size) })
+            ? t('caches.tabs.entries-size', {
+                size: displayUtils.formatNumber(cache?.size)
+              })
             : t('caches.tabs.entries')
         }
       />
@@ -432,7 +425,7 @@ const DetailCache = (props: { cacheName: string }) => {
   };
 
   const displayActions = (
-    <ToolbarGroup align={{ default: 'alignRight' }}>
+    <ToolbarGroup align={{ default: 'alignEnd' }}>
       <ToolbarItem>
         <Dropdown
           popperProps={{ position: 'right' }}
@@ -465,111 +458,50 @@ const DetailCache = (props: { cacheName: string }) => {
 
   const buildCacheHeader = () => {
     if (loading || !cache) {
-      return (
-        <Toolbar id="cache-detail-header">
-          <ToolbarGroup>
-            <ToolbarContent>
-              <ToolbarItem>
-                <TextContent>
-                  <Text component={TextVariants.h1}>{t('caches.info.loading', { cacheName: cacheName })}</Text>
-                </TextContent>
-              </ToolbarItem>
-              <ToolbarItem></ToolbarItem>
-            </ToolbarContent>
-          </ToolbarGroup>
-        </Toolbar>
-      );
+      return <PageHeader title={cacheName} subtitle={t('common.loading')} />;
     }
 
     if (error != '') {
-      return (
-        <Toolbar id="cache-detail-header">
-          <ToolbarGroup>
-            <ToolbarContent>
-              <ToolbarItem>
-                <TextContent>
-                  <Text component={TextVariants.h1}>{t('caches.info.error', { cacheName: cacheName })}</Text>
-                </TextContent>
-              </ToolbarItem>
-            </ToolbarContent>
-          </ToolbarGroup>
-        </Toolbar>
-      );
+      return <PageHeader title={cacheName} subtitle={t('caches.info.error', { cacheName: cacheName })} />;
     }
 
     if (!cache.started) {
       // cache is not ok
       return (
-        <React.Fragment>
-          <Toolbar id="cache-detail-header">
-            <ToolbarContent>
-              <ToolbarGroup>
-                <ToolbarItem>
-                  <Flex>
-                    <FlexItem>
-                      <TextContent>
-                        <Text component={TextVariants.h1}>{cache.name}</Text>
-                      </TextContent>
-                    </FlexItem>
-                    <FlexItem>
-                      <Health health={cache.health} displayIcon={true} cacheName={cache.name} />
-                    </FlexItem>
-                  </Flex>
-                </ToolbarItem>
-              </ToolbarGroup>
-              {displayActions}
-            </ToolbarContent>
-          </Toolbar>
-          <Tabs isBox={false} activeKey={activeTabKey1} isSecondary={true} component={TabsComponent.nav}>
-            {displayConfiguration()}
-          </Tabs>
-        </React.Fragment>
+        <PageHeader
+          title={cache.name}
+          subtitle={'cache detail'}
+          actionMenu={displayActions}
+          label={<InfinispanComponentStatus status={cache.health} name={cacheName} isLabel={true} />}
+        />
       );
     }
 
-    return (
-      <React.Fragment>
-        <Toolbar id="cache-detail-header">
-          <ToolbarContent>
-            <ToolbarGroup>
-              <ToolbarItem>
-                <TextContent>
-                  <Text component={TextVariants.h1}>{cache.name}</Text>
-                </TextContent>
-              </ToolbarItem>
-              <ToolbarItem>
-                <CacheTypeBadge cacheType={cache.type!} small={true} cacheName={cache.name} />
-              </ToolbarItem>
-              {buildFeaturesChip()}
-            </ToolbarGroup>
-            {displayActions}
-          </ToolbarContent>
-        </Toolbar>
-        {buildShowMorePanel()}
-        <Tabs
-          isBox={false}
-          activeKey={activeTabKey1}
-          isSecondary={true}
-          component={TabsComponent.nav}
-          onSelect={(event, tabIndex) => {
-            setActiveTabKey1(tabIndex);
-          }}
-        >
-          {displayCacheEntries()}
-          {displayConfiguration()}
-          {displayCacheStats()}
-        </Tabs>
-      </React.Fragment>
-    );
+    return <PageHeader title={cache.name} subtitle={''} actionMenu={displayActions} label={buildFeaturesChip()} />;
   };
 
   return (
     <React.Fragment>
-      <PageSection variant={PageSectionVariants.light} style={{ paddingBottom: 0 }}>
-        <DataContainerBreadcrumb currentPage={t('caches.info.breadcrumb', { cacheName: cacheName })} />
-        {buildCacheHeader()}
+      <DataContainerBreadcrumb currentPage={t('caches.info.breadcrumb', { cacheName: cacheName })} />
+      {buildCacheHeader()}
+      <PageSection>
+        {buildShowMorePanel()}
+        {cache && cache.started && (
+          <Tabs
+            isBox={false}
+            activeKey={activeTabKey1}
+            component={TabsComponent.nav}
+            onSelect={(event, tabIndex) => {
+              setActiveTabKey1(tabIndex);
+            }}
+          >
+            {displayCacheEntries()}
+            {displayConfiguration()}
+            {displayCacheStats()}
+          </Tabs>
+        )}
+        {buildDetailContent()}
       </PageSection>
-      <PageSection>{buildDetailContent()}</PageSection>
     </React.Fragment>
   );
 };

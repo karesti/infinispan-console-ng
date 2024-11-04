@@ -34,5 +34,5 @@ Cypress.Commands.add('login', (username, password, url = '/') => {
       password: password
     }
   });
-  cy.get('#nav-toggle').click();
+  cy.get('[data-cy=sideBarToggle]').click();
 });

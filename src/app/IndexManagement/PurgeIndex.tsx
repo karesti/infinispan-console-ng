@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, ButtonVariant, Modal, Text, TextContent } from '@patternfly/react-core';
+import { Button, ButtonVariant, Modal, Content, ModalHeader, ModalFooter, ModalBody } from '@patternfly/react-core';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';
@@ -21,28 +21,22 @@ const PurgeIndex = (props: { cacheName: string; isModalOpen: boolean; closeModal
   };
 
   return (
-    <Modal
-      titleIconVariant={'warning'}
-      width={'50%'}
-      isOpen={props.isModalOpen}
-      title={t('caches.index.purge.title')}
-      onClose={props.closeModal}
-      aria-label="Clear index modal"
-      actions={[
+    <Modal variant={'small'} isOpen={props.isModalOpen} onClose={props.closeModal} aria-label="Clear index modal">
+      <ModalHeader titleIconVariant={'warning'} title={t('caches.index.purge.title')} />
+      <ModalBody>
+        <Content>
+          {t('caches.index.purge.description1')} <strong>{props.cacheName}</strong>{' '}
+          {t('caches.index.purge.description2')}
+        </Content>
+      </ModalBody>
+      <ModalFooter>
         <Button data-cy="clearIndex" key="purge" variant={ButtonVariant.danger} onClick={onClickPurgeButton}>
           {t('common.actions.clear')}
-        </Button>,
+        </Button>
         <Button data-cy="cancelButton" key="cancel" variant="link" onClick={props.closeModal}>
           {t('common.actions.cancel')}
         </Button>
-      ]}
-    >
-      <TextContent>
-        <Text>
-          {t('caches.index.purge.description1')} <strong>{props.cacheName}</strong>{' '}
-          {t('caches.index.purge.description2')}
-        </Text>
-      </TextContent>
+      </ModalFooter>
     </Modal>
   );
 };

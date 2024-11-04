@@ -6,8 +6,6 @@ import {
   CardBody,
   EmptyState,
   EmptyStateBody,
-  EmptyStateHeader,
-  EmptyStateIcon,
   EmptyStateVariant,
   Pagination,
   Popover,
@@ -17,12 +15,12 @@ import {
   ToolbarContent,
   ToolbarItem
 } from '@patternfly/react-core';
-import { ExclamationCircleIcon, ExternalLinkSquareAltIcon, HelpIcon, SearchIcon } from '@patternfly/react-icons';
+import { ExternalLinkSquareAltIcon, HelpIcon, SearchIcon } from '@patternfly/react-icons';
 import displayUtils from '../../../services/displayUtils';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { useTranslation } from 'react-i18next';
 import { Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
-import { global_danger_color_200, global_spacer_md, global_spacer_sm } from '@patternfly/react-tokens';
+import { t_global_spacer_md, t_global_spacer_sm } from '@patternfly/react-tokens';
 import { ThemeContext } from '@app/providers/ThemeProvider';
 import { useSearch } from '@app/services/searchHook';
 
@@ -96,10 +94,10 @@ const QueryEntries = (props: { cacheName: string; changeTab: () => void }) => {
   const buildViewAllQueryStats = () => {
     return (
       <React.Fragment>
-        <ToolbarItem variant={'separator'} style={{ marginInline: global_spacer_sm.value }} />
+        <ToolbarItem variant={'separator'} style={{ marginInline: t_global_spacer_sm.value }} />
         <ToolbarItem>
           <Button
-            style={{ marginLeft: global_spacer_md.value }}
+            style={{ marginLeft: t_global_spacer_md.value }}
             variant={ButtonVariant.secondary}
             onClick={() => props.changeTab()}
             data-cy="viewQueryMetricsButton"
@@ -147,7 +145,9 @@ const QueryEntries = (props: { cacheName: string; changeTab: () => void }) => {
         <ToolbarItem>
           <Popover
             headerContent={t('caches.query.ickle-query')}
-            bodyContent={t('caches.query.ickle-query-tooltip', { brandname: brandname })}
+            bodyContent={t('caches.query.ickle-query-tooltip', {
+              brandname: brandname
+            })}
             footerContent={
               <Button
                 variant={'link'}
@@ -177,29 +177,15 @@ const QueryEntries = (props: { cacheName: string; changeTab: () => void }) => {
   );
 
   const emptyQueryMessage = (
-    <EmptyState variant={EmptyStateVariant.lg}>
-      <EmptyStateHeader icon={<EmptyStateIcon icon={SearchIcon} />} />
+    <EmptyState variant={EmptyStateVariant.lg} icon={SearchIcon}>
       <EmptyStateBody>{t('caches.query.no-query-body')}</EmptyStateBody>
     </EmptyState>
   );
 
-  const emptyStateLoading = (
-    <EmptyState>
-      <EmptyStateHeader
-        titleText={t('caches.query.query-loading')}
-        headingLevel="h4"
-        icon={<EmptyStateIcon icon={Spinner} />}
-      />
-    </EmptyState>
-  );
+  const emptyStateLoading = <EmptyState titleText={t('caches.query.query-loading')} headingLevel="h4" icon={Spinner} />;
 
   const errorSearchMessage = (
-    <EmptyState>
-      <EmptyStateHeader
-        titleText={<>{t('caches.query.query-error')}</>}
-        icon={<EmptyStateIcon color={global_danger_color_200.value} icon={ExclamationCircleIcon} />}
-        headingLevel="h2"
-      />
+    <EmptyState status={'danger'} headingLevel="h2" titleText={t('caches.query.query-error')}>
       <EmptyStateBody>{search.searchResult.cause}</EmptyStateBody>
     </EmptyState>
   );
@@ -255,7 +241,7 @@ const QueryEntries = (props: { cacheName: string; changeTab: () => void }) => {
   };
 
   return (
-    <Card>
+    <Card isPlain isFullHeight>
       <CardBody>
         {toolbar}
         {displayContent()}

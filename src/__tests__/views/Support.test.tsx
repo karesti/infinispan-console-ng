@@ -9,7 +9,7 @@ describe('Support page', () => {
 
     const { getByRole } = renderWithRouter(<Support isModalOpen={true} closeModal={handleClose} />);
 
-    expect(getByRole('dialog', { name: 'support.no-user-label' })).toBeDefined();
+    expect(getByRole('banner', { name: 'support.no-user-label' })).toBeDefined();
     expect(getByRole('heading', { name: 'support.no-user' })).toBeDefined();
     expect(getByRole('heading', { name: 'support.text-create-user' })).toBeDefined();
 
