@@ -4,7 +4,7 @@ describe('Counters CRUD', () => {
     });
 
     it('successfully creates weak & volatile counter', () => {
-      cy.get('a[aria-label="nav-item-Counters"]').click();
+      cy.get('[data-cy="tab-Counters"]').click();
       //Creating new weak counter
       cy.get('button[data-cy="createCounterButton"]').click();
       cy.get("[aria-label=counter-name-input]").type("TestWeakVolatileCounter");
@@ -17,7 +17,7 @@ describe('Counters CRUD', () => {
     });
 
     it('successfully shows error while creating counter with duplicate name', () => {
-        cy.get('a[aria-label="nav-item-Counters"]').click();
+        cy.get('[data-cy="tab-Counters"]').click();
         //Creating new weak counter
         cy.get('button[data-cy="createCounterButton"]').click();
         cy.get("[aria-label=counter-name-input]").type("TestWeakVolatileCounter");
@@ -30,7 +30,7 @@ describe('Counters CRUD', () => {
       });
 
     it('successfully creates weak & persistent counter', () => {
-        cy.get('a[aria-label="nav-item-Counters"]').click();
+        cy.get('[data-cy="tab-Counters"]').click();
         //Creating new weak counter
         cy.get('button[data-cy="createCounterButton"]').click();
         cy.get("[aria-label=counter-name-input]").type("TestWeakPersistentCounter");
@@ -43,7 +43,7 @@ describe('Counters CRUD', () => {
       });
 
     it ('successfully creates strong & persistent counter', () => {
-      cy.get('a[aria-label="nav-item-Counters"]').click();
+      cy.get('[data-cy="tab-Counters"]').click();
       //Creating new strong counter
       cy.get('button[data-cy="createCounterButton"]').click();
       cy.get("[aria-label=counter-name-input]").type("TestStrongPersistentCounter");
@@ -57,7 +57,7 @@ describe('Counters CRUD', () => {
     });
 
     it ('successfully creates strong & volatile counter', () => {
-        cy.get('a[aria-label="nav-item-Counters"]').click();
+        cy.get('[data-cy="tab-Counters"]').click();
         //Creating new strong counter
         cy.get('button[data-cy="createCounterButton"]').click();
         cy.get("[aria-label=counter-name-input]").type("TestStrongVolatileCounter");
@@ -71,7 +71,7 @@ describe('Counters CRUD', () => {
       });
 
       it ('successfully adds delta to strong counter', () => {
-        cy.get('a[aria-label="nav-item-Counters"]').click();
+        cy.get('[data-cy="tab-Counters"]').click();
         cy.contains('strong-5');
         cy.contains('td', 'strong-5').parent()
         .within($tr => {
@@ -93,7 +93,7 @@ describe('Counters CRUD', () => {
       });
 
       it ('successfully resets strong counter', () => {
-        cy.get('a[aria-label="nav-item-Counters"]').click();
+        cy.get('[data-cy="tab-Counters"]').click();
         cy.contains('td', 'strong-5').parent()
         .within($tr => {
             cy.get('[data-label="Current value"]').contains('4');
@@ -115,7 +115,7 @@ describe('Counters CRUD', () => {
       });
 
       it ('successfully deletes weak counter', () => {
-        cy.get('a[aria-label="nav-item-Counters"]').click();
+        cy.get('[data-cy="tab-Counters"]').click();
         cy.contains('weak-5');
         cy.contains('td', 'weak-5').parent()
         .within($tr => {
@@ -135,7 +135,7 @@ describe('Counters CRUD', () => {
       });
 
       it ('successfully deletes strong counter', () => {
-        cy.get('a[aria-label="nav-item-Counters"]').click();
+        cy.get('[data-cy="tab-Counters"]').click();
         cy.contains('strong-5');
         cy.contains('td', 'strong-5').parent()
         .within($tr => {
@@ -154,7 +154,7 @@ describe('Counters CRUD', () => {
 
       // it ('successfully filters counters', () => {
       //   // There is an issue in Patternfly with size
-      //   cy.get('a[aria-label="nav-item-Counters"]').click();
+      //   cy.get('[data-cy="tab-Counters"]').click();
       //   cy.contains('strong-4');
       //   cy.contains('weak-4');
       //
@@ -242,7 +242,7 @@ describe('Counters CRUD', () => {
       // });
 
       it ('successfully sets value to strong counter', () => {
-        cy.get('a[aria-label="nav-item-Counters"]').click();
+        cy.get('[data-cy="tab-Counters"]').click();
         cy.contains('strong-4');
         cy.contains('td', 'strong-4').parent()
         .within($tr => {
@@ -264,7 +264,7 @@ describe('Counters CRUD', () => {
       });
 
       it('successully shows error while setting value to strong counter with value out of bounds', () => {
-        cy.get('a[aria-label="nav-item-Counters"]').click();
+        cy.get('[data-cy="tab-Counters"]').click();
         cy.contains('TestStrongPersistentCounter');
         cy.contains('td', 'TestStrongPersistentCounter').parent()
         .within($tr => {

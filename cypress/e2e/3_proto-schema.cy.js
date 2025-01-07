@@ -4,7 +4,7 @@ describe('Proto Schema CRUD', () => {
   });
 
   it('successfully navigates through schemas', () => {
-    cy.get('a[aria-label="nav-item-Schemas"]').click();
+    cy.get('[data-cy="tab-Schemas"]').click();
     cy.contains('people');
     cy.contains('test-6.proto');
     cy.contains('test-10.proto');
@@ -46,7 +46,7 @@ describe('Proto Schema CRUD', () => {
   });
 
   it('successfully creates, edits and deletes a proto schema', () => {
-    cy.get('a[aria-label="nav-item-Schemas"]').click();
+    cy.get('[data-cy="tab-Schemas"]').click();
 
     //Creating new schema
     cy.get('button[aria-label="create-schema-button"]').click();
@@ -99,7 +99,7 @@ describe('Proto Schema CRUD', () => {
   });
 
   it('gives error if duplicate name is used while creating new schema', () => {
-    cy.get('a[aria-label="nav-item-Schemas"]').click();
+    cy.get('[data-cy="tab-Schemas"]').click();
     cy.get('button[aria-label="create-schema-button"]').click();
     cy.get('#schema-name').click().type('people');
     cy.get('#schema').click().type('schemaValue');
@@ -109,7 +109,7 @@ describe('Proto Schema CRUD', () => {
   });
 
   it('gives error if special symbols are used in the name field', () => {
-    cy.get('a[aria-label="nav-item-Schemas"]').click();
+    cy.get('[data-cy="tab-Schemas"]').click();
     cy.get('button[aria-label="create-schema-button"]').click();
     cy.get('#schema-name').click().type('1234567890+-*/name!@#$with%^&*special()_+symbols{}|":isnot?><saved>');
     cy.get('#schema').click().type('1234567890+-*/value!@#$with%^&*special()_+symbols{}|":is?><saved>');

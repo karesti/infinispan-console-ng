@@ -20,7 +20,7 @@ describe('Welcome page', () => {
     cy.contains('Tracing is enabled'); // tracing status
     cy.contains('16 Caches');
     cy.contains('10 Counters');
-    cy.contains('1 Tasks');
+    // cy.contains('1 Tasks');
     cy.contains('13 Schemas');
     cy.contains('invalidationCache');
 

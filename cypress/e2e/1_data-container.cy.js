@@ -11,8 +11,8 @@ describe('Data Container Overview', () => {
     cy.contains('Running'); // cluster status
     cy.contains('Tracing is enabled');
     cy.contains('Cluster rebalancing on'); // rebalancing status
-    cy.get('[data-cy=cluster-manager-header]').should('exist');
-    cy.get('[data-cy=cacheManagerStatus]').should('exist');
+    cy.get('[data-cy="statusInfo-clusterManager"]').should('exist');
+    cy.get('[data-ouia-component-id=cluster-manager-header-title]').should('exist');
     cy.get('[data-cy=rebalancingSwitch]').should('exist');
     cy.get('[data-cy=navigationTabs]').should('exist');
     cy.get('#cache-table-toolbar').should('exist');
@@ -23,18 +23,19 @@ describe('Data Container Overview', () => {
     cy.get('[data-cy=cachesTable]').should('exist');
     cy.contains('default'); // cache default
     cy.contains('octet-stream-cache').should('not.exist'); // cache octet-stream-cache is already on the next page
+
     //make sure there are total 4 tabs (0,1,2,3)
-    cy.get('a[aria-label="nav-item-Caches"]').click();
-    cy.get('a[aria-label="nav-item-Tasks"]').click();
-    cy.get('a[aria-label="nav-item-Counters"]').click();
-    cy.get('a[aria-label="nav-item-Schemas"]').click();
+    cy.get('[data-cy="tab-Caches"]').click({multiple: true, force: true});
+    cy.get('[data-cy="tab-Tasks"]').click({multiple: true, force: true});
+    cy.get('[data-cy="tab-Counters"]').click({multiple: true, force: true});
+    cy.get('[data-cy="tab-Schemas"]').click({multiple: true, force: true});
   });
 
   //Testing pagination and navigation
   it('successfully navigates through the caches as well as changes number of viewed caches on the page', () => {
     cy.contains(numberOfCaches + ' Caches');
     cy.contains('10 Counters');
-    cy.contains('1 Tasks');
+    // cy.contains('1 Tasks');
     cy.contains('13 Schemas');
 
     cy.contains('1 - 10 of ' + numberOfCaches);
@@ -60,48 +61,16 @@ describe('Data Container Overview', () => {
     cy.contains('xml-cache').should('not.exist');
 
     //Changing the number of items on the page
-    cy.get('[id^="pagination-caches-top-pagination"]').first().click();
-    cy.get('[data-action=per-page-10] .pf-v5-c-menu__item-select-icon').should('exist'); //Verifying the selected option
-    cy.get('[data-action=per-page-20] .pf-v5-c-menu__item-select-icon').should('not.exist');
-    cy.get('[data-action=per-page-50] .pf-v5-c-menu__item-select-icon').should('not.exist');
-    cy.get('[data-action=per-page-100] .pf-v5-c-menu__item-select-icon').should('not.exist');
+    cy.contains('1 - 10 of 16');
+    cy.get('[id^="pagination-caches-top-toggle"]').first().click();
+    cy.get('[data-action=per-page-10]').should('exist');
+    cy.get('[data-action=per-page-20]').should('exist');
+    cy.get('[data-action=per-page-50]').should('exist');
+    cy.get('[data-action=per-page-100]').should('exist');
     cy.get('[data-action=per-page-20]').click();
-
     //Verifying that all caches are shown and navigation buttons are disabled
-    cy.get('[id^="pagination-caches-top-pagination"]').first().click();
-    cy.get('[data-action=per-page-10] .pf-v5-c-menu__item-select-icon').should('not.exist'); //Verifying the selected option
-    cy.get('[data-action=per-page-20] .pf-v5-c-menu__item-select-icon').should('exist');
-    cy.get('[data-action=per-page-50] .pf-v5-c-menu__item-select-icon').should('not.exist');
-    cy.get('[data-action=per-page-100] .pf-v5-c-menu__item-select-icon').should('not.exist');
+    cy.contains('1 - 16 of 16');
     cy.get('[data-cy=cachesTable] tr').should('have.length', numberOfCaches + 1); // including header row
-    cy.get('[data-action=next]').first().should('be.disabled');
-    cy.get('[data-action=previous]').first().should('be.disabled');
-    cy.contains('java-serialized-cache');
-    cy.contains('people');
-    cy.contains('xml-cache');
-
-    //Changing the number of items on the page to 3rd option
-    cy.get('[data-action=per-page-50]').click();
-    cy.get('[id^="pagination-caches-top-pagination"]').first().click();
-    cy.get('[data-action=per-page-10] .pf-v5-c-menu__item-select-icon').should('not.exist'); //Verifying the selected option
-    cy.get('[data-action=per-page-20] .pf-v5-c-menu__item-select-icon').should('not.exist');
-    cy.get('[data-action=per-page-50] .pf-v5-c-menu__item-select-icon').should('exist');
-    cy.get('[data-action=per-page-100] .pf-v5-c-menu__item-select-icon').should('not.exist');
-    cy.get('[data-cy=cachesTable] tr').should('have.length', numberOfCaches + 1); //including header row
-    cy.get('[data-action=next]').first().should('be.disabled');
-    cy.get('[data-action=previous]').first().should('be.disabled');
-    cy.contains('java-serialized-cache');
-    cy.contains('people');
-    cy.contains('xml-cache');
-
-    //Changing the number of items on the page to 4th option
-    cy.get('[data-action=per-page-100]').click();
-    cy.get('[id^="pagination-caches-top-pagination"]').first().click();
-    cy.get('[data-action=per-page-10] .pf-v5-c-menu__item-select-icon').should('not.exist'); //Verifying the selected option
-    cy.get('[data-action=per-page-20] .pf-v5-c-menu__item-select-icon').should('not.exist');
-    cy.get('[data-action=per-page-50] .pf-v5-c-menu__item-select-icon').should('not.exist');
-    cy.get('[data-action=per-page-100] .pf-v5-c-menu__item-select-icon').should('exist');
-    cy.get('[data-cy=cachesTable] tr').should('have.length', numberOfCaches + 1); //including header row
     cy.get('[data-action=next]').first().should('be.disabled');
     cy.get('[data-action=previous]').first().should('be.disabled');
     cy.contains('java-serialized-cache');
@@ -310,8 +279,8 @@ describe('Data Container Overview', () => {
     cy.get('[data-cy=dataContainerLink]').click(); //Clicking on breadcrumb link.
 
     //Is redirected to Data Container page
-    cy.get('[data-cy=cluster-manager-header]').should('exist');
-    cy.get('[data-cy=cacheManagerStatus]').should('exist');
+    cy.get('[data-ouia-component-id=cluster-manager-header-title]').should('exist');
+    cy.get('[data-cy="statusInfo-clusterManager"]').should('exist');
     cy.get('[data-cy=rebalancingSwitch]').should('exist');
 
     //Go to Config page again

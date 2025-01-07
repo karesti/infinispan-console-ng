@@ -135,8 +135,8 @@ describe('Cache Creation Wizard', () => {
     cy.get('[data-cy=wizardNextButton]').click();
 
     // Once the cache created, redirection to main page is done and the cache should be visible
-    cy.get('[data-cy=cluster-manager-header]').should('exist');
-    cy.get('[data-cy=cacheManagerStatus]').should('exist');
+    cy.get('[data-ouia-component-id=cluster-manager-header-title]').should('exist');
+    cy.get('[data-cy="statusInfo-clusterManager"]').should('exist');
     cy.get('[data-cy=rebalancingSwitch]').should('exist');
     cy.contains('asuper-cache');
     cy.contains('securedAlias');
@@ -167,8 +167,8 @@ describe('Cache Creation Wizard', () => {
     cy.contains('Cache ' + cacheName + ' successfully created with e2e-test-template.');
     // Once the cache created, redirection to main page is done and the cache should be visible
     //Is redirected to Data Container page
-    cy.get('[data-cy=cluster-manager-header]').should('exist');
-    cy.get('[data-cy=cacheManagerStatus]').should('exist');
+    cy.get('[data-ouia-component-id=cluster-manager-header-title]').should('exist');
+    cy.get('[data-cy="statusInfo-clusterManager"]').should('exist');
     cy.get('[data-cy=rebalancingSwitch]').should('exist');
     cy.contains(cacheName);
     deleteCache(cacheName);
@@ -195,8 +195,8 @@ describe('Cache Creation Wizard', () => {
     cy.get('[data-cy=wizardNextButton]').click();
     cy.contains('Cache aSimpleCache created with the provided configuration.');
     // Once the cache created, redirection to main page is done and the cache should be visible
-    cy.get('[data-cy=cluster-manager-header]').should('exist');
-    cy.get('[data-cy=cacheManagerStatus]').should('exist');
+    cy.get('[data-ouia-component-id=cluster-manager-header-title]').should('exist');
+    cy.get('[data-cy="statusInfo-clusterManager"]').should('exist');
     cy.get('[data-cy=rebalancingSwitch]').should('exist');
     cy.contains('aSimpleCache');
     deleteCache('aSimpleCache');
@@ -229,8 +229,8 @@ describe('Cache Creation Wizard', () => {
     cy.get('[data-cy=wizardNextButton]').click();
     cy.contains('Cache aSimpleXmlCache created with the provided configuration.');
     // Once the cache created, redirection to main page is done and the cache should be visible
-    cy.get('[data-cy=cluster-manager-header]').should('exist');
-    cy.get('[data-cy=cacheManagerStatus]').should('exist');
+    cy.get('[data-ouia-component-id=cluster-manager-header-title]').should('exist');
+    cy.get('[data-cy="statusInfo-clusterManager"]').should('exist');
     cy.get('[data-cy=rebalancingSwitch]').should('exist');
     cy.contains('aSimpleXmlCache');
     deleteCache('aSimpleXmlCache');

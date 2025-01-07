@@ -102,6 +102,7 @@ const CacheManagers = () => {
         <>
           {tabs.map((tab) => (
             <Tab
+              data-cy={'tab-' + tab.name}
               aria-label={'nav-item-' + tab.name}
               key={'nav-item-' + tab.key}
               eventKey={tab.key}
@@ -156,7 +157,7 @@ const CacheManagers = () => {
 
     return (
       <>
-        <PageHeader data-cy="cluster-manager-header" title={title} subtitle={''} />
+        <PageHeader ouiaId="cluster-manager-header" title={title} subtitle={''} />
         <PageSection>
           <Toolbar id="cluster-manager-sub-header">
             <ToolbarContent>
@@ -176,7 +177,7 @@ const CacheManagers = () => {
                 </>
               )}
               <ToolbarItem>
-                <InfinispanComponentStatus status={cm.cache_manager_status} />
+                <InfinispanComponentStatus name="clusterManager" status={cm.cache_manager_status} />
               </ToolbarItem>
               {cm.tracing_enabled && (
                 <React.Fragment>

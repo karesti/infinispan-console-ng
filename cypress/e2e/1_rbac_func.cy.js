@@ -121,8 +121,8 @@ describe('RBAC Functionality Tests', () => {
       cy.get('[data-cy=rebalancingSwitch]').should('not.exist'); // rebalancing status
     }
 
-    cy.get('[data-cy=cluster-manager-header]').should('exist');
-    cy.get('[data-cy=cacheManagerStatus]').should('exist');
+    cy.get('[data-ouia-component-id=cluster-manager-header-title]').should('exist');
+    cy.get('[data-cy="statusInfo-clusterManager"]').should('exist');
     cy.get('[data-cy=navigationTabs]').should('exist');
     cy.contains(/^\d+ Caches$/);
     cy.contains('Counters');
@@ -223,7 +223,7 @@ describe('RBAC Functionality Tests', () => {
   function checkNotOwnSecuredCache(cacheName) {
     //Checking not owned cache to be invisible for the current user.
     cy.contains('Data container').click();
-    cy.get('[id^="pagination-caches-top-pagination"]').first().click();
+    cy.get('[id^="pagination-caches-top-toggle"]').first().click();
     cy.get('[data-action=per-page-100]').click();
     cy.contains('/' + cacheName +'$/').should('not.exist');
   }
@@ -317,7 +317,7 @@ describe('RBAC Functionality Tests', () => {
   function checkSchemasPageView(isAdmin) {
     //Go to schemas and check that no create/edit/delete buttons available
     cy.contains('Data container').click();
-    cy.get('a[aria-label="nav-item-Schemas"]').click();
+    cy.get('[data-cy="tab-Schemas"]').click();
     cy.contains('people');
     cy.contains('test-6.proto');
     cy.get('[data-cy="people.protoConfig"]').click();
@@ -337,7 +337,7 @@ describe('RBAC Functionality Tests', () => {
 
   function checkCountersPageView(isSuperAdmin) {
     //Checking counters page
-    cy.get('a[aria-label="nav-item-Counters"]').click();
+    cy.get('[data-cy="tab-Counters"]').click();
     cy.contains('strong-1');
     cy.get('body').then(($body) => {
       if ($body.find('button[aria-label="Show Filters"]').length) {
@@ -436,7 +436,7 @@ describe('RBAC Functionality Tests', () => {
 
   function checkTasksPage() {
     //Checking Tasks page
-    cy.get('a[aria-label="nav-item-Tasks"]').click();
+    cy.get('[data-cy="tab-Tasks"]').click();
     cy.contains('hello');
   }
 
