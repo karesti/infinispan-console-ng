@@ -258,7 +258,7 @@ describe('Cache Creation Wizard', () => {
     cy.get('[data-cy=deleteCacheButton]').click(); //Deleting cache aCache
 
     cy.contains(`Cache ${cacheName} deleted.`);
-    cy.get('.pf-v5-c-alert__action > .pf-v5-c-button').click(); //Closing alert popup.
+    cy.get('[name=close-alert-button]').click(); //Closing alert popup.
     cy.get(cacheName).should('not.exist'); //Checking that deleted cache is not visible
   }
 });

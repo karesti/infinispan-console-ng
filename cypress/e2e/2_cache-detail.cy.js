@@ -313,6 +313,6 @@ describe('Cache Detail Overview', () => {
   }
 
   function closePopup() {
-    cy.get('.pf-v5-c-alert__action > .pf-v5-c-button').click(); //Closing alert popup.
+    cy.get('[name=close-alert-button]').click(); //Closing alert popup.
   }
 });

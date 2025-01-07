@@ -19,7 +19,7 @@ const ActionResponseAlert = () => {
             isLiveRegion
             title={alertMap.get(key).message}
             variant={alertMap.get(key).success ? AlertVariant.success : AlertVariant.danger}
-            actionClose={<AlertActionCloseButton key={key} onClose={() => removeAlert(key)} />}
+            actionClose={<AlertActionCloseButton name={'close-alert-button'} key={key} onClose={() => removeAlert(key)} />}
           />
         ))}
     </AlertGroup>

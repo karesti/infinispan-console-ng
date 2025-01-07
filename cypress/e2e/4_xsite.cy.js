@@ -211,7 +211,7 @@ describe('XSite Config Tests', () => {
         cy.get('#value-entry').click().type('stringValue');
         cy.get('[data-cy=addButton]').click();
         cy.contains('Entry added to cache xsiteCache.');
-        cy.get('.pf-v5-c-alert__action > .pf-v5-c-button').click(); //Closing alert popup.
+        cy.get('[name=close-alert-button]').click(); //Closing alert popup.
         cy.contains('stringKey');
         cy.contains('stringValue');
 

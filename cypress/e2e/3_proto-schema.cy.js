@@ -55,7 +55,7 @@ describe('Proto Schema CRUD', () => {
     cy.get('#schema').click().type('schemaValue');
     cy.get('[data-cy="addSchemaButton"]').click();
     cy.contains('Schema ' + schemaName + ' created.');
-    cy.get('.pf-v5-c-alert__action > .pf-v5-c-button').click(); //Closing alert popup.
+    cy.get('[name=close-alert-button]').click(); //Closing alert popup.
     cy.contains(schemaName + '.proto');
     cy.contains('Schema ' + schemaName + '.proto has errors');
 
@@ -77,7 +77,7 @@ describe('Proto Schema CRUD', () => {
     cy.wait(3000);
     cy.contains('Schema ' + schemaName +'.proto updated.');
     cy.wait(3000);
-    cy.get('.pf-v5-c-alert__action > .pf-v5-c-button').click(); //Closing alert popup.
+    cy.get('[name=close-alert-button]').click(); //Closing alert popup.
     //Waiting 5 seconds so that the proto schema is managed to be updated on the page.
     cy.wait(3000);
     cy.get('[data-cy="' + schemaName + '.protoConfig"]').click();
@@ -92,7 +92,7 @@ describe('Proto Schema CRUD', () => {
     cy.contains('Delete schema?');
     cy.get('button[aria-label="confirm-delete-schema-button"]').click();
     cy.contains('Schema ' + schemaName + '.proto has been deleted.');
-    cy.get('.pf-v5-c-alert__action > .pf-v5-c-button').click(); //Closing alert popup.
+    cy.get('[name=close-alert-button]').click(); //Closing alert popup.
     cy.contains('people.proto');
     cy.get('button[aria-label="create-schema-button"]').scrollIntoView();
     cy.contains(schemaName + '.proto').should('not.exist');
