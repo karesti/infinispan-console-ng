@@ -34,5 +34,5 @@ module.exports = {
   transformIgnorePatterns: ['/node_modules/(?!(react-syntax-highlighter)/)'],
 
   // The test environment that will be used for testing.
-  testEnvironment: "jsdom",
+  testEnvironment: "jest-fixed-jsdom",
 };

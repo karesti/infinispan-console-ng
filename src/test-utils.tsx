@@ -15,11 +15,6 @@ export function renderWithRouter(children, routes = []) {
   });
 
   return render(
-    <RouterProvider
-      future={{
-        v7_startTransition: true
-      }}
-      router={router}
-    />
+    <RouterProvider router={router} />
   );
 }
