@@ -52,7 +52,7 @@ const ClusterDistributionChart = () => {
     if (filteredData) {
       const initSlice = (tablePagination.page - 1) * tablePagination.perPage;
       const updateRows = filteredData.slice(initSlice, initSlice + tablePagination.perPage);
-      updateRows.length > 0 ? setTableRow(updateRows) : setTableRow([]);
+      setTableRow(updateRows);
     }
   }, [tablePagination, filteredData]);
 
